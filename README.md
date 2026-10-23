@@ -1,4 +1,4 @@
-# 拾光成长 · Shiguang Growth
+# 拾光成长 · Kindergarten Memories
 
 把园内分散的照片和视频，整理成每个孩子有原始依据、经老师确认的成长周记。
 
