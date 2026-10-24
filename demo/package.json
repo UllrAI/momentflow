@@ -1,0 +1,25 @@
+{
+  "name": "momentflow-demo",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && node scripts/prepare-sites-build.mjs",
+    "preview": "vite preview",
+    "test:sites": "node --test tests/sites-worker.test.mjs",
+    "test": "node --test tests/model.test.mjs",
+    "format": "prettier --write src tests/model.test.mjs index.html",
+    "check:format": "prettier --check src tests/model.test.mjs index.html"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "5.0.4",
+    "lucide-react": "^1.61.0",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "vite": "6.4.2"
+  },
+  "devDependencies": {
+    "prettier": "^3.9.10"
+  }
+}
