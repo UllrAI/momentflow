@@ -4,13 +4,16 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "node scripts/dev-local.mjs",
     "build": "vite build && node scripts/prepare-sites-build.mjs",
     "preview": "vite preview",
     "test:sites": "node --test tests/sites-worker.test.mjs",
-    "test": "node --test tests/model.test.mjs",
-    "format": "prettier --write src tests/model.test.mjs index.html",
-    "check:format": "prettier --check src tests/model.test.mjs index.html"
+    "test": "uv run --directory ../backend pytest && node --test tests/client.test.mjs",
+    "format": "prettier --write src tests/client.test.mjs index.html scripts/dev-local.mjs",
+    "check:format": "prettier --check src tests/client.test.mjs index.html scripts/dev-local.mjs",
+    "dev:ui": "vite",
+    "setup": "uv sync --directory ../backend && uv run --directory ../backend python -m momentflow.download_models",
+    "check:backend": "uv run --directory ../backend ruff check momentflow tests"
   },
   "dependencies": {
     "@vitejs/plugin-react": "5.0.4",

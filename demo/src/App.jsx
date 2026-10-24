@@ -1,129 +1,91 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
-  Mountain,
-  Send,
-  FolderOpen,
-  MapPin,
-  ReceiptText,
-  Settings,
-  Upload,
-  ChevronDown,
-  ChevronRight,
-  X,
-  Check,
-  CheckCircle2,
-  AlertCircle,
-  Clock3,
   ArrowLeft,
   ArrowRight,
-  Link,
-  Play,
-  Image as ImageIcon,
-  Film,
-  RotateCcw,
-  Download,
   ArrowUp,
-  Trash2,
-  ShieldCheck,
-  CalendarDays,
-  SlidersHorizontal,
-  Bell,
-  Users,
+  Check,
+  CheckCircle2,
+  ChevronDown,
+  ChevronRight,
+  Download,
+  FileVideo,
+  Film,
+  FolderOpen,
+  GraduationCap,
+  Image as ImageIcon,
+  Leaf,
   LoaderCircle,
+  Merge,
+  Mountain,
+  Plus,
+  ScanFace,
+  Scissors,
+  Send,
+  Settings,
+  ShieldCheck,
+  Split,
+  Upload,
+  Users,
+  X,
+  AlertCircle,
 } from "lucide-react";
-import {
-  projects,
-  labels,
-  initialSessions,
-  importedSession,
-  updateSession,
-  statusOf,
-  canApprove,
-  canDeliver,
-  canView,
-  imageFor,
-  duration,
-  clock,
-} from "./model";
-import { renderMontage } from "./render";
+import { api, defaultSelection, latestExport, seconds } from "./api";
 
-const nav = [
-  { id: "today", label: "今日交付", icon: Send },
-  { id: "media", label: "素材与成片", icon: FolderOpen },
-  { id: "projects", label: "项目与点位", icon: MapPin },
-  { id: "orders", label: "订单", icon: ReceiptText },
-  { id: "settings", label: "设置", icon: Settings },
-];
-const getRoute = () =>
-  location.hash.startsWith("#guest/")
-    ? decodeURIComponent(location.hash.slice(7))
-    : null;
-const fileUrls = new Set();
-function Status({ session }) {
-  const status = statusOf(session);
-  const Icon =
-    status === "pending"
-      ? AlertCircle
-      : status === "rendering"
-        ? Clock3
-        : CheckCircle2;
-  return (
-    <span className={`status ${status}`}>
-      <Icon size={14} />
-      {labels[status]}
-    </span>
-  );
-}
-function Steps({ session }) {
-  const count = !session.verified
-    ? 2
-    : session.renderedVersion !== session.version
-      ? 2
-      : session.delivered
-        ? 4
-        : 3;
-  return (
-    <div className="steps">
-      {["已采集", "已关联", "已成片", "已交付"].map((x, i) => (
-        <div key={x} className={i < count ? "done" : ""}>
-          <i />
-          <span>{x}</span>
-        </div>
-      ))}
-    </div>
-  );
-}
-function Modal({ title, close, children, wide = false }) {
+const scenes = {
+  adventure: {
+    brand: "MomentFlow · 拾光",
+    org: "体验影像工作空间",
+    title: "每个人，都有自己的精彩。",
+    description: "从真实照片与视频，找到属于每位体验者的瞬间。",
+    people: "体验者",
+    output: "专属集锦",
+    receiver: "游客",
+    sample: "体验影像示例",
+  },
+  kindergarten: {
+    brand: "拾光成长",
+    org: "青禾幼儿园",
+    title: "本周成长周记",
+    description: "先确认人物，再把美好交到家长手中。",
+    people: "孩子们",
+    output: "成长周记",
+    receiver: "家长",
+    sample: "幼儿园示例",
+  },
+};
+
+function Modal({ title, children, close, wide = false }) {
   const ref = useRef(null);
   const closeRef = useRef(close);
   closeRef.current = close;
   useEffect(() => {
-    const previous = document.activeElement;
-    const el = ref.current;
-    el.focus();
-    const handler = (e) => {
+    const before = document.activeElement;
+    const dialog = ref.current;
+    dialog.focus();
+    const key = (e) => {
       if (e.key === "Escape") closeRef.current();
       if (e.key === "Tab") {
         const items = [
-          ...el.querySelectorAll(
+          ...dialog.querySelectorAll(
             "button:not(:disabled),input:not(:disabled),select,textarea,a[href]",
           ),
         ];
-        const first = items[0],
-          last = items.at(-1);
-        if (e.shiftKey && document.activeElement === first) {
+        if (e.shiftKey && document.activeElement === items[0]) {
           e.preventDefault();
-          last?.focus();
-        } else if (!e.shiftKey && document.activeElement === last) {
+          items.at(-1)?.focus();
+        } else if (!e.shiftKey && document.activeElement === items.at(-1)) {
           e.preventDefault();
-          first?.focus();
+          items[0]?.focus();
         }
       }
     };
-    el.addEventListener("keydown", handler);
+    dialog.addEventListener("keydown", key);
+    const priorOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
     return () => {
-      previous?.focus();
-      el.removeEventListener("keydown", handler);
+      dialog.removeEventListener("keydown", key);
+      document.body.style.overflow = priorOverflow;
+      before?.focus();
     };
   }, []);
   return (
@@ -134,15 +96,15 @@ function Modal({ title, close, children, wide = false }) {
       <section
         ref={ref}
         tabIndex={-1}
-        className={`modal ${wide ? "wide" : ""}`}
         role="dialog"
         aria-modal="true"
         aria-label={title}
+        className={`modal ${wide ? "wide" : ""}`}
       >
         <header>
           <h2>{title}</h2>
-          <button className="icon-button" aria-label="关闭弹窗" onClick={close}>
-            <X />
+          <button aria-label="关闭弹窗" className="icon" onClick={close}>
+            <X size={20} />
           </button>
         </header>
         {children}
@@ -150,1376 +112,1702 @@ function Modal({ title, close, children, wide = false }) {
     </div>
   );
 }
-function Player({ session, compact = false }) {
+
+function personStatus(project, person) {
+  const output = latestExport(project, person.id);
+  if (!person.confirmed || !person.authorized) return ["pending", "待核对人物"];
+  if (output?.delivered) return ["delivered", "已交付"];
+  if (output?.approved) return ["ready", "可交付"];
+  if (output) return ["pending", "待审核成片"];
+  return ["idle", "待生成"];
+}
+function Badge({ project, person }) {
+  const [kind, label] = personStatus(project, person);
   return (
-    <div className={`player ${compact ? "compact" : ""}`}>
-      <>
-        {session.video ? (
-          <video
-            key={`${session.id}-${session.video}`}
-            controls
-            playsInline
-            preload="metadata"
-            poster={session.clips[0]?.src || imageFor(session.project)}
-            src={session.video}
-            aria-label={`${session.id} 纪念短片`}
-          />
-        ) : (
-          <img
-            src={session.clips[0]?.src || imageFor(session.project)}
-            alt="待生成的影片封面"
-          />
-        )}
-      </>
-      {!session.video && (
-        <div className="player-note">
-          <Film size={25} />
-          <span>等待生成影片</span>
-        </div>
-      )}
+    <span className={`badge ${kind}`}>
+      <i />
+      {label}
+    </span>
+  );
+}
+function Empty({ icon: Icon = FolderOpen, title, text, children }) {
+  return (
+    <div className="empty">
+      <Icon size={34} strokeWidth={1.4} />
+      <h3>{title}</h3>
+      <p>{text}</p>
+      {children}
     </div>
   );
 }
 
 export function App() {
-  const [sessions, setSessions] = useState(initialSessions);
-  const [project, setProject] = useState(projects[0]);
-  const [page, setPage] = useState("today");
-  const [selected, setSelected] = useState("SX-1024-018");
-  const [filter, setFilter] = useState("all");
-  const [modal, setModal] = useState(null);
-  const [guest, setGuest] = useState(getRoute);
-  const [studio, setStudio] = useState(false);
-  const [toast, setToast] = useState("");
-  const [renderProgress, setRenderProgress] = useState(null);
-  const renderController = useRef(null);
-  const [verifiedChecks, setVerifiedChecks] = useState([]);
-  const [scopeCheck, setScopeCheck] = useState(false);
-  const [importFiles, setImportFiles] = useState([]);
-  const [importError, setImportError] = useState("");
-  const [captionIndex, setCaptionIndex] = useState(0);
-  const [paymentPending, setPaymentPending] = useState(false);
-  const [checkoutConfirmed, setCheckoutConfirmed] = useState(false);
-  const [guestPlaying, setGuestPlaying] = useState(false);
-  const [downloaded, setDownloaded] = useState(false);
-  const selectedSession = sessions.find((s) => s.id === selected);
-  const session = sessions.find((s) => s.id === guest) || selectedSession;
-  const list = sessions.filter((s) => s.project === project);
-  const visible = list.filter(
-    (s) => filter === "all" || statusOf(s) === filter,
+  const [mode, setMode] = useState(
+    () => localStorage.getItem("momentflow-mode") || "kindergarten",
   );
-  const notify = (text) => setToast(text);
-  useEffect(() => {
-    const handle = () => {
-      setGuest(getRoute());
-      setGuestPlaying(false);
-      setDownloaded(false);
-    };
-    window.addEventListener("hashchange", handle);
-    return () => window.removeEventListener("hashchange", handle);
+  const [projects, setProjects] = useState([]);
+  const [project, setProject] = useState(null);
+  const [selected, setSelected] = useState(null);
+  const [tab, setTab] = useState("workbench");
+  const [filter, setFilter] = useState("all");
+  const [health, setHealth] = useState(null);
+  const [error, setError] = useState("");
+  const [toast, setToast] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [modal, setModal] = useState(null);
+  const [segments, setSegments] = useState([]);
+  const [selections, setSelections] = useState({});
+  const [faceSelections, setFaceSelections] = useState([]);
+  const [correcting, setCorrecting] = useState(false);
+  const [name, setName] = useState("");
+  const [note, setNote] = useState("");
+  const [authorized, setAuthorized] = useState(false);
+  const [identityChecked, setIdentityChecked] = useState(false);
+  const [reviewed, setReviewed] = useState(false);
+  const [mergeId, setMergeId] = useState("");
+  const [newTitle, setNewTitle] = useState("本周成长周记");
+  const [className, setClassName] = useState("向日葵班");
+  const [importConsent, setImportConsent] = useState(false);
+  const [files, setFiles] = useState([]);
+  const [reference, setReference] = useState(null);
+  const [source, setSource] = useState(null);
+  const [interval, setIntervalValue] = useState(1);
+  const [recipient, setRecipient] = useState(null);
+  const scene = scenes[mode] || scenes.kindergarten;
+  const person = project?.people.find((p) => p.id === selected);
+  const personFaces =
+    project?.faces.filter((f) => person?.face_ids.includes(f.id)) || [];
+  const currentOutput = latestExport(project, selected);
+  const output =
+    currentOutput &&
+    (!person || note === person.note) &&
+    (!selections[selected] ||
+      selections[selected].join(",") === currentOutput.segment_ids.join(","))
+      ? currentOutput
+      : null;
+  const running = project?.job?.status === "running";
+  const disabled = busy || running;
+  const selectedSegments = selections[selected] || [];
+  const selectedDuration = selectedSegments.reduce(
+    (total, id) => total + (segments.find((s) => s.id === id)?.duration || 0),
+    0,
+  );
+  const availableProjects = projects.filter((p) => p.mode === mode);
+  const update = useCallback((data) => {
+    setProject(data);
+    setProjects((all) => [data, ...all.filter((p) => p.id !== data.id)]);
+    setSelected((current) =>
+      data.people.some((p) => p.id === current)
+        ? current
+        : data.people[0]?.id || null,
+    );
+    localStorage.setItem(`momentflow-project-${data.mode}`, data.id);
   }, []);
+  const notify = (text) => setToast(text);
+  const act = async (operation) => {
+    setBusy(true);
+    setError("");
+    try {
+      return await operation();
+    } catch (e) {
+      setError(e.message);
+      return null;
+    } finally {
+      setBusy(false);
+    }
+  };
+  const boot = useCallback(async () => {
+    try {
+      const info = await api("/bootstrap");
+      setHealth(info);
+      const all = await api("/projects");
+      setProjects(all);
+      const savedMode =
+        localStorage.getItem("momentflow-mode") || "kindergarten";
+      const current =
+        all.find(
+          (p) =>
+            p.id === localStorage.getItem(`momentflow-project-${savedMode}`),
+        ) || all.find((p) => p.mode === savedMode);
+      if (current) update(current);
+      setError("");
+    } catch (e) {
+      setError(e.message);
+    }
+  }, [update]);
+  useEffect(() => {
+    boot();
+  }, [boot]);
+  useEffect(() => {
+    if (!project?.id || !running) return;
+    let cancelled = false,
+      timer;
+    async function poll() {
+      try {
+        const data = await api(`/projects/${project.id}`);
+        if (!cancelled) update(data);
+      } catch (e) {
+        if (!cancelled) setError(e.message);
+      }
+      if (!cancelled) timer = setTimeout(poll, 1200);
+    }
+    timer = setTimeout(poll, 500);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [project?.id, running, update]);
+  useEffect(() => {
+    if (!project || !selected) {
+      setSegments([]);
+      return;
+    }
+    let alive = true;
+    setSegments([]);
+    api(`/projects/${project.id}/people/${selected}/segments`)
+      .then((data) => {
+        if (!alive) return;
+        setSegments(data);
+        if (!data.length) return;
+        setSelections((all) => ({
+          ...all,
+          [selected]: all[selected]
+            ? all[selected].filter((id) => data.some((s) => s.id === id))
+            : latestExport(project, selected)?.segment_ids ||
+              defaultSelection(data),
+        }));
+      })
+      .catch((e) => {
+        if (alive) setError(e.message);
+      });
+    return () => {
+      alive = false;
+    };
+  }, [project?.id, selected, project?.analysis_version, person?.revision]);
+  useEffect(() => {
+    setNote(person?.note || "");
+    setFaceSelections([]);
+    setCorrecting(false);
+  }, [selected, person?.note]);
   useEffect(() => {
     if (!toast) return;
     const timer = setTimeout(() => setToast(""), 4500);
     return () => clearTimeout(timer);
   }, [toast]);
-  useEffect(
-    () => () => {
-      renderController.current?.abort();
-      fileUrls.forEach((url) => URL.revokeObjectURL(url));
-    },
-    [],
-  );
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [page, guest, studio]);
-  const mutate = (id, action) =>
-    setSessions((all) =>
-      all.map((s) => (s.id === id ? updateSession(s, action) : s)),
-    );
-  const chooseProject = (value) => {
-    setProject(value);
-    setSelected(sessions.find((s) => s.project === value)?.id);
+  }, [tab, recipient, mode]);
+
+  function switchScene(value) {
+    if (disabled) return;
+    setMode(value);
+    localStorage.setItem("momentflow-mode", value);
+    const current =
+      projects.find(
+        (p) => p.id === localStorage.getItem(`momentflow-project-${value}`),
+      ) || projects.find((p) => p.mode === value);
+    setProject(current || null);
+    setSelected(current?.people[0]?.id || null);
+    setTab("workbench");
     setFilter("all");
-  };
-  const edit = (clips) => {
-    if (session.delivered) return;
-    mutate(session.id, { type: "edit", clips });
-  };
-  const openVerify = () => {
-    setVerifiedChecks([]);
-    setScopeCheck(false);
-    setModal("verify");
-  };
-  const goGuest = (s) => {
-    location.hash = `guest/${encodeURIComponent(s.id)}`;
-  };
-  const closeModal = () => {
-    if (!paymentPending) setModal(null);
-  };
-  async function render() {
-    const target = session;
-    setRenderProgress(0);
-    const controller = new AbortController();
-    renderController.current = controller;
-    try {
-      const { url: video, format } = await renderMontage(
-        target.clips,
-        setRenderProgress,
-        controller.signal,
-      );
-      fileUrls.add(video);
-      mutate(target.id, {
-        type: "render",
-        version: target.version,
-        video,
-        format,
+    setError("");
+    setRecipient(null);
+  }
+  function identity() {
+    setName(person.name);
+    setAuthorized(person.authorized);
+    setIdentityChecked(false);
+    setModal("identity");
+  }
+  async function createProject(sample = false) {
+    return act(async () => {
+      let data = await api("/projects", {
+        method: "POST",
+        body: {
+          mode,
+          title: sample
+            ? mode === "kindergarten"
+              ? "向日葵班 · 本周成长周记"
+              : "体验影像 · 真实识别演示"
+            : newTitle,
+          class_name: mode === "kindergarten" ? className : "",
+          consent: sample || importConsent,
+        },
       });
-      notify("预览已生成，请播放检查后确认成片。");
-    } catch (error) {
-      notify(error.message);
-    } finally {
-      setRenderProgress(null);
-      renderController.current = null;
-    }
-  }
-  function importMedia() {
-    const id = `DEMO-${String(sessions.length + 1).padStart(3, "0")}`;
-    const clips = importFiles.length
-      ? importFiles.map((file, i) => {
-          const src = URL.createObjectURL(file);
-          fileUrls.add(src);
-          return {
-            id: `${id}-${i}`,
-            src,
-            name: file.name,
-            title: [
-              "出发，一起迎着风",
-              "把快乐留在山林之间",
-              "这一刻，值得带走",
-            ][i % 3],
-          };
-        })
-      : [0, 1, 2].map((i) => ({
-          id: `${id}-${i}`,
-          src: i === 1 ? "/media/forest.jpg" : imageFor(project),
-          title: ["出发，一起迎着风", "把快乐留在山林之间", "这一刻，值得带走"][
-            i
-          ],
-          name: `SAMPLE_${i + 1}.jpg`,
-        }));
-    setSessions((all) => [...all, importedSession(id, project, clips)]);
-    setSelected(id);
-    setFilter("all");
-    setPage("today");
-    setStudio(false);
-    setModal(null);
-    notify("素材已归入新场次，请核对同行人后生成影片。");
-  }
-  function pickFiles(event) {
-    const files = [...event.target.files];
-    event.target.value = "";
-    if (
-      files.length > 6 ||
-      files.some(
-        (file) =>
-          !["image/jpeg", "image/png", "image/webp"].includes(file.type) ||
-          file.size > 15 * 1024 * 1024,
-      )
-    ) {
-      setImportError(
-        "请选择最多 6 张 JPG、PNG 或 WebP 照片，每张不超过 15 MB。",
-      );
-      setImportFiles([]);
-      return;
-    }
-    setImportError("");
-    setImportFiles(files);
-  }
-  function purchase() {
-    setPaymentPending(true);
-    setTimeout(() => {
-      mutate(session.id, { type: "purchase" });
-      setPaymentPending(false);
+      update(data);
       setModal(null);
-      notify("模拟解锁成功，可以下载纪念短片了。");
-    }, 700);
+      setTab("workbench");
+      if (sample) {
+        data = await api(`/projects/${data.id}/samples`, { method: "POST" });
+        update(data);
+        data = await api(`/projects/${data.id}/analyze`, {
+          method: "POST",
+          body: { sample_interval: 1 },
+        });
+        update(data);
+      }
+      return data;
+    });
   }
-  function download() {
-    if (!canView(session) || !session.paid) return;
-    const a = document.createElement("a");
-    a.href = session.video;
-    a.download = `${session.id}-MomentFlow.${session.videoFormat || "mp4"}`;
-    a.click();
-    setDownloaded(true);
+  async function upload() {
+    return act(async () => {
+      const form = new FormData();
+      files.forEach((file) => form.append("files", file));
+      const data = await api(`/projects/${project.id}/media`, {
+        method: "POST",
+        body: form,
+      });
+      update(data);
+      setModal(null);
+      setFiles([]);
+      notify("素材已保存到本机，可以开始人物识别。");
+    });
   }
+  async function analyze() {
+    await act(async () =>
+      update(
+        await api(`/projects/${project.id}/analyze`, {
+          method: "POST",
+          body: { sample_interval: interval },
+        }),
+      ),
+    );
+  }
+  async function saveIdentity() {
+    await act(async () => {
+      update(
+        await api(`/projects/${project.id}/people/${person.id}`, {
+          method: "PATCH",
+          body: {
+            name,
+            note: person.note,
+            confirmed: identityChecked,
+            authorized,
+          },
+        }),
+      );
+      setModal(null);
+      notify("人物身份与授权范围已确认。");
+    });
+  }
+  async function saveNote() {
+    return api(`/projects/${project.id}/people/${person.id}`, {
+      method: "PATCH",
+      body: {
+        name: person.name,
+        note,
+        confirmed: person.confirmed,
+        authorized: person.authorized,
+      },
+    });
+  }
+  async function render() {
+    await act(async () => {
+      if (note !== person.note) update(await saveNote());
+      update(
+        await api(`/projects/${project.id}/people/${person.id}/render`, {
+          method: "POST",
+          body: { segment_ids: selectedSegments },
+        }),
+      );
+    });
+  }
+  async function approve() {
+    await act(async () => {
+      update(
+        await api(`/projects/${project.id}/exports/${output.id}/approve`, {
+          method: "POST",
+          body: { reviewed },
+        }),
+      );
+      setModal(null);
+      notify("当前成片已审核，可以交付。");
+    });
+  }
+  async function deliver() {
+    await act(async () => {
+      update(
+        await api(`/projects/${project.id}/exports/${output.id}/deliver`, {
+          method: "POST",
+        }),
+      );
+      notify(`影片已向${scene.receiver}视角开放。`);
+    });
+  }
+  async function merge() {
+    await act(async () => {
+      update(
+        await api(`/projects/${project.id}/people/${person.id}/merge`, {
+          method: "POST",
+          body: { other_id: mergeId },
+        }),
+      );
+      setCorrecting(false);
+      setMergeId("");
+      notify("已合并，请重新核对人物。");
+    });
+  }
+  async function split() {
+    await act(async () => {
+      update(
+        await api(`/projects/${project.id}/people/${person.id}/split`, {
+          method: "POST",
+          body: { face_ids: faceSelections },
+        }),
+      );
+      setFaceSelections([]);
+      notify("已拆出新人物组，请分别核对。");
+    });
+  }
+  async function enroll() {
+    await act(async () => {
+      const form = new FormData();
+      form.append("name", name);
+      form.append("authorized", String(authorized));
+      form.append("file", reference);
+      update(
+        await api(`/projects/${project.id}/enroll`, {
+          method: "POST",
+          body: form,
+        }),
+      );
+      setModal(null);
+      notify("参考档案已登记，新导入素材将与其比对。");
+    });
+  }
+  const face = personFaces[0];
+  const stats = {
+    photos: project?.media.filter((m) => m.kind === "image").length || 0,
+    videos: project?.media.filter((m) => m.kind === "video").length || 0,
+    pending: project?.people.filter((p) => !p.confirmed).length || 0,
+    delivered:
+      project?.exports.filter((e) => e.current && e.delivered).length || 0,
+  };
+  const visiblePeople =
+    project?.people.filter(
+      (p) =>
+        filter === "all" ||
+        (filter === "pending"
+          ? !p.confirmed
+          : filter === "delivered"
+            ? latestExport(project, p.id)?.delivered
+            : p.confirmed),
+    ) || [];
 
   const dialogs = (
     <>
-      {modal === "verify" && (
-        <Modal title="核对本场次同行人" close={closeModal}>
-          <p className="muted">
-            {session.id} · 体验码已绑定。请按现场记录确认出镜范围。
-          </p>
-          <div className="verify-photo">
-            <img
-              src={session.clips[0]?.src || imageFor(session.project)}
-              alt="本场次待核对的体验照片"
+      {modal === "new" && (
+        <Modal title="新建素材批次" close={() => !busy && setModal(null)}>
+          <p className="muted">照片、视频、人物特征和影片保存在当前电脑。</p>
+          <label>
+            批次名称
+            <input
+              value={newTitle}
+              onChange={(e) => setNewTitle(e.target.value)}
+              maxLength={80}
             />
-          </div>
-          <div className="check-list">
-            {session.party.map((name) => (
-              <label key={name}>
-                <input
-                  type="checkbox"
-                  checked={verifiedChecks.includes(name)}
-                  onChange={(e) =>
-                    setVerifiedChecks((all) =>
-                      e.target.checked
-                        ? [...all, name]
-                        : all.filter((x) => x !== name),
-                    )
-                  }
-                />
-                <span>{name}</span>
-                <small>本场次体验者</small>
-              </label>
-            ))}
-          </div>
-          <label className="scope-check">
+          </label>
+          {mode === "kindergarten" && (
+            <label>
+              班级
+              <input
+                value={className}
+                onChange={(e) => setClassName(e.target.value)}
+                maxLength={60}
+              />
+            </label>
+          )}
+          <label className="checkline">
             <input
               type="checkbox"
-              checked={scopeCheck}
-              onChange={(e) => setScopeCheck(e.target.checked)}
+              checked={importConsent}
+              onChange={(e) => setImportConsent(e.target.checked)}
             />
-            <span>
-              已确认所选素材仅包含本场次参与者，并已获得相应使用和领取授权。
-            </span>
+            我有权处理这些照片与视频；涉及儿童时，已取得相应监护授权。
           </label>
-          <div className="notice">
-            <ShieldCheck size={18} />
-            这是人工核对演示，不进行人脸识别或身份认证。
-          </div>
           <footer>
-            <button onClick={closeModal}>返回</button>
+            <button onClick={() => setModal(null)}>返回</button>
             <button
               className="primary"
-              disabled={
-                verifiedChecks.length !== session.party.length || !scopeCheck
-              }
-              onClick={() => {
-                mutate(session.id, { type: "verify" });
-                setModal(null);
-                notify("同行范围已确认，请检查影片并确认成片。");
-              }}
+              disabled={busy || !newTitle.trim() || !importConsent}
+              onClick={() => createProject(false)}
             >
-              确认同行范围
+              创建批次
             </button>
           </footer>
         </Modal>
       )}
-      {modal === "import" && (
-        <Modal title="导入体验素材" close={closeModal}>
-          <p className="muted">
-            将照片归入「{project}」的新场次，再核对参与者。
-          </p>
-          <label className="upload-zone">
+      {modal === "upload" && (
+        <Modal title="导入照片与视频" close={() => !busy && setModal(null)}>
+          <p className="muted">上传到本机处理服务，不会发送至云端识别平台。</p>
+          <label className="dropzone">
             <Upload size={30} />
-            <strong>选择活动照片</strong>
-            <span>JPG / PNG / WebP · 最多 6 张 · 单张 ≤ 15 MB</span>
+            <strong>选择活动照片与视频</strong>
+            <span>JPG / PNG / WebP / MP4 / MOV / WebM / AVI</span>
             <input
               type="file"
               multiple
-              accept="image/jpeg,image/png,image/webp"
-              onChange={pickFiles}
+              accept="image/jpeg,image/png,image/webp,video/mp4,video/quicktime,video/webm,video/x-msvideo,.m4v"
+              onChange={(e) => {
+                setFiles([...e.target.files]);
+                e.target.value = "";
+              }}
             />
           </label>
-          {importError && (
-            <p role="alert" className="error">
-              {importError}
-            </p>
-          )}
-          {importFiles.length > 0 && (
-            <div className="file-list">
-              {importFiles.map((f) => (
-                <p key={`${f.name}-${f.lastModified}`}>
-                  <ImageIcon size={15} />
-                  {f.name}
-                  <small>{(f.size / 1024 / 1024).toFixed(1)} MB</small>
-                </p>
-              ))}
-            </div>
-          )}
-          <div className="notice">
-            <ShieldCheck size={18} />
-            照片仅在当前浏览器处理，不会上传。也可直接导入一组示例素材。
-          </div>
-          <footer>
-            <button
-              onClick={() => {
-                setImportFiles([]);
-                setImportError("");
-              }}
-            >
-              清空选择
-            </button>
-            <button
-              className="primary"
-              disabled={!!importError}
-              onClick={importMedia}
-            >
-              {importFiles.length
-                ? `导入 ${importFiles.length} 张照片`
-                : "使用示例素材"}
-            </button>
-          </footer>
-        </Modal>
-      )}
-      {modal === "batch" && (
-        <Modal title="交付已确认的影片" close={closeModal}>
-          <p className="muted">
-            仅交付当前项目中，同行范围、成片版本都已确认的场次。
+          <p className="hint">
+            每份 ≤100 MB，视频 ≤5 分钟；每批最多 30 份、总计 ≤500
+            MB。支持本地视频文件，尚未接监控直播流。
           </p>
-          <div className="delivery-list">
-            {list.filter(canDeliver).map((s) => (
-              <div key={s.id}>
-                <CheckCircle2 size={18} />
-                <strong>{s.id}</strong>
-                <span>{s.party.length} 位体验者</span>
+          <div className="upload-files">
+            {files.map((f, i) => (
+              <div key={`${f.name}-${i}`}>
+                <FileVideo size={15} />
+                <span>{f.name}</span>
+                <small>{(f.size / 1024 / 1024).toFixed(1)} MB</small>
               </div>
             ))}
           </div>
-          {!list.some(canDeliver) && (
-            <div className="empty">
-              <ShieldCheck />
-              <h3>还没有可交付的影片</h3>
-              <p>完成同行核对、生成预览及成片确认后再来。</p>
-            </div>
-          )}
           <footer>
-            <button onClick={closeModal}>返回</button>
-            <button
-              className="primary"
-              disabled={!list.some(canDeliver)}
-              onClick={() => {
-                const ready = list.filter(canDeliver);
-                setSessions((all) =>
-                  all.map((s) =>
-                    ready.some((x) => x.id === s.id)
-                      ? updateSession(s, { type: "deliver" })
-                      : s,
-                  ),
-                );
-                setSelected(ready[0].id);
-                setModal(null);
-                notify(`已交付 ${ready.length} 个场次，可打开游客领取页。`);
-              }}
-            >
-              确认交付 {list.filter(canDeliver).length} 个场次
-            </button>
-          </footer>
-        </Modal>
-      )}
-      {modal === "checkout" && (
-        <Modal title="解锁纪念影像" close={closeModal}>
-          <div className="checkout-product">
-            <img src={session.clips[0].src} alt="纪念影像封面" />
-            <div>
-              <strong>纪念影像包</strong>
-              <p>{session.id}</p>
-              <b>
-                ¥49 <small>示例价格</small>
-              </b>
-            </div>
-          </div>
-          <div className="notice">
-            <ReceiptText size={18} />
-            演示订单，不会收款；无需提供付款信息。
-          </div>
-          <label className="scope-check">
-            <input
-              type="checkbox"
-              checked={checkoutConfirmed}
-              onChange={(e) => setCheckoutConfirmed(e.target.checked)}
-            />
-            我已了解这是模拟购买。
-          </label>
-          <footer>
-            <button disabled={paymentPending} onClick={closeModal}>
+            <button onClick={() => setModal(null)} disabled={busy}>
               返回
             </button>
             <button
               className="primary"
-              disabled={paymentPending || !checkoutConfirmed}
-              onClick={purchase}
+              disabled={!files.length || busy}
+              onClick={upload}
             >
-              {paymentPending ? (
-                <>
-                  <LoaderCircle className="spin" />
-                  处理中
-                </>
+              {busy ? (
+                <LoaderCircle className="spin" size={16} />
               ) : (
-                "模拟支付成功"
+                <Upload size={16} />
               )}
+              导入 {files.length || ""} 份素材
             </button>
           </footer>
         </Modal>
       )}
-      {modal === "package" && (
-        <Modal title="纪念影像包内容" close={closeModal}>
-          <div className="package-details">
-            <Film />
-            <h3>1 支纪念短片 + {session.clips.length} 张照片</h3>
-            <p>
-              短片时长 {clock(duration(session))}
-              ，由当前场次所选照片生成，无声。
-            </p>
-            <p>解锁后可下载真实示例视频。照片可在下方逐张打开保存。</p>
-            {session.clips.map((clip, i) => (
-              <a
-                key={clip.id}
-                href={clip.src}
-                download={`MomentFlow-${i + 1}.jpg`}
-                className={!session.paid ? "disabled-link" : ""}
-                aria-disabled={!session.paid}
-                onClick={(e) => !session.paid && e.preventDefault()}
-              >
-                <ImageIcon size={18} />
-                照片 {i + 1} · {session.paid ? "下载" : "解锁后下载"}
-              </a>
+      {modal === "identity" && person && (
+        <Modal
+          title={`核对${mode === "kindergarten" ? "儿童" : "人物"}身份与授权`}
+          close={() => !busy && setModal(null)}
+        >
+          <p className="muted">
+            以下是同一人物组的实际检测切片。请逐一检查，发现混人时先拆分。
+          </p>
+          <div className="modal-faces">
+            {personFaces.map((f) => (
+              <img
+                key={f.id}
+                src={f.thumbnail}
+                alt="待核对人脸切片"
+                loading="lazy"
+              />
             ))}
           </div>
+          <label>
+            姓名 / 体验者称呼
+            <input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              maxLength={30}
+            />
+          </label>
+          <label className="checkline">
+            <input
+              type="checkbox"
+              checked={identityChecked}
+              onChange={(e) => setIdentityChecked(e.target.checked)}
+            />
+            我已核对本组所有人脸均属于上述人物。
+          </label>
+          <label className="checkline">
+            <input
+              type="checkbox"
+              checked={authorized}
+              onChange={(e) => setAuthorized(e.target.checked)}
+            />
+            {mode === "kindergarten"
+              ? "已获得监护人关于拍摄、人物关联及本儿童影像领取的相应授权。"
+              : "已确认拍摄、人物关联和影像领取的相应授权。"}
+          </label>
           <footer>
-            <button className="primary" onClick={closeModal}>
-              知道了
+            <button onClick={() => setModal(null)}>返回检查</button>
+            <button
+              className="primary"
+              disabled={
+                busy ||
+                !identityChecked ||
+                !authorized ||
+                !name.trim() ||
+                name.startsWith("待命名")
+              }
+              onClick={saveIdentity}
+            >
+              确认身份与授权
             </button>
           </footer>
+        </Modal>
+      )}
+      {modal === "enroll" && (
+        <Modal
+          title={`登记${mode === "kindergarten" ? "儿童参考档案" : "人物参考照片"}`}
+          close={() => !busy && setModal(null)}
+        >
+          <p className="muted">
+            上传一张仅有本人、清晰正面的人脸照片。识别只在此批次内比对，不搜索外部身份库。已有聚类结果时，可以人工合并到参考档案。
+          </p>
+          <label>
+            姓名
+            <input
+              value={name}
+              maxLength={30}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </label>
+          <label>
+            正面参考照片
+            <input
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              onChange={(e) => setReference(e.target.files[0] || null)}
+            />
+          </label>
+          <label className="checkline">
+            <input
+              type="checkbox"
+              checked={authorized}
+              onChange={(e) => setAuthorized(e.target.checked)}
+            />
+            我已获得此人物或其监护人关于照片关联和影像领取的相应授权。
+          </label>
+          <footer>
+            <button onClick={() => setModal(null)}>返回</button>
+            <button
+              className="primary"
+              disabled={busy || !authorized || !name.trim() || !reference}
+              onClick={enroll}
+            >
+              登记参考档案
+            </button>
+          </footer>
+        </Modal>
+      )}
+      {modal === "approve" && (
+        <Modal title="审核当前成片" close={() => !busy && setModal(null)}>
+          <p className="muted">
+            请先完整播放影片。只确认当前版本，之后修改素材、人物分组、姓名或记录，都需重新生成并审核。
+          </p>
+          <label className="checkline">
+            <input
+              type="checkbox"
+              checked={reviewed}
+              onChange={(e) => setReviewed(e.target.checked)}
+            />
+            我已检查人物身份、非目标人脸遮盖、所选片段、文字记录和接收范围，确认可以交付。
+          </label>
+          <div className="notice">
+            <ShieldCheck size={18} />
+            自动遮盖仅覆盖检测到的非目标人脸，漏检仍需人工检查。此步骤不代表系统能保证零误识别。
+          </div>
+          <footer>
+            <button onClick={() => setModal(null)}>返回播放</button>
+            <button
+              className="primary"
+              disabled={!reviewed || busy}
+              onClick={approve}
+            >
+              <Check size={16} />
+              审核通过
+            </button>
+          </footer>
+        </Modal>
+      )}
+      {source && (
+        <Modal title={source.media.name} close={() => setSource(null)} wide>
+          <div className="source-viewer">
+            {source.media.kind === "video" ? (
+              <video
+                key={`${source.media.id}-${source.time}`}
+                controls
+                autoPlay
+                playsInline
+                src={`${source.media.url}#t=${source.time || 0}`}
+              />
+            ) : (
+              <div className="source-image">
+                <img src={source.media.url} alt="原始照片" />
+                {source.face && (
+                  <div
+                    className="face-box"
+                    style={{
+                      left: `${(source.face.bbox[0] / source.media.width) * 100}%`,
+                      top: `${(source.face.bbox[1] / source.media.height) * 100}%`,
+                      width: `${(source.face.bbox[2] / source.media.width) * 100}%`,
+                      height: `${(source.face.bbox[3] / source.media.height) * 100}%`,
+                    }}
+                  />
+                )}
+              </div>
+            )}
+          </div>
+          <p className="hint">
+            {source.face
+              ? `检测时间 ${seconds(source.time || 0)} · 人脸检测置信度 ${Math.round(source.face.confidence * 100)}%（不是身份正确概率）`
+              : "原始素材预览，仅当前本地工作空间可访问。"}
+          </p>
         </Modal>
       )}
     </>
   );
 
-  if (guest)
+  if (recipient) {
+    const deliveredPerson = project.people.find((p) => p.id === recipient);
+    const deliveredOutput = latestExport(project, recipient);
     return (
-      <div className="guest-shell">
-        <div className="guest-demo">
-          <span>游客视角 · 演示相册</span>
-          <button
-            onClick={() => {
-              location.hash = "";
-            }}
-          >
-            返回工作台 <ArrowRight size={13} />
+      <div className="recipient-shell">
+        <div className="recipient-demo">
+          <span>本地演示 · {scene.receiver}视角</span>
+          <button onClick={() => setRecipient(null)}>
+            <ArrowLeft size={13} />
+            返回工作台
           </button>
         </div>
-        {!canView(sessions.find((s) => s.id === guest)) ? (
-          <main className="guest-unavailable">
-            <ShieldCheck size={44} />
-            <h1>这份影像还未开放</h1>
-            <p>影片完成核对并交付后，才能在这里领取。</p>
-            <button
-              onClick={() => {
-                location.hash = "";
-              }}
-            >
-              返回工作台
-            </button>
-          </main>
-        ) : (
-          <main className="guest-page">
-            <header className="guest-brand">
-              <img className="venue-mark" src="/media/venue.png" alt="" />
-              <div>
-                <strong>松野探险乐园</strong>
-                <small>SONGYE ADVENTURE PARK</small>
-              </div>
-              <span>×</span>
-              <b>MomentFlow · 拾光</b>
-            </header>
-            <p className="guest-intro">
-              你的专属体验相册 <span>MADE FOR YOUR MOMENT</span>
-            </p>
-            <div className="guest-cover">
-              {guestPlaying ? (
-                <video
-                  controls
-                  autoPlay
-                  playsInline
-                  src={session.video}
-                  poster={session.clips[0].src}
-                />
-              ) : (
-                <>
-                  <img src={session.clips[0].src} alt="松野探险体验纪念照片" />
-                  <button
-                    className="play-cover"
-                    aria-label="播放纪念短片"
-                    onClick={() => setGuestPlaying(true)}
-                  >
-                    <Play fill="currentColor" />
-                  </button>
-                  <h1>
-                    这一刻，
-                    <br />
-                    值得带走。
-                  </h1>
-                  <span className="watermark">松野 · 预览</span>
-                  <span className="cover-duration">
-                    {clock(duration(session))}
-                  </span>
-                </>
-              )}
-            </div>
-            <div className="guest-meta">
-              <div>
-                <CalendarDays size={17} />
-                <strong>2026年10月24日 · {session.project}</strong>
-              </div>
-              <p>
-                <MapPin size={14} />
-                松野探险乐园{" "}
-                <span>
-                  {session.id} · {session.time}
-                </span>
-              </p>
-            </div>
-            <div className="guest-photos">
-              {session.clips.slice(1, 3).map((clip, i) => (
-                <img key={clip.id} src={clip.src} alt={`体验照片 ${i + 2}`} />
-              ))}
-            </div>
-            <section className="guest-package">
-              <div>
-                <h2>
-                  纪念影像包 <small>示例套餐</small>
-                </h2>
-                <strong className="price">
-                  <small>¥</small>49
-                </strong>
-              </div>
-              <h3>
-                <Film size={19} />1 支纪念短片 <span>＋</span>
-                <ImageIcon size={19} />
-                {session.clips.length} 张照片
-              </h3>
-              <p>
-                记录你们在山林间的精彩瞬间，
-                <br />
-                保留这段勇敢、快乐、并肩同行的珍贵回忆。
-              </p>
-              <button
-                className="unlock"
-                onClick={
-                  session.paid
-                    ? download
-                    : () => {
-                        setCheckoutConfirmed(false);
-                        setModal("checkout");
-                      }
-                }
-              >
-                {session.paid ? (
-                  <>
-                    <Download />
-                    下载纪念短片
-                  </>
-                ) : (
-                  <>
-                    解锁高清影像 ¥49 <ArrowRight />
-                  </>
-                )}
-              </button>
-              {session.paid && (
-                <p className="purchase-success">
-                  <CheckCircle2 size={15} />
-                  已模拟解锁 ·{" "}
-                  {downloaded
-                    ? "下载已开始，可再次领取"
-                    : "影像已准备好，随时保存"}
+        <main className="recipient-page">
+          <div className="recipient-brand">
+            <Leaf size={25} />
+            <strong>
+              {mode === "kindergarten" ? "拾光成长" : "MomentFlow · 拾光"}
+            </strong>
+            <span>{project.class_name || "专属体验影像"}</span>
+          </div>
+          {deliveredOutput?.delivered && deliveredOutput?.approved ? (
+            <>
+              <p className="eyebrow">A LITTLE STORY, JUST FOR YOU</p>
+              <h1>
+                {deliveredPerson.name}的{scene.output}
+              </h1>
+              <p className="muted">{project.title}</p>
+              <video
+                key={deliveredOutput.id}
+                controls
+                playsInline
+                preload="metadata"
+                src={deliveredOutput.url}
+              />
+              <div className="recipient-note">
+                <h3>
+                  {mode === "kindergarten"
+                    ? "老师想和你分享"
+                    : "这次体验，值得回放"}
+                </h3>
+                <p>
+                  {deliveredOutput.note ||
+                    "属于你的精彩瞬间，都收在这份小小的回忆里。"}
                 </p>
-              )}
-              <div className="guest-links">
-                <button onClick={() => setModal("package")}>
-                  <FolderOpen size={17} />
-                  查看套餐内容
-                </button>
-                <button
-                  onClick={() =>
-                    session.paid
-                      ? notify("购买权益已恢复，可以重新下载。")
-                      : notify("当前场次暂无模拟购买记录，请先解锁。")
-                  }
-                >
-                  <RotateCcw size={17} />
-                  恢复领取
-                </button>
               </div>
-              <p className="guest-footnote">
-                演示影像由 AI 生成照片制作，不实际收费。
+              <a
+                className="button primary download"
+                href={deliveredOutput.claim_url}
+                download
+              >
+                <Download size={18} />
+                保存{scene.output}
+                <ArrowRight size={18} />
+              </a>
+              <p className="recipient-foot">
+                真实生成的 720p MP4 · 无声 · {seconds(deliveredOutput.duration)}
                 <br />
-                本页仅展示当前已交付场次，不提供身份认证或公开分享服务。
+                本页为本机领取演示，暂不支持跨设备分享。
               </p>
-            </section>
-          </main>
-        )}
-        {dialogs}
-        {toast && (
-          <div className="toast" role="status">
-            <CheckCircle2 size={18} />
-            {toast}
+            </>
+          ) : (
+            <Empty
+              icon={ShieldCheck}
+              title="这份影片还未开放"
+              text="老师完成当前版本审核并交付后，才可以领取。"
+            />
+          )}
+        </main>
+        {error && (
+          <div className="toast error" role="alert">
+            {error}
           </div>
         )}
       </div>
     );
+  }
 
   return (
-    <div className={`app-shell ${studio ? "studio-shell" : ""}`}>
+    <div
+      className={`app-shell ${mode === "kindergarten" ? "kindergarten" : "adventure"}`}
+    >
       <aside className="sidebar">
         <a
-          className="brand"
-          aria-label="MomentFlow · 拾光，返回今日交付"
           href="#"
-          onClick={() => {
-            setPage("today");
-            setStudio(false);
-          }}
+          className="brand"
+          aria-label="拾光，返回工作台"
+          onClick={() => setTab("workbench")}
         >
-          <img className="brand-mark" src="/media/brand.png" alt="" />
+          {mode === "kindergarten" ? (
+            <Leaf size={34} />
+          ) : (
+            <Mountain size={34} />
+          )}
           <div>
-            <strong>MomentFlow · 拾光</strong>
-            <small>让每一次体验，都被好好珍藏</small>
+            <strong>{scene.brand}</strong>
+            <small>
+              {mode === "kindergarten"
+                ? "让每个童年都被看见"
+                : "让每一次体验，都被好好珍藏"}
+            </small>
           </div>
         </a>
-        {studio ? (
-          <div className="studio-sessions">
-            <button className="back" onClick={() => setStudio(false)}>
-              <ArrowLeft size={15} />
-              返回交付工作台
+        <div className="scene-switch">
+          <button
+            disabled={disabled}
+            aria-label="体验场景"
+            className={mode === "adventure" ? "active" : ""}
+            onClick={() => switchScene("adventure")}
+          >
+            <Mountain size={14} />
+            体验
+          </button>
+          <button
+            disabled={disabled}
+            aria-label="幼儿园场景"
+            className={mode === "kindergarten" ? "active" : ""}
+            onClick={() => switchScene("kindergarten")}
+          >
+            <GraduationCap size={15} />
+            幼儿园
+          </button>
+        </div>
+        <nav aria-label="主导航">
+          {[
+            ["workbench", "批次交付工作台", Send],
+            ["people", scene.people, Users],
+            ["media", "素材库", FolderOpen],
+            ["settings", "设置与处理说明", Settings],
+          ].map(([id, title, Icon]) => (
+            <button
+              key={id}
+              aria-label={title}
+              className={tab === id ? "active" : ""}
+              disabled={busy}
+              onClick={() => setTab(id)}
+            >
+              <Icon size={19} />
+              <span>{title}</span>
             </button>
-            <div className="studio-project">
-              <img src={imageFor(project)} alt={project} />
-              <div>
-                <strong>松野探险乐园</strong>
-                <span>{project}</span>
-                <small>2026-10-24 · 星期六</small>
-              </div>
-            </div>
-            {list.map((s) => (
-              <button
-                key={s.id}
-                className={selected === s.id ? "active" : ""}
-                disabled={renderProgress !== null}
-                onClick={() => {
-                  setSelected(s.id);
-                  setCaptionIndex(0);
-                }}
-              >
-                <img src={s.clips[0]?.src || imageFor(s.project)} alt="" />
-                <div>
-                  <strong>{s.id}</strong>
-                  <span>
-                    {s.party.length} 名同行 · {clock(duration(s))}
-                  </span>
-                </div>
-              </button>
-            ))}
-          </div>
-        ) : (
-          <>
-            {" "}
-            <nav aria-label="主导航">
-              {nav.map(({ id, label, icon: Icon }) => (
-                <button
-                  key={id}
-                  aria-label={label}
-                  className={page === id ? "active" : ""}
-                  onClick={() => {
-                    setPage(id);
-                    setStudio(false);
-                  }}
-                >
-                  <Icon size={21} />
-                  {label}
-                </button>
-              ))}
-            </nav>
-            <div className="sidebar-scenery">
-              <img src="/media/forest.jpg" alt="松林山谷风景" />
-              <div>
-                <span>COLLECT MOMENTS.</span>
-                <strong>体验，连接更多美好的发生。</strong>
-                <small>MomentFlow · 拾光</small>
-              </div>
-            </div>
-          </>
-        )}
+          ))}
+        </nav>
+        <div className="sidebar-bottom">
+          <ShieldCheck size={18} />
+          <strong>识别与素材，留在本机。</strong>
+          <p>
+            照片、视频和人物特征
+            <br />
+            不发送给云端识别服务。
+          </p>
+          <small>MomentFlow / LOCAL STUDIO</small>
+        </div>
       </aside>
       <main className="workspace">
-        <div className="account">
-          <span className="demo-label">交互演示</span>
-          <button
-            className="icon-button"
-            aria-label="查看交付提醒"
-            onClick={() =>
-              notify(
-                `当前项目有 ${list.filter((s) => !s.delivered).length} 个场次待处理。`,
-              )
-            }
-          >
-            <Bell size={19} />
-          </button>
-          <span className="account-divider" />
-          <div className="venue-icon">
-            <Mountain size={20} />
-          </div>
+        <header className="topbar">
           <div>
-            <strong>松野探险乐园</strong>
-            <small>运营管理员</small>
+            <span>{scene.org}</span>
+            {project?.class_name && (
+              <>
+                <ChevronRight size={13} />
+                <strong>{project.class_name}</strong>
+              </>
+            )}
           </div>
-        </div>
-        <header className="page-heading">
-          {studio ? (
-            <>
-              <button className="back" onClick={() => setStudio(false)}>
-                <ArrowLeft size={16} />
-                返回交付工作台
-              </button>
-              <h1>成片工作室</h1>
-              <p>把每一次体验，变成值得回放的故事。</p>
-            </>
-          ) : (
-            <>
-              <span className="eyebrow">
-                MOMENTFLOW /{" "}
-                {page === "today" ? "DELIVERY" : page.toUpperCase()}
-              </span>
-              <h1>
-                {
-                  {
-                    today: "今日体验交付",
-                    media: "素材与成片",
-                    projects: "项目与点位",
-                    orders: "影像订单",
-                    settings: "工作空间设置",
-                  }[page]
-                }
-              </h1>
-              <p>
-                {
-                  {
-                    today: "从一次体验，到一份值得带走的回忆。",
-                    media: "属于每个场次的瞬间，都在这里。",
-                    projects: "让每个拍摄点位，与一次体验准确相连。",
-                    orders: "领取权益与影像交付，清晰可追溯。",
-                    settings: "为每一份回忆，设定恰当的边界。",
-                  }[page]
-                }
-              </p>
-            </>
-          )}
+          <span className="local-tag">
+            <i />
+            本地真实处理
+          </span>
         </header>
-        {(page === "today" || page === "media") && !studio && (
+        <section className="page-heading">
+          <div>
+            <p className="eyebrow">
+              {mode === "kindergarten"
+                ? "MOMENTFLOW / GROWING TOGETHER"
+                : "MOMENTFLOW / PERSONAL HIGHLIGHTS"}
+            </p>
+            <h1>
+              {tab === "media"
+                ? "把精彩，汇聚在一起。"
+                : tab === "people"
+                  ? "每一张面孔，都值得被认真确认。"
+                  : tab === "settings"
+                    ? "工作空间与处理边界"
+                    : scene.title}
+            </h1>
+            <p>{scene.description}</p>
+          </div>
+          <div className="heading-actions">
+            <button
+              disabled={!health || disabled}
+              onClick={() => {
+                setNewTitle(
+                  mode === "kindergarten" ? "本周成长周记" : "体验纪念片",
+                );
+                setImportConsent(false);
+                setModal("new");
+              }}
+            >
+              <Plus size={16} />
+              新建批次
+            </button>
+            <button
+              className="primary"
+              disabled={!project || disabled}
+              onClick={() => {
+                setFiles([]);
+                setModal("upload");
+              }}
+            >
+              <Upload size={17} />
+              导入素材
+            </button>
+          </div>
+        </section>
+        {error && (
+          <div className="error-banner" role="alert">
+            <AlertCircle size={18} />
+            <span>{error}</span>
+            <button onClick={() => (health ? setError("") : boot())}>
+              {health ? "关闭" : "重新连接"}
+            </button>
+          </div>
+        )}
+        {health && (!health.models_ready || !health.ffmpeg_ready) && (
+          <div className="error-banner">
+            <AlertCircle size={18} />
+            <span>
+              本地识别模型或 FFmpeg 尚未准备好，请执行 npm run setup。
+            </span>
+          </div>
+        )}
+        {!health && !error && (
+          <Empty
+            icon={LoaderCircle}
+            title="正在连接本地处理服务"
+            text="加载工作空间与识别模型状态。"
+          />
+        )}
+        {health && (
           <>
-            <div className="toolbar">
-              <div className="date-label">
-                10月24日 <span>今天</span>
-                <CalendarDays size={17} />
-              </div>
-              <div className="select-control">
-                <Mountain size={18} />
-                <span>松野探险乐园</span>
-              </div>
-              <label className="select-control">
-                <MapPin size={17} />
+            <div className="batch-toolbar">
+              <label>
+                <FolderOpen size={17} />
                 <select
-                  aria-label="体验项目"
-                  value={project}
-                  onChange={(e) => chooseProject(e.target.value)}
-                >
-                  {projects.map((x) => (
-                    <option key={x}>{x}</option>
-                  ))}
-                </select>
-                <ChevronDown size={15} />
-              </label>
-              <div className="toolbar-actions">
-                <button
-                  onClick={() => {
-                    setImportFiles([]);
-                    setImportError("");
-                    setModal("import");
+                  aria-label="当前素材批次"
+                  value={project?.id || ""}
+                  disabled={disabled}
+                  onChange={(e) => {
+                    const data = projects.find((p) => p.id === e.target.value);
+                    if (data) {
+                      update(data);
+                      setFilter("all");
+                    }
                   }}
                 >
-                  <Upload size={17} />
-                  导入素材
-                </button>
-                <button className="primary" onClick={() => setModal("batch")}>
-                  <Send size={17} />
-                  交付已确认的影片
-                </button>
-              </div>
-            </div>
-            <div className="delivery-layout">
-              <section className="session-list">
-                <div className="tabs" role="tablist" aria-label="场次状态">
-                  {[["all", "全部场次"], ...Object.entries(labels)].map(
-                    ([key, name]) => (
-                      <button
-                        key={key}
-                        role="tab"
-                        aria-selected={filter === key}
-                        className={filter === key ? "active" : ""}
-                        onClick={() => setFilter(key)}
-                      >
-                        {name}{" "}
-                        <span>
-                          (
-                          {key === "all"
-                            ? list.length
-                            : list.filter((s) => statusOf(s) === key).length}
-                          )
-                        </span>
-                      </button>
-                    ),
-                  )}
-                </div>
-                <div className="table-scroll">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>场次编号</th>
-                        <th>开始时间</th>
-                        <th>体验类型</th>
-                        <th>影片时长</th>
-                        <th>状态</th>
-                        <th>交付进度</th>
-                        <th>
-                          <span className="sr-only">详情</span>
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {visible.map((s) => (
-                        <tr
-                          key={s.id}
-                          className={selected === s.id ? "selected" : ""}
-                          onClick={() => setSelected(s.id)}
-                        >
-                          <td>
-                            <button
-                              className="row-select"
-                              onClick={() => setSelected(s.id)}
-                            >
-                              {s.id}
-                            </button>
-                          </td>
-                          <td>{s.time}</td>
-                          <td>
-                            {s.party.length === 1
-                              ? "单人体验"
-                              : `${s.party.length} 人同行`}
-                          </td>
-                          <td>{clock(duration(s))}</td>
-                          <td>
-                            <Status session={s} />
-                          </td>
-                          <td>
-                            <Steps session={s} />
-                          </td>
-                          <td>
-                            <ChevronRight size={16} />
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-                {!visible.length && (
-                  <div className="empty">
-                    <FolderOpen />
-                    <h3>没有{filter === "all" ? "" : labels[filter]}的场次</h3>
-                    <p>切换状态筛选，或导入新素材。</p>
-                    <button onClick={() => setFilter("all")}>
-                      查看全部场次
-                    </button>
-                  </div>
-                )}
-                <div className="table-foot">
-                  <span>{visible.length} 个场次 · 示例日期 2026.10.24</span>
-                  <span>
-                    <ShieldCheck size={13} />
-                    按场次私密交付
-                  </span>
-                </div>
-              </section>
-              {selectedSession && (
-                <aside className="inspector">
-                  <div className="inspector-heading">
-                    <h2>{session.id}</h2>
-                    <Status session={session} />
-                  </div>
-                  <p className="session-meta">
-                    10月24日 {session.time}
-                    <span>·</span>
-                    {session.party.length} 人同行<span>·</span>
-                    {clock(duration(session))}
-                  </p>
-                  <Player session={session} />
-                  <div className="review-message">
-                    <i />
-                    <strong>
-                      {!session.verified
-                        ? "需确认本场次同行人"
-                        : session.delivered
-                          ? "影片已交付，等待领取"
-                          : session.approvedVersion === session.version
-                            ? "本场次影片已确认"
-                            : "请检查并确认当前成片"}
-                    </strong>
-                    <p>
-                      {!session.verified
-                        ? "核对体验者和素材范围后，才能进入交付。"
-                        : session.delivered
-                          ? "游客可在专属页面预览并解锁影像。"
-                          : "素材绑定、同行授权和成片审核分别确认。"}
-                    </p>
-                  </div>
-                  <div className="inspector-actions">
-                    {!session.verified ? (
-                      <button className="primary" onClick={openVerify}>
-                        <Users size={17} />
-                        核对场次
-                      </button>
-                    ) : session.delivered ? (
-                      <button
-                        className="primary"
-                        onClick={() => goGuest(session)}
-                      >
-                        <Link size={17} />
-                        游客领取页
-                      </button>
-                    ) : (
-                      <button
-                        className="primary"
-                        onClick={() => {
-                          setStudio(true);
-                          setCaptionIndex(0);
-                        }}
-                      >
-                        <Film size={17} />
-                        {canApprove(session) ? "审核成片" : "生成成片"}
-                      </button>
-                    )}
-                    <button
-                      onClick={() => {
-                        setStudio(true);
-                        setCaptionIndex(0);
-                      }}
-                    >
-                      <SlidersHorizontal size={16} />
-                      {session.delivered ? "查看成片" : "打开工作室"}
-                    </button>
-                  </div>
-                  <div className="sources-heading">
-                    <h3>
-                      素材来源 <span>({session.clips.length})</span>
-                    </h3>
-                    <small>
-                      <CheckCircle2 size={14} />
-                      体验码已绑定
-                    </small>
-                  </div>
-                  <div className="source-grid">
-                    {session.clips.slice(0, 3).map((clip, i) => (
-                      <button
-                        key={clip.id}
-                        onClick={() => {
-                          setCaptionIndex(i);
-                          setStudio(true);
-                        }}
-                      >
-                        <img src={clip.src} alt={clip.title} />
-                        <strong>{clip.name}</strong>
-                        <small>照片 · 片段 {i + 1}</small>
-                      </button>
-                    ))}
-                  </div>
-                  <div className="notice">
-                    <Link size={20} />
-                    <div>
-                      <strong>体验码已绑定</strong>
-                      <span>关联只确定素材归属，交付仍需确认同行范围。</span>
-                    </div>
-                  </div>
-                </aside>
-              )}
-            </div>
-          </>
-        )}
-        {studio && (
-          <div className="studio">
-            <section className="studio-main">
-              <div className="studio-top">
-                <div>
-                  <strong>{session.id}</strong>
-                  <span>
-                    {session.project} · {session.party.length} 人同行
-                  </span>
-                </div>
-                <Status session={session} />
-              </div>
-              <Player session={session} />
-              <div className="timeline-heading">
-                <h3>
-                  故事片段{" "}
-                  <small>{session.clips.length} 个片段 · 每段 4 秒</small>
-                </h3>
-                <span>照片短片 · 无声</span>
-              </div>
-              <div className="filmstrip">
-                {session.clips.map((clip, i) => (
-                  <div
-                    key={clip.id}
-                    className={captionIndex === i ? "selected" : ""}
-                  >
-                    <button
-                      className="clip-pick"
-                      onClick={() => setCaptionIndex(i)}
-                    >
-                      <img
-                        src={clip.src}
-                        alt={`片段 ${i + 1}：${clip.title}`}
-                      />
-                      <span>{clock(i * 4)} — 04s</span>
-                    </button>
-                    <div>
-                      <small>
-                        {String(i + 1).padStart(2, "0")} · {clip.title}
-                      </small>
-                      <button
-                        disabled={
-                          i === 0 ||
-                          session.delivered ||
-                          renderProgress !== null
-                        }
-                        aria-label={`前移片段 ${i + 1}`}
-                        onClick={() => {
-                          const clips = [...session.clips];
-                          [clips[i - 1], clips[i]] = [clips[i], clips[i - 1]];
-                          edit(clips);
-                          setCaptionIndex(i - 1);
-                        }}
-                      >
-                        <ArrowUp size={14} />
-                      </button>
-                      <button
-                        disabled={
-                          session.clips.length === 1 ||
-                          session.delivered ||
-                          renderProgress !== null
-                        }
-                        aria-label={`移除片段 ${i + 1}`}
-                        onClick={() => {
-                          edit(session.clips.filter((c) => c.id !== clip.id));
-                          setCaptionIndex(0);
-                        }}
-                      >
-                        <Trash2 size={14} />
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <label className="caption-label">
-                片段 {captionIndex + 1} 字幕
-                <input
-                  maxLength={36}
-                  value={session.clips[captionIndex]?.title || ""}
-                  disabled={session.delivered || renderProgress !== null}
-                  onChange={(e) =>
-                    edit(
-                      session.clips.map((clip, i) =>
-                        i === captionIndex
-                          ? { ...clip, title: e.target.value }
-                          : clip,
-                      ),
-                    )
-                  }
-                />
+                  <option value="" disabled>
+                    选择素材批次
+                  </option>
+                  {availableProjects.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.title}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown size={14} />
               </label>
-              <div className="notice">
-                <Film size={18} />
-                修改片段或字幕后，需重新生成并审核。演示在浏览器内生成真实视频，每张照片展示
-                4 秒。
-              </div>
-            </section>
-            <aside className="studio-review">
-              <span className="eyebrow">BEFORE DELIVERY</span>
-              <h2>交付前，最后看一眼。</h2>
-              <div className="review-line">
-                <CheckCircle2 />
-                <div>
-                  <strong>体验码已绑定</strong>
-                  <p>{session.id}</p>
-                </div>
-              </div>
-              <div className="review-line">
-                {session.verified ? (
-                  <CheckCircle2 />
-                ) : (
-                  <AlertCircle className="orange" />
-                )}
-                <div>
-                  <strong>
-                    同行范围{session.verified ? "已核对" : "待核对"}
-                  </strong>
-                  <p>{session.party.join("、")}</p>
-                  {!session.verified && (
-                    <button onClick={openVerify}>
-                      现在核对 <ArrowRight size={13} />
-                    </button>
-                  )}
-                </div>
-              </div>
-              <div className="review-line">
-                {session.renderedVersion === session.version ? (
-                  <CheckCircle2 />
-                ) : (
-                  <Clock3 className="orange" />
-                )}
-                <div>
-                  <strong>
-                    {session.renderedVersion === session.version
-                      ? "当前版本已生成"
-                      : "需要重新生成预览"}
-                  </strong>
-                  <p>
-                    版本 {session.version} · {clock(duration(session))}
-                  </p>
-                </div>
-              </div>
-              <div className="render-actions">
-                {renderProgress !== null ? (
-                  <>
-                    <div className="render-progress">
-                      <LoaderCircle className="spin" size={18} />
-                      正在生成影片 {renderProgress}%
-                    </div>
-                    <progress value={renderProgress} max="100" />
-                    <p>请保持此页面可见，约需 {duration(session)} 秒。</p>
-                    <button onClick={() => renderController.current?.abort()}>
-                      取消生成
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <button disabled={session.delivered} onClick={render}>
-                      <Film size={17} />
-                      {session.renderedVersion === session.version
-                        ? "重新生成预览"
-                        : "生成预览"}
-                    </button>
-                    <button
-                      className="primary"
-                      disabled={
-                        !canApprove(session) ||
-                        session.delivered ||
-                        session.approvedVersion === session.version
+              <span>
+                {stats.photos} 张照片 <i />
+                {stats.videos} 段视频
+              </span>
+              {project && (
+                <div className="batch-actions">
+                  <label className="sampling">
+                    抽帧间隔
+                    <select
+                      aria-label="抽帧间隔"
+                      disabled={disabled || project.faces.length > 0}
+                      value={
+                        project.faces.length
+                          ? project.sample_interval
+                          : interval
                       }
-                      onClick={() => {
-                        mutate(session.id, { type: "approve" });
-                        notify("成片已确认，可以交付。");
-                      }}
+                      onChange={(e) => setIntervalValue(Number(e.target.value))}
                     >
-                      <Check size={17} />
-                      {session.approvedVersion === session.version
-                        ? "成片已确认"
-                        : "确认当前成片"}
-                    </button>
-                    <button
-                      className="primary terracotta"
-                      disabled={!canDeliver(session) && !session.delivered}
-                      onClick={() => {
-                        if (session.delivered) goGuest(session);
-                        else {
-                          mutate(session.id, { type: "deliver" });
-                          notify("已交付，游客领取页已开放。");
-                        }
-                      }}
-                    >
-                      <Send size={17} />
-                      {session.delivered ? "打开游客领取页" : "交付此影片"}
-                    </button>
-                  </>
-                )}
-              </div>
-              <small className="studio-tip">
-                <ShieldCheck size={14} />
-                已交付影片锁定编辑，避免已购内容发生变化。
-              </small>
-            </aside>
-          </div>
-        )}
-        {page === "projects" && (
-          <section className="project-grid">
-            {projects.map((p, i) => (
-              <article key={p}>
-                <img src={imageFor(p)} alt={p} />
-                <div>
-                  <span className="eyebrow">EXPERIENCE 0{i + 1}</span>
-                  <h2>{p}</h2>
-                  <p>
-                    场次绑定 ·{" "}
-                    {i
-                      ? "赛道起点 / 林间弯道 / 终点"
-                      : "出发平台 / 林间机位 / 到达平台"}
-                  </p>
-                  <div className="project-points">
-                    <span>
-                      <CheckCircle2 size={15} />3 个示例拍摄点
-                    </span>
-                    <span>体验码关联</span>
-                  </div>
+                      <option value="0.5">0.5 秒</option>
+                      <option value="1">1 秒</option>
+                      <option value="2">2 秒</option>
+                    </select>
+                  </label>
                   <button
-                    onClick={() => {
-                      chooseProject(p);
-                      setPage("today");
-                    }}
+                    disabled={
+                      disabled ||
+                      !project.media.some((m) => m.status !== "analyzed") ||
+                      !health.models_ready
+                    }
+                    onClick={analyze}
                   >
-                    查看项目场次 <ArrowRight size={16} />
+                    <ScanFace size={16} />
+                    开始人物识别
                   </button>
                 </div>
-              </article>
-            ))}
-          </section>
-        )}
-        {page === "orders" && (
-          <section className="orders">
-            <div className="section-title">
-              <h2>模拟订单</h2>
-              <span>示例套餐 ¥49 · 无实际收款</span>
+              )}
             </div>
-            {sessions.some((s) => s.paid) ? (
-              <div className="table-scroll">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>场次</th>
-                      <th>项目</th>
-                      <th>套餐</th>
-                      <th>金额</th>
-                      <th>领取权益</th>
-                      <th>操作</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {sessions
-                      .filter((s) => s.paid)
-                      .map((s) => (
-                        <tr key={s.id}>
-                          <td>
-                            <strong>{s.id}</strong>
-                          </td>
-                          <td>{s.project}</td>
-                          <td>纪念影像包</td>
-                          <td>
-                            ¥49 <small>模拟</small>
-                          </td>
-                          <td>
-                            <span className="status ready">
-                              <CheckCircle2 size={14} />
-                              已解锁
-                            </span>
-                          </td>
-                          <td>
-                            <button onClick={() => goGuest(s)}>
-                              打开领取页
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                  </tbody>
-                </table>
-              </div>
-            ) : (
-              <div className="empty">
-                <ReceiptText size={32} />
-                <h3>第一份回忆，等待被带走。</h3>
-                <p>
-                  交付影片后，在游客领取页完成一次模拟解锁，订单会出现在这里。
-                </p>
-                <button onClick={() => setPage("today")}>
-                  去处理今日交付 <ArrowRight size={16} />
+            {running && (
+              <div className="job-panel" role="status">
+                <LoaderCircle className="spin" size={21} />
+                <div>
+                  <strong>{project.job.stage}</strong>
+                  <progress value={project.job.progress} max="100" />
+                </div>
+                <span>{project.job.progress}%</span>
+                <button
+                  onClick={() =>
+                    act(() =>
+                      api(`/projects/${project.id}/cancel`, { method: "POST" }),
+                    )
+                  }
+                  disabled={busy}
+                >
+                  取消任务
                 </button>
               </div>
             )}
-          </section>
-        )}
-        {page === "settings" && (
-          <section className="settings-panel">
-            <h2>演示工作空间</h2>
-            <dl>
-              <div>
-                <dt>机构</dt>
-                <dd>松野探险乐园（虚构）</dd>
+            {project?.job?.status === "failed" && (
+              <div className="error-banner" role="alert">
+                <AlertCircle size={18} />
+                <span>{project.job.error}</span>
+                <small>保留已导入素材，可以重试。</small>
               </div>
-              <div>
-                <dt>交付方式</dt>
-                <dd>人工核对同行 → 成片审核 → 私密领取</dd>
+            )}
+            {!project ? (
+              <div className="welcome">
+                <div>
+                  <span className="eyebrow">START WITH A REAL MOMENT</span>
+                  <h2>
+                    {mode === "kindergarten" ? (
+                      <>
+                        把散落的日常，
+                        <br />
+                        收成每个孩子的成长故事。
+                      </>
+                    ) : (
+                      <>
+                        一场体验，很多镜头。
+                        <br />
+                        让回忆，找到它的主人。
+                      </>
+                    )}
+                  </h2>
+                  <p>
+                    导入真实照片与视频，检测人脸、聚成不同人物，
+                    <br />
+                    核对身份后，生成每个人自己的纪念片。
+                  </p>
+                  <div>
+                    <button
+                      className="primary"
+                      disabled={busy || !health.models_ready}
+                      onClick={() => createProject(true)}
+                    >
+                      {busy ? (
+                        <LoaderCircle className="spin" size={16} />
+                      ) : (
+                        <ArrowRight size={16} />
+                      )}
+                      打开{scene.sample}
+                    </button>
+                    <button
+                      disabled={busy}
+                      onClick={() => {
+                        setImportConsent(false);
+                        setModal("new");
+                      }}
+                    >
+                      从自己的素材开始
+                    </button>
+                  </div>
+                  <small>
+                    {mode === "kindergarten"
+                      ? "示例儿童为 AI 虚构。示例视频由照片合成；识别与成片仍真实运行。"
+                      : "示例含 AI 照片和 MIT 授权的 OpenCV 真人动态视频，不使用预制聚类结果。"}
+                  </small>
+                </div>
+                <img
+                  src={
+                    mode === "kindergarten"
+                      ? "/samples/kindergarten/blocks.jpg"
+                      : "/media/zipline.jpg"
+                  }
+                  alt={
+                    mode === "kindergarten"
+                      ? "三位虚构儿童在教室搭积木"
+                      : "两位虚构体验者在松林滑索平台"
+                  }
+                />
               </div>
-              <div>
-                <dt>媒体处理</dt>
-                <dd>照片在浏览器内处理，不上传服务器</dd>
-              </div>
-              <div>
-                <dt>识别与付款</dt>
-                <dd>使用模拟记录；不进行人脸识别，不实际收费</dd>
-              </div>
-              <div>
-                <dt>保存范围</dt>
-                <dd>当前页面会话；刷新后恢复示例数据</dd>
-              </div>
-            </dl>
-            <div className="notice">
-              <ShieldCheck size={20} />
-              本地演示不提供生产环境的认证、访问控制、订单核验或云端存储。
-            </div>
-            <button onClick={() => setModal("reset")}>
-              <RotateCcw size={16} />
-              重置演示数据
-            </button>
-          </section>
-        )}
-        {modal === "reset" && (
-          <Modal title="重新开始演示" close={closeModal}>
-            <p>将清除本次导入、编辑及模拟购买记录，恢复初始场次。</p>
-            <footer>
-              <button onClick={closeModal}>返回</button>
-              <button
-                className="primary"
-                onClick={() => {
-                  fileUrls.forEach((url) => URL.revokeObjectURL(url));
-                  fileUrls.clear();
-                  setSessions(initialSessions());
-                  setSelected("SX-1024-018");
-                  setProject(projects[0]);
-                  setPage("today");
-                  setFilter("all");
-                  setModal(null);
-                  notify("演示已重置。");
-                }}
-              >
-                确认重置
-              </button>
-            </footer>
-          </Modal>
+            ) : (
+              <>
+                {(tab === "workbench" || tab === "people") && (
+                  <>
+                    <div className="summary-line">
+                      <span>
+                        <b>{project.people.length}</b> 个人物组
+                        <i>·</i>
+                        <em>{stats.pending} 份待核对</em>
+                        <i>·</i>
+                        {stats.delivered} 份已交付
+                      </span>
+                      <button
+                        disabled={disabled}
+                        onClick={() => {
+                          setName("");
+                          setAuthorized(false);
+                          setReference(null);
+                          setModal("enroll");
+                        }}
+                      >
+                        <Plus size={14} />
+                        登记参考档案
+                      </button>
+                    </div>
+                    <div className="delivery-grid">
+                      <section className="people-panel">
+                        <div
+                          className="filter-tabs"
+                          role="tablist"
+                          aria-label="人物状态"
+                        >
+                          {[
+                            ["all", "全部人物"],
+                            ["pending", "待核对"],
+                            ["confirmed", "已确认"],
+                            ["delivered", "已交付"],
+                          ].map(([id, title]) => (
+                            <button
+                              role="tab"
+                              aria-selected={filter === id}
+                              className={filter === id ? "active" : ""}
+                              key={id}
+                              onClick={() => setFilter(id)}
+                            >
+                              {title}
+                            </button>
+                          ))}
+                        </div>
+                        <div className="people-table-header">
+                          <span>
+                            {mode === "kindergarten"
+                              ? "幼儿 / 人物组"
+                              : "人物组"}
+                          </span>
+                          <span>来源切片</span>
+                          <span>状态</span>
+                        </div>
+                        {visiblePeople.map((p) => {
+                          const faces = project.faces.filter((f) =>
+                            p.face_ids.includes(f.id),
+                          );
+                          return (
+                            <button
+                              className={`person-row ${selected === p.id ? "active" : ""}`}
+                              key={p.id}
+                              disabled={busy}
+                              onClick={() => setSelected(p.id)}
+                            >
+                              <span className="person-identity">
+                                <img src={faces[0]?.thumbnail} alt="" />
+                                <span>
+                                  <strong>{p.name}</strong>
+                                  <small>
+                                    {p.face_count} 个出镜切片
+                                    {faces.some((f) => f.reference)
+                                      ? " · 已登记参考照"
+                                      : ""}
+                                  </small>
+                                </span>
+                              </span>
+                              <span className="row-thumbs">
+                                {faces
+                                  .filter((f) => !f.reference)
+                                  .slice(0, 3)
+                                  .map((f) => (
+                                    <img
+                                      src={f.thumbnail}
+                                      key={f.id}
+                                      alt="出镜人脸切片"
+                                    />
+                                  ))}
+                              </span>
+                              <Badge project={project} person={p} />
+                              <ChevronRight size={14} />
+                            </button>
+                          );
+                        })}
+                        {!visiblePeople.length && (
+                          <Empty
+                            icon={ScanFace}
+                            title={
+                              project.people.length
+                                ? "这个状态下还没有人物"
+                                : running
+                                  ? "正在从真实素材中寻找面孔"
+                                  : "先让镜头里的面孔，相聚在一起。"
+                            }
+                            text={
+                              project.media.length
+                                ? "点击“开始人物识别”，系统会保留出镜时间与来源。识别不到的人脸不会被强行命名。"
+                                : "先导入活动照片、视频，或使用一组示例素材。"
+                            }
+                          >
+                            {!project.media.length && (
+                              <button
+                                disabled={disabled}
+                                onClick={() =>
+                                  act(async () =>
+                                    update(
+                                      await api(
+                                        `/projects/${project.id}/samples`,
+                                        { method: "POST" },
+                                      ),
+                                    ),
+                                  )
+                                }
+                              >
+                                导入示例素材
+                              </button>
+                            )}
+                          </Empty>
+                        )}
+                        <div className="panel-footer">
+                          <ShieldCheck size={13} />
+                          <span>聚类只关联人物，不代替身份与授权核对。</span>
+                        </div>
+                      </section>
+                      <section className="detail-panel">
+                        {person ? (
+                          <>
+                            <header className="person-heading">
+                              <img
+                                src={face?.thumbnail}
+                                alt={`${person.name}人脸切片`}
+                              />
+                              <div>
+                                <h2>{person.name}</h2>
+                                <p>{project.title}</p>
+                              </div>
+                              <Badge project={project} person={person} />
+                            </header>
+                            <div className="movie-preview">
+                              {output ? (
+                                <video
+                                  key={output.id}
+                                  controls
+                                  playsInline
+                                  preload="metadata"
+                                  src={output.url}
+                                />
+                              ) : (
+                                <>
+                                  <img
+                                    src={
+                                      segments[0]?.thumbnail || face?.thumbnail
+                                    }
+                                    alt="待生成集锦的素材封面"
+                                  />
+                                  <div>
+                                    <Film size={26} />
+                                    <strong>
+                                      {person.confirmed
+                                        ? `准备好${scene.output}的片段，再生成预览。`
+                                        : "先核对人物，再生成专属集锦。"}
+                                    </strong>
+                                    <span>
+                                      此处将播放从原始素材实际生成的 MP4
+                                    </span>
+                                  </div>
+                                </>
+                              )}
+                            </div>
+                            <div className="detail-actions">
+                              <button
+                                className={!person.confirmed ? "primary" : ""}
+                                disabled={disabled}
+                                onClick={identity}
+                              >
+                                <Users size={16} />
+                                {person.confirmed
+                                  ? "重新核对人物"
+                                  : "核对人物与授权"}
+                              </button>
+                              <button
+                                disabled={disabled}
+                                onClick={() => setCorrecting(!correcting)}
+                              >
+                                <Scissors size={16} />
+                                {correcting ? "结束纠错" : "纠正分组"}
+                              </button>
+                            </div>
+                            <div className="section-heading">
+                              <h3>
+                                人脸切片 <span>({personFaces.length})</span>
+                              </h3>
+                              <small>点击查看原始来源</small>
+                            </div>
+                            <div className="face-strip">
+                              {personFaces.map((f) => (
+                                <div className="face-cell" key={f.id}>
+                                  {correcting ? (
+                                    <label>
+                                      <input
+                                        type="checkbox"
+                                        aria-label={`选择人脸 ${f.id}`}
+                                        checked={faceSelections.includes(f.id)}
+                                        onChange={(e) =>
+                                          setFaceSelections((all) =>
+                                            e.target.checked
+                                              ? [...all, f.id]
+                                              : all.filter((id) => id !== f.id),
+                                          )
+                                        }
+                                      />
+                                      <img
+                                        src={f.thumbnail}
+                                        alt="待纠正的人脸切片"
+                                      />
+                                    </label>
+                                  ) : (
+                                    <button
+                                      onClick={() => {
+                                        const media = project.media.find(
+                                          (m) => m.id === f.media_id,
+                                        );
+                                        if (media)
+                                          setSource({
+                                            media,
+                                            face: f,
+                                            time: f.timestamp,
+                                          });
+                                        else notify("这是授权登记的参考照片。");
+                                      }}
+                                    >
+                                      <img
+                                        src={f.thumbnail}
+                                        alt={`${f.reference ? "参考照" : `出镜 ${seconds(f.timestamp)}`}人脸切片`}
+                                      />
+                                    </button>
+                                  )}
+                                  <small>
+                                    {f.reference
+                                      ? "参考照"
+                                      : seconds(f.timestamp)}
+                                  </small>
+                                </div>
+                              ))}
+                            </div>
+                            {personFaces.length > 60 && (
+                              <p className="hint">
+                                可横向滚动查看全部切片。人物组共{" "}
+                                {personFaces.length} 张，核对完整来源后再确认。
+                              </p>
+                            )}
+                            {correcting && (
+                              <div className="correction-box">
+                                <strong>
+                                  把误归的人脸拆出，或合并重复人物。
+                                </strong>
+                                <p>
+                                  同一帧同时出现的不同人脸不能合并。纠错后需重新确认人物与成片。
+                                </p>
+                                <button
+                                  disabled={
+                                    disabled ||
+                                    !faceSelections.length ||
+                                    faceSelections.length === personFaces.length
+                                  }
+                                  onClick={split}
+                                >
+                                  <Split size={15} />
+                                  将选中 {faceSelections.length} 张拆为新人物
+                                </button>
+                                <div>
+                                  <select
+                                    aria-label="合并另一人物组"
+                                    value={mergeId}
+                                    onChange={(e) => setMergeId(e.target.value)}
+                                  >
+                                    <option value="">选择要合并的人物组</option>
+                                    {project.people
+                                      .filter((p) => p.id !== person.id)
+                                      .map((p) => (
+                                        <option key={p.id} value={p.id}>
+                                          {p.name} · {p.face_count} 个出镜切片
+                                        </option>
+                                      ))}
+                                  </select>
+                                  <button
+                                    disabled={!mergeId || disabled}
+                                    onClick={merge}
+                                  >
+                                    <Merge size={15} />
+                                    合并
+                                  </button>
+                                </div>
+                              </div>
+                            )}
+                            <div className="section-heading">
+                              <h3>
+                                {mode === "kindergarten"
+                                  ? "本周精彩片段"
+                                  : "个人出镜片段"}{" "}
+                                <span>({segments.length})</span>
+                              </h3>
+                              <span>
+                                {selectedSegments.length} 段已选 ·{" "}
+                                {seconds(selectedDuration)}
+                              </span>
+                            </div>
+                            <div className="segments-list">
+                              {segments.map((s) => (
+                                <label
+                                  className={`segment ${selectedSegments.includes(s.id) ? "selected" : ""}`}
+                                  key={s.id}
+                                >
+                                  <input
+                                    type="checkbox"
+                                    disabled={disabled}
+                                    checked={selectedSegments.includes(s.id)}
+                                    onChange={(e) =>
+                                      setSelections((all) => ({
+                                        ...all,
+                                        [selected]: e.target.checked
+                                          ? [...selectedSegments, s.id]
+                                          : selectedSegments.filter(
+                                              (id) => id !== s.id,
+                                            ),
+                                      }))
+                                    }
+                                  />
+                                  <img src={s.thumbnail} alt="片段来源缩略图" />
+                                  <span>
+                                    <strong>{s.name}</strong>
+                                    <small>
+                                      {s.kind === "video" ? (
+                                        <>
+                                          <FileVideo size={11} />
+                                          原视频 {s.start.toFixed(1)}–
+                                          {s.end.toFixed(1)} 秒
+                                        </>
+                                      ) : (
+                                        <>
+                                          <ImageIcon size={11} />
+                                          活动照片 · 展示 3 秒
+                                        </>
+                                      )}
+                                      {s.other_faces > 0 && " · 含其他出镜人脸"}
+                                    </small>
+                                  </span>
+                                  <button
+                                    type="button"
+                                    className="icon"
+                                    aria-label={`预览片段 ${s.id}`}
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      setSource({
+                                        media: project.media.find(
+                                          (m) => m.id === s.media_id,
+                                        ),
+                                        time: s.start,
+                                      });
+                                    }}
+                                  >
+                                    <ChevronRight size={16} />
+                                  </button>
+                                </label>
+                              ))}
+                            </div>
+                            {!segments.length && (
+                              <p className="hint">
+                                尚未找到此人物的活动素材。参考照片仅用于身份比对，不会放入集锦。
+                              </p>
+                            )}
+                            {selectedSegments.length > 1 && (
+                              <div className="sequence">
+                                <strong>成片顺序</strong>
+                                {selectedSegments.map((id, i) => (
+                                  <span key={id}>
+                                    <small>
+                                      {i + 1}.{" "}
+                                      {segments.find((s) => s.id === id)?.name}
+                                    </small>
+                                    <button
+                                      aria-label={`前移已选片段 ${i + 1}`}
+                                      className="icon"
+                                      disabled={i === 0 || disabled}
+                                      onClick={() =>
+                                        setSelections((all) => {
+                                          const next = [...selectedSegments];
+                                          [next[i - 1], next[i]] = [
+                                            next[i],
+                                            next[i - 1],
+                                          ];
+                                          return { ...all, [selected]: next };
+                                        })
+                                      }
+                                    >
+                                      <ArrowUp size={13} />
+                                    </button>
+                                  </span>
+                                ))}
+                              </div>
+                            )}
+                            <label className="teacher-note">
+                              {mode === "kindergarten"
+                                ? "老师的活动记录"
+                                : "这份回忆的记录"}
+                              <textarea
+                                value={note}
+                                maxLength={500}
+                                disabled={disabled}
+                                onChange={(e) => setNote(e.target.value)}
+                                placeholder={
+                                  mode === "kindergarten"
+                                    ? "写下你实际观察到的活动与细节。文字由老师确认，不自动推断孩子的能力或性格。"
+                                    : "写下关于这次体验的简短记录。"
+                                }
+                              />
+                              <small>
+                                {note.length}/500 · 会展示给{scene.receiver}
+                              </small>
+                            </label>
+                            <div className="production-controls">
+                              <button
+                                className="primary"
+                                disabled={
+                                  disabled ||
+                                  !person.confirmed ||
+                                  !person.authorized ||
+                                  !selectedSegments.length ||
+                                  selectedDuration > 60 ||
+                                  selectedSegments.length > 12
+                                }
+                                onClick={render}
+                              >
+                                <Film size={17} />
+                                {output ? "重新生成集锦" : "生成专属集锦"}
+                              </button>
+                              <button
+                                disabled={
+                                  disabled || !output || output.approved
+                                }
+                                onClick={() => {
+                                  setReviewed(false);
+                                  setModal("approve");
+                                }}
+                              >
+                                <Check size={16} />
+                                {output?.approved
+                                  ? "当前版本已审核"
+                                  : "审核当前成片"}
+                              </button>
+                              <button
+                                className="accent"
+                                disabled={
+                                  disabled ||
+                                  !output?.approved ||
+                                  output.delivered
+                                }
+                                onClick={deliver}
+                              >
+                                <Send size={16} />
+                                {output?.delivered
+                                  ? "已交付"
+                                  : `交付${scene.receiver}`}
+                              </button>
+                              {output?.delivered && (
+                                <button onClick={() => setRecipient(person.id)}>
+                                  <ArrowRight size={16} />
+                                  {scene.receiver}领取页
+                                </button>
+                              )}
+                            </div>
+                            <div className="notice">
+                              <ShieldCheck size={17} />
+                              <p>
+                                成片为 720p
+                                无声视频，直接使用原视频动态画面。逐帧遮盖检测到的非目标人脸；仍需人工复核，不能保证零漏检。
+                              </p>
+                            </div>
+                          </>
+                        ) : (
+                          <Empty
+                            icon={Leaf}
+                            title="选一个人物，看看属于他的瞬间。"
+                            text="识别完成后，左侧会出现实际检测到的人物组。"
+                          />
+                        )}
+                      </section>
+                    </div>
+                  </>
+                )}
+                {tab === "media" && (
+                  <section className="media-library">
+                    <div className="section-heading">
+                      <h2>
+                        本批次素材 <span>({project.media.length})</span>
+                      </h2>
+                      <p>原文件保存在本机，点击查看。</p>
+                    </div>
+                    <div className="media-grid">
+                      {project.media.map((m) => (
+                        <button
+                          key={m.id}
+                          className="media-card"
+                          onClick={() => setSource({ media: m, time: 0 })}
+                        >
+                          <div>
+                            <img src={m.thumbnail} alt={m.name} />
+                            <span>
+                              {m.kind === "video" ? (
+                                <FileVideo size={15} />
+                              ) : (
+                                <ImageIcon size={15} />
+                              )}
+                              {m.kind === "video"
+                                ? seconds(m.duration)
+                                : "照片"}
+                            </span>
+                          </div>
+                          <strong>{m.name}</strong>
+                          <p>
+                            {m.status === "analyzed"
+                              ? `${m.detections} 个人脸切片 · ${m.sampled_frames} 个采样帧`
+                              : "待分析"}
+                            <small>
+                              {(m.size / 1024 / 1024).toFixed(1)} MB
+                            </small>
+                          </p>
+                          {m.warning && <em>{m.warning}</em>}
+                        </button>
+                      ))}
+                    </div>
+                    <div className="notice">
+                      <AlertCircle size={17} />
+                      {
+                        project.faces.filter((f) => !f.usable_for_matching)
+                          .length
+                      }{" "}
+                      张低质量人脸保留为未归类，不会强行匹配。未检测到人脸的素材仍在原素材库中。
+                    </div>
+                  </section>
+                )}
+                {tab === "settings" && (
+                  <section className="settings-panel">
+                    <h2>真实运行的处理链路</h2>
+                    <div className="pipeline-steps">
+                      {[
+                        "本地照片 / 视频",
+                        "抽帧与人脸检测",
+                        "特征提取与聚类",
+                        "人工核对人物",
+                        "原片剪辑与遮盖",
+                        "审核与专属领取",
+                      ].map((text, i) => (
+                        <div key={text}>
+                          <span>0{i + 1}</span>
+                          <strong>{text}</strong>
+                        </div>
+                      ))}
+                    </div>
+                    <dl>
+                      <div>
+                        <dt>识别引擎</dt>
+                        <dd>YuNet 检测 + SFace 特征 · 仅此批次内匹配</dd>
+                      </div>
+                      <div>
+                        <dt>成片引擎</dt>
+                        <dd>FFmpeg + 逐帧人脸检测 · 720p MP4 · 无声</dd>
+                      </div>
+                      <div>
+                        <dt>存储位置</dt>
+                        <dd>
+                          当前电脑的
+                          .momentflow-data，刷新后仍保留。人物特征不返回前端，也不发送云端。
+                        </dd>
+                      </div>
+                      <div>
+                        <dt>聚类边界</dt>
+                        <dd>
+                          相似度不是身份正确概率。低清、侧脸、遮挡和儿童外观相近都可能导致漏检、错分或分散，必须人工核对。
+                        </dd>
+                      </div>
+                      <div>
+                        <dt>领取边界</dt>
+                        <dd>
+                          本地签名会话隔离项目；家长视角用于演示审核后的领取，尚未接入真实监护账号、邀请和跨设备交付。
+                        </dd>
+                      </div>
+                      <div>
+                        <dt>还未接入</dt>
+                        <dd>
+                          监控实时流、多模态事件理解、自动成长评价、云端存储、真实账号体系和真实支付。
+                        </dd>
+                      </div>
+                    </dl>
+                    <button
+                      className="danger"
+                      disabled={disabled}
+                      onClick={() => setModal("delete")}
+                    >
+                      <X size={16} />
+                      删除本批次及人脸数据
+                    </button>
+                  </section>
+                )}
+              </>
+            )}
+          </>
         )}
         <footer className="workspace-footer">
-          <span>每一次体验，都值得被好好记住。</span>
-          <span>MomentFlow · 交互演示 / 照片素材与身份均为虚构</span>
+          <span>让每一个属于你的瞬间，都被好好记住。</span>
+          <span>本地处理 · 教师/运营人工审核 · MomentFlow</span>
         </footer>
       </main>
       {dialogs}
+      {modal === "delete" && (
+        <Modal title="删除批次与人脸数据" close={() => !busy && setModal(null)}>
+          <p>
+            将永久删除此批次的原始素材、人脸特征、分组和所有成片。已下载到其他位置的文件不受影响。
+          </p>
+          <footer>
+            <button onClick={() => setModal(null)}>返回</button>
+            <button
+              className="danger"
+              disabled={busy}
+              onClick={() =>
+                act(async () => {
+                  await api(`/projects/${project.id}`, { method: "DELETE" });
+                  setProjects((all) => all.filter((p) => p.id !== project.id));
+                  setProject(null);
+                  setSelected(null);
+                  setModal(null);
+                })
+              }
+            >
+              确认永久删除
+            </button>
+          </footer>
+        </Modal>
+      )}
       {toast && (
         <div className="toast" role="status">
           <CheckCircle2 size={18} />

@@ -1,0 +1,74 @@
+[
+  {
+    "file": "lin-xiaoman.mp4",
+    "sha256": "befa701fd73805eb005d65ef04820f97e0ea8cb914bf8b80b243f91bf5add1ca",
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "codec_name": "h264",
+        "width": 1280,
+        "height": 720,
+        "r_frame_rate": "12/1"
+      }
+    ],
+    "format": {
+      "duration": "11.583333",
+      "size": "751573"
+    }
+  },
+  {
+    "file": "zhou-yuan.mp4",
+    "sha256": "8549133cbd22a99ac0bb8ab7100d3aa80a7f44b44f055b710cc95ea8fb419d9a",
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "codec_name": "h264",
+        "width": 1280,
+        "height": 720,
+        "r_frame_rate": "12/1"
+      }
+    ],
+    "format": {
+      "duration": "11.583333",
+      "size": "751799"
+    }
+  },
+  {
+    "file": "chen-yinuo.mp4",
+    "sha256": "9f8b8fb736a6c4a488b75fd1762690e4809d432185edb6adfd2ec6690fce3102",
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "codec_name": "h264",
+        "width": 1280,
+        "height": 720,
+        "r_frame_rate": "12/1"
+      }
+    ],
+    "format": {
+      "duration": "11.583333",
+      "size": "749377"
+    }
+  },
+  {
+    "file": "real-motion.mp4",
+    "sha256": "66f6b6cdd6c88c00a8f8794c65453e7dbd9f481126a04ed2902ee7a574b6fadf",
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "codec_name": "h264",
+        "width": 1280,
+        "height": 720,
+        "r_frame_rate": "12/1"
+      }
+    ],
+    "format": {
+      "duration": "10.416667",
+      "size": "417206"
+    }
+  }
+]

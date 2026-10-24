@@ -8,3 +8,11 @@ work/
 node_modules/
 dist/
 *.local
+
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.momentflow-data/
+backend/models/*.onnx
+backend/models/*.download
