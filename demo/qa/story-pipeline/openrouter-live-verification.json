@@ -1,0 +1,514 @@
+{
+  "provider": "OpenRouter",
+  "model": "openai/gpt-6-luna",
+  "fixture": "Fictional kindergarten children; photo-derived synthetic video. Actual model requests, not a test double.",
+  "stories": [
+    {
+      "person": "林小满",
+      "id": "d582ed07-ab78-4b68-a7f5-ac9439854a80",
+      "person_id": "db72dede-48bc-4928-980b-361092991ddf",
+      "input_signature": "134a075e55cce1a6826c357aa59221d18df4fe6586af1614668d7249ee44d1da",
+      "created_at": "2026-10-24T10:36:07.192589+00:00",
+      "model_draft": {
+        "title": "桌前的积木与涂色",
+        "weekly_note": "这份记录中，TA在桌前摆弄彩色积木，也手持画笔在树叶图案画纸上涂色。",
+        "chapters": [
+          {
+            "segment_id": "d55008c3640b7233ed48",
+            "heading": "桌前摆弄积木",
+            "caption": "TA坐在桌前，手靠近桌上的彩色积木。"
+          },
+          {
+            "segment_id": "317f6380f27efe587bfa",
+            "heading": "画纸上涂色",
+            "caption": "TA手持画笔，在树叶图案画纸上涂色。"
+          }
+        ]
+      },
+      "model": "openai/gpt-6-luna",
+      "provider": "OpenRouter",
+      "budget": 15,
+      "candidate_count": 4,
+      "total_candidates": 4,
+      "selected_ids": [
+        "d55008c3640b7233ed48",
+        "317f6380f27efe587bfa"
+      ],
+      "observations": [
+        {
+          "segment_id": "d55008c3640b7233ed48",
+          "usable": true,
+          "duplicate_of": null,
+          "title": "桌前摆弄积木",
+          "activity": "搭积木",
+          "observation": "目标坐在桌前，手靠近桌上的积木，面前摆有多块彩色积木。",
+          "stage": "action",
+          "score": 72,
+          "reason": "目标清晰，桌面有积木，手部位置显示正在摆弄积木。",
+          "evidence_frames": [
+            1
+          ]
+        },
+        {
+          "segment_id": "317f6380f27efe587bfa",
+          "usable": true,
+          "duplicate_of": null,
+          "title": "画纸上涂色",
+          "activity": "绘画涂色",
+          "observation": "目标坐在桌前，手持画笔在画纸上涂色，桌面摆有调色盘和树叶图案画纸。",
+          "stage": "action",
+          "score": 78,
+          "reason": "绘画用具和目标手持画笔的姿势清楚可见。",
+          "evidence_frames": [
+            1
+          ]
+        },
+        {
+          "segment_id": "9e0e01afdbd27a79f53a",
+          "usable": true,
+          "duplicate_of": "317f6380f27efe587bfa",
+          "title": "绘画画面重复",
+          "activity": "绘画涂色",
+          "observation": "目标保持手持画笔、面向画纸的姿势，画面与较早的绘画画面相同。",
+          "stage": "result",
+          "score": 40,
+          "reason": "三帧均为同一绘画场景和相近姿势，没有显示新的动作或画面状态。",
+          "evidence_frames": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "segment_id": "51e78ac06ed332b77443",
+          "usable": true,
+          "duplicate_of": "317f6380f27efe587bfa",
+          "title": "绘画画面重复",
+          "activity": "绘画涂色",
+          "observation": "目标仍在桌前手持画笔，画面与较早的绘画画面相同。",
+          "stage": "result",
+          "score": 40,
+          "reason": "三帧呈现同一绘画场景和相近姿势，属于重复画面。",
+          "evidence_frames": [
+            1,
+            2,
+            3
+          ]
+        }
+      ],
+      "title": "桌前的积木与涂色",
+      "weekly_note": "这份记录中，TA在桌前摆弄彩色积木，也手持画笔在树叶图案画纸上涂色。",
+      "chapters": [
+        {
+          "segment_id": "d55008c3640b7233ed48",
+          "heading": "桌前摆弄积木",
+          "caption": "TA坐在桌前，手靠近桌上的彩色积木。"
+        },
+        {
+          "segment_id": "317f6380f27efe587bfa",
+          "heading": "画纸上涂色",
+          "caption": "TA手持画笔，在树叶图案画纸上涂色。"
+        }
+      ],
+      "evidence": {
+        "d55008c3640b7233ed48": {
+          "times": [
+            0.0
+          ],
+          "target_visible": [
+            true
+          ],
+          "sha256": "6c9e5d0287d3df8407558d3fe84e809aeccf2902863b3b350752351b83d82b72"
+        },
+        "317f6380f27efe587bfa": {
+          "times": [
+            0.0
+          ],
+          "target_visible": [
+            true
+          ],
+          "sha256": "45a16cea233be437f73f9ac90cb62de94e4f47fa25b78305433ab67046ba1328"
+        },
+        "9e0e01afdbd27a79f53a": {
+          "times": [
+            0.5,
+            2.5,
+            4.5
+          ],
+          "target_visible": [
+            true,
+            true,
+            true
+          ],
+          "sha256": "3d3eb96f72261a31f3605b1a2b191015a72762d66465ba811dcd34483620a356"
+        },
+        "51e78ac06ed332b77443": {
+          "times": [
+            5.055,
+            5.275,
+            5.495
+          ],
+          "target_visible": [
+            true,
+            true,
+            true
+          ],
+          "sha256": "468b4e63d55c6708baa267d423e68b5ab2ad44fe0b9a320408a26dbbcf7a71d7"
+        }
+      },
+      "usage": [
+        {
+          "prompt_tokens": 2949,
+          "completion_tokens": 577,
+          "total_tokens": 3526
+        },
+        {
+          "prompt_tokens": 886,
+          "completion_tokens": 148,
+          "total_tokens": 1034
+        }
+      ],
+      "applied": false,
+      "method": "sampled_visual_frames",
+      "prompt_version": "visual-story-v1"
+    },
+    {
+      "person": "周予安",
+      "id": "bb610801-6a63-4d34-9017-0882d2cd8a3d",
+      "person_id": "492388d1-b1ea-4552-9dc3-89e208926b13",
+      "input_signature": "4b03fbabc3c0a8cfb9b302a575f046bef2c2a00847c7fe88184d05ab13025b2e",
+      "created_at": "2026-10-24T10:36:17.706870+00:00",
+      "model_draft": {
+        "title": "桌前的搭建与绘画",
+        "weekly_note": "这份记录中，TA在桌前伸手接触积木，也手持画笔在树叶主题画纸上作画。",
+        "chapters": [
+          {
+            "segment_id": "2d5d8c30f961b89c2044",
+            "heading": "桌前搭积木",
+            "caption": "TA坐在桌前，手伸向摆放着的积木块。"
+          },
+          {
+            "segment_id": "be36457bee4f65655801",
+            "heading": "画纸上的树叶",
+            "caption": "TA手持画笔在树叶主题画纸上作画，桌上摆有调色盘。"
+          }
+        ]
+      },
+      "model": "openai/gpt-6-luna",
+      "provider": "OpenRouter",
+      "budget": 15,
+      "candidate_count": 4,
+      "total_candidates": 4,
+      "selected_ids": [
+        "2d5d8c30f961b89c2044",
+        "be36457bee4f65655801"
+      ],
+      "observations": [
+        {
+          "segment_id": "2d5d8c30f961b89c2044",
+          "usable": true,
+          "duplicate_of": null,
+          "title": "桌前搭积木",
+          "activity": "搭积木",
+          "observation": "目标坐在桌前，手伸向桌上的积木，面前摆有多个积木块。",
+          "stage": "action",
+          "score": 70,
+          "reason": "目标和桌面活动清晰可见，呈现搭积木的日常场景。",
+          "evidence_frames": [
+            1
+          ]
+        },
+        {
+          "segment_id": "be36457bee4f65655801",
+          "usable": true,
+          "duplicate_of": null,
+          "title": "桌前画树叶",
+          "activity": "绘画涂色",
+          "observation": "目标手持画笔在纸上作画，桌上可见调色盘和树叶主题画纸。",
+          "stage": "action",
+          "score": 75,
+          "reason": "绘画活动及相关画具清晰可见。",
+          "evidence_frames": [
+            1
+          ]
+        },
+        {
+          "segment_id": "e9236fdf8ab9fa772e54",
+          "usable": true,
+          "duplicate_of": "be36457bee4f65655801",
+          "title": "桌前画树叶",
+          "activity": "绘画涂色",
+          "observation": "目标手持画笔在纸上作画；三帧画面与较早的绘画画面相同，未见新的动作或作品状态。",
+          "stage": "action",
+          "score": 40,
+          "reason": "画面清楚，但属于已出现的相同场景和姿势。",
+          "evidence_frames": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "segment_id": "ae8b26257d9c1878e12e",
+          "usable": true,
+          "duplicate_of": "be36457bee4f65655801",
+          "title": "桌前画树叶",
+          "activity": "绘画涂色",
+          "observation": "目标手持画笔在纸上作画；画面与较早的绘画画面相同。",
+          "stage": "action",
+          "score": 40,
+          "reason": "画面清楚，但属于已出现的相同场景和姿势。",
+          "evidence_frames": [
+            1,
+            2,
+            3
+          ]
+        }
+      ],
+      "title": "桌前的搭建与绘画",
+      "weekly_note": "这份记录中，TA在桌前伸手接触积木，也手持画笔在树叶主题画纸上作画。",
+      "chapters": [
+        {
+          "segment_id": "2d5d8c30f961b89c2044",
+          "heading": "桌前搭积木",
+          "caption": "TA坐在桌前，手伸向摆放着的积木块。"
+        },
+        {
+          "segment_id": "be36457bee4f65655801",
+          "heading": "画纸上的树叶",
+          "caption": "TA手持画笔在树叶主题画纸上作画，桌上摆有调色盘。"
+        }
+      ],
+      "evidence": {
+        "2d5d8c30f961b89c2044": {
+          "times": [
+            0.0
+          ],
+          "target_visible": [
+            true
+          ],
+          "sha256": "6aa69472a6ed13fb9e6c717249ef01f6ad0d8479cf0483ad9a0d4870f5605c68"
+        },
+        "be36457bee4f65655801": {
+          "times": [
+            0.0
+          ],
+          "target_visible": [
+            true
+          ],
+          "sha256": "941ecd9a04a65c813693f9ce7ce4c1909df89b68f36061ecc0fa9062fb052e7c"
+        },
+        "e9236fdf8ab9fa772e54": {
+          "times": [
+            0.5,
+            2.5,
+            4.5
+          ],
+          "target_visible": [
+            true,
+            true,
+            true
+          ],
+          "sha256": "d30317d433d9710ac39492529e8110b0cb447ff3357e297c4158c59a60d5195e"
+        },
+        "ae8b26257d9c1878e12e": {
+          "times": [
+            5.055,
+            5.275,
+            5.495
+          ],
+          "target_visible": [
+            true,
+            true,
+            true
+          ],
+          "sha256": "d8e9090767ae97aa53544714e6f49bad44a6bd763177341e939fc7a0d8b6caec"
+        }
+      },
+      "usage": [
+        {
+          "prompt_tokens": 2952,
+          "completion_tokens": 630,
+          "total_tokens": 3582
+        },
+        {
+          "prompt_tokens": 871,
+          "completion_tokens": 152,
+          "total_tokens": 1023
+        }
+      ],
+      "applied": false,
+      "method": "sampled_visual_frames",
+      "prompt_version": "visual-story-v1"
+    },
+    {
+      "person": "陈一诺",
+      "id": "46584596-7481-4338-9dc7-654d8ab0c5f9",
+      "person_id": "c4e8d932-0202-4c41-9aec-430ec59ee127",
+      "input_signature": "7cfc044840f84a1719dfc5dd73e67f087c7c07ddd5801ac88721dc880b38d8d8",
+      "created_at": "2026-10-24T10:36:28.796575+00:00",
+      "model_draft": {
+        "title": "桌边活动记录",
+        "weekly_note": "这份记录中，TA在桌边手持积木，也手持画笔为纸上的叶片图案涂画。",
+        "chapters": [
+          {
+            "segment_id": "8049c292bf66ed24222b",
+            "heading": "桌边搭积木",
+            "caption": "TA手持积木，桌面上摆着多块积木。"
+          },
+          {
+            "segment_id": "45bfec144845aaf7e53c",
+            "heading": "绘画涂色",
+            "caption": "TA手持画笔，在纸上的叶片图案处涂画。"
+          }
+        ]
+      },
+      "model": "openai/gpt-6-luna",
+      "provider": "OpenRouter",
+      "budget": 15,
+      "candidate_count": 4,
+      "total_candidates": 4,
+      "selected_ids": [
+        "8049c292bf66ed24222b",
+        "45bfec144845aaf7e53c"
+      ],
+      "observations": [
+        {
+          "segment_id": "8049c292bf66ed24222b",
+          "usable": true,
+          "duplicate_of": null,
+          "title": "桌边搭积木",
+          "activity": "搭积木",
+          "observation": "目标坐在桌边，手中拿着积木，桌面摆有多块积木。",
+          "stage": "action",
+          "score": 70,
+          "reason": "目标清晰，手持积木，搭建活动可见。",
+          "evidence_frames": [
+            1
+          ]
+        },
+        {
+          "segment_id": "45bfec144845aaf7e53c",
+          "usable": true,
+          "duplicate_of": null,
+          "title": "绘画涂色",
+          "activity": "绘画涂色",
+          "observation": "目标手持画笔，在纸上的叶片图案处涂画。",
+          "stage": "action",
+          "score": 70,
+          "reason": "目标和画笔清晰可见，正在进行绘画涂色。",
+          "evidence_frames": [
+            1
+          ]
+        },
+        {
+          "segment_id": "26f49f1b8736483eda61",
+          "usable": true,
+          "duplicate_of": "45bfec144845aaf7e53c",
+          "title": "绘画画面重复",
+          "activity": "绘画涂色",
+          "observation": "目标手持画笔，姿势及桌面绘画内容与较早的绘画画面相同；采样帧未显示明确的新动作或作品变化。",
+          "stage": "result",
+          "score": 40,
+          "reason": "与较早候选为相同场景和姿势，未见新的活动内容。",
+          "evidence_frames": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "segment_id": "13b7e48db6218b984907",
+          "usable": true,
+          "duplicate_of": "45bfec144845aaf7e53c",
+          "title": "绘画画面重复",
+          "activity": "绘画涂色",
+          "observation": "目标手持画笔，姿势及桌面绘画内容与较早的绘画画面相同；采样帧未显示明确的新动作或作品变化。",
+          "stage": "result",
+          "score": 40,
+          "reason": "与较早候选为相同场景和姿势，未见新的活动内容。",
+          "evidence_frames": [
+            1,
+            2,
+            3
+          ]
+        }
+      ],
+      "title": "桌边活动记录",
+      "weekly_note": "这份记录中，TA在桌边手持积木，也手持画笔为纸上的叶片图案涂画。",
+      "chapters": [
+        {
+          "segment_id": "8049c292bf66ed24222b",
+          "heading": "桌边搭积木",
+          "caption": "TA手持积木，桌面上摆着多块积木。"
+        },
+        {
+          "segment_id": "45bfec144845aaf7e53c",
+          "heading": "绘画涂色",
+          "caption": "TA手持画笔，在纸上的叶片图案处涂画。"
+        }
+      ],
+      "evidence": {
+        "8049c292bf66ed24222b": {
+          "times": [
+            0.0
+          ],
+          "target_visible": [
+            true
+          ],
+          "sha256": "113f4de189e562862ea0ac80970db57a645e8ddd5bd261eda1790d9f854e3d52"
+        },
+        "45bfec144845aaf7e53c": {
+          "times": [
+            0.0
+          ],
+          "target_visible": [
+            true
+          ],
+          "sha256": "6135c0cf4c68acb96197e290d634218d3f659955aa4b3385d22d77b409fd705a"
+        },
+        "26f49f1b8736483eda61": {
+          "times": [
+            0.5,
+            2.5,
+            4.5
+          ],
+          "target_visible": [
+            true,
+            true,
+            true
+          ],
+          "sha256": "0c2316a64cabb04ec33b5acd1b7f9d5abfb2d8964df9822ab0c6bf5432fc898a"
+        },
+        "13b7e48db6218b984907": {
+          "times": [
+            5.055,
+            5.275,
+            5.495
+          ],
+          "target_visible": [
+            true,
+            true,
+            true
+          ],
+          "sha256": "9f40c436e8c4214656412723133b57a96a2d4164007656c3f32f858f4d080500"
+        }
+      },
+      "usage": [
+        {
+          "prompt_tokens": 2947,
+          "completion_tokens": 673,
+          "total_tokens": 3620
+        },
+        {
+          "prompt_tokens": 859,
+          "completion_tokens": 138,
+          "total_tokens": 997
+        }
+      ],
+      "applied": false,
+      "method": "sampled_visual_frames",
+      "prompt_version": "visual-story-v1"
+    }
+  ]
+}

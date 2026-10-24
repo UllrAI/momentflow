@@ -5,6 +5,7 @@ import hmac
 import os
 import secrets
 import shutil
+import subprocess
 import uuid
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -13,8 +14,9 @@ from typing import Annotated
 import cv2
 from fastapi import FastAPI, File, Form, HTTPException, Request, Response, UploadFile
 from fastapi.responses import FileResponse, JSONResponse
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, SecretStr
 
+from . import model_api
 from .faces import cooccurs
 from .media import (
     IMAGE_EXTENSIONS,
@@ -25,7 +27,8 @@ from .media import (
     segments_for,
 )
 from .pipeline import Jobs
-from .store import Store, export_current, public_view
+from .store import Store, current_story, export_current, public_view
+from .story import Chapter
 
 ROOT = Path(__file__).resolve().parents[2]
 COOKIE = "momentflow_owner"
@@ -47,6 +50,25 @@ class PersonEdit(BaseModel):
 
 class RenderRequest(BaseModel):
     segment_ids: list[str] = Field(min_length=1, max_length=12)
+    preserve_audio: bool = True
+    story_id: str | None = None
+
+
+class ModelConfig(BaseModel):
+    model: str = model_api.DEFAULT_MODEL
+    api_key: SecretStr | None = None
+
+
+class StoryRequest(BaseModel):
+    consent: bool = False
+    duration: int = Field(default=30, ge=5, le=60)
+
+
+class StoryApply(BaseModel):
+    story_id: str
+    title: str = Field(min_length=1, max_length=30)
+    weekly_note: str = Field(min_length=1, max_length=500)
+    chapters: list[Chapter] | None = Field(default=None, min_length=1, max_length=8)
 
 
 class ReviewRequest(BaseModel):
@@ -160,8 +182,47 @@ def create_app(data_root=None):
             "models_ready": all((MODEL_DIR / name).exists() for name in MODELS),
             "ffmpeg_ready": bool(shutil.which("ffmpeg") and shutil.which("ffprobe")),
             "engine": "YuNet + SFace",
-            "local_only": True,
+            "local_only": False,
+            "face_recognition_local": True,
+            "story_provider": "OpenRouter",
         }
+
+    @app.get("/api/model-config")
+    def get_model_config(request: Request):
+        return model_api.public_config(model_api.load_config(store, owner(request)))
+
+    @app.put("/api/model-config")
+    def set_model_config(body: ModelConfig, request: Request):
+        try:
+            return model_api.save_config(
+                store,
+                owner(request),
+                body.model,
+                body.api_key.get_secret_value() if body.api_key is not None else None,
+            )
+        except ValueError as error:
+            raise HTTPException(422, str(error))
+
+    @app.post("/api/model-config/test")
+    def test_model_config(request: Request):
+        config = model_api.load_config(store, owner(request))
+        try:
+            result, _ = model_api.complete(
+                config,
+                [{"role": "user", "content": 'Return {"ok":true}'}],
+                {
+                    "type": "object",
+                    "properties": {"ok": {"type": "boolean"}},
+                    "required": ["ok"],
+                    "additionalProperties": False,
+                },
+                max_tokens=512,
+            )
+            if result.get("ok") is not True:
+                raise ValueError("模型连接测试未返回预期结果。")
+            return {"ok": True, "model": config["model"]}
+        except ValueError as error:
+            raise HTTPException(422, str(error))
 
     @app.get("/api/projects")
     def list_projects(request: Request):
@@ -239,7 +300,9 @@ def create_app(data_root=None):
                 path.unlink(missing_ok=True)
             if isinstance(error, HTTPException):
                 raise
-            raise HTTPException(422, str(error)[:250])
+            if isinstance(error, (subprocess.CalledProcessError, subprocess.TimeoutExpired)):
+                raise HTTPException(422, "无法读取素材，请检查文件格式、时长与编码。")
+            raise HTTPException(422, str(error).replace(str(store.root), "[本地数据目录]")[:250])
 
     @app.post("/api/projects/{project_id}/media")
     def upload_media(project_id: str, request: Request, files: Annotated[list[UploadFile], File()]):
@@ -464,6 +527,68 @@ def create_app(data_root=None):
         finally:
             path.unlink(missing_ok=True)
 
+    @app.post("/api/projects/{project_id}/people/{person_id}/story")
+    def create_story(project_id: str, person_id: str, body: StoryRequest, request: Request):
+        with store.lock:
+            project = project_for(project_id, request)
+            editable(project)
+            person = person_for(project, person_id)
+            if not person["confirmed"] or not person["authorized"]:
+                raise HTTPException(409, "先核对人物和授权，再分析故事。")
+            if not body.consent:
+                raise HTTPException(
+                    422, "请确认向 OpenRouter / OpenAI 发送此人物的候选画面进行分析。"
+                )
+            config = model_api.load_config(store, owner(request))
+            if not config.get("api_key"):
+                raise HTTPException(422, "请先在设置中配置 OpenRouter API Key。")
+
+            def work(snapshot, check, progress):
+                from .story import analyze_story
+
+                result = analyze_story(
+                    snapshot, person_id, config, jobs.get_engine(), body.duration, check, progress
+                )
+                check()
+
+                def commit(current):
+                    person_for(current, person_id)["story"] = result
+
+                store.update(project_id, commit)
+
+            jobs.start(project_id, "story", work)
+        return public_view(store.load(project_id))
+
+    @app.post("/api/projects/{project_id}/people/{person_id}/story/apply")
+    def apply_story(project_id: str, person_id: str, body: StoryApply, request: Request):
+        with store.lock:
+            project = project_for(project_id, request)
+            editable(project)
+            person = person_for(project, person_id)
+            story = current_story(project, person)
+            if not person["confirmed"] or not person["authorized"]:
+                raise HTTPException(409, "先核对人物和授权，再采用故事草稿。")
+            if not story or story["id"] != body.story_id:
+                raise HTTPException(409, "故事草稿已过期，请重新分析。")
+            if not body.title.strip() or not body.weekly_note.strip():
+                raise HTTPException(422, "标题和周记不能为空。")
+            if body.chapters is not None:
+                if [chapter.segment_id for chapter in body.chapters] != story["selected_ids"]:
+                    raise HTTPException(422, "章节必须与推荐片段一一对应，且保持相同顺序。")
+                if any(not c.heading.strip() or not c.caption.strip() for c in body.chapters):
+                    raise HTTPException(422, "章节标题与字幕不能为空。")
+                story["chapters"] = [chapter.model_dump() for chapter in body.chapters]
+            story.update(title=body.title.strip(), weekly_note=body.weekly_note.strip())
+            person.update(
+                note=body.weekly_note.strip(),
+                story_title=body.title.strip(),
+                applied_story_id=story["id"],
+                revision=person["revision"] + 1,
+            )
+            story["applied"] = True
+            store.save(project)
+        return public_view(project)
+
     @app.post("/api/projects/{project_id}/people/{person_id}/render")
     def render(project_id: str, person_id: str, body: RenderRequest, request: Request):
         with store.lock:
@@ -479,13 +604,30 @@ def create_app(data_root=None):
                 raise HTTPException(422, "包含重复、过期或不属于此人物的片段。")
             if sum(catalog[s]["duration"] for s in body.segment_ids) > 60:
                 raise HTTPException(422, "每份集锦最多 60 秒，请减少片段。")
+            if body.story_id:
+                story = current_story(project, person)
+                if (
+                    not story
+                    or story["id"] != body.story_id
+                    or person.get("applied_story_id") != body.story_id
+                    or set(body.segment_ids) != set(story["selected_ids"])
+                ):
+                    raise HTTPException(
+                        409, "故事草稿、选段或采用状态已改变，请重新采用或手动生成。"
+                    )
             person["revision"] += 1
             store.save(project)
             jobs.start(
                 project_id,
                 "render",
                 lambda p, check, progress: jobs.render(
-                    p, person_id, body.segment_ids, check, progress
+                    p,
+                    person_id,
+                    body.segment_ids,
+                    check,
+                    progress,
+                    body.preserve_audio,
+                    body.story_id,
                 ),
             )
         return public_view(store.load(project_id))

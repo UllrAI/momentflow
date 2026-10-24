@@ -45,3 +45,18 @@ export function latestExport(project, personId) {
     .filter((e) => e.person_id === personId && e.current)
     .at(-1);
 }
+
+export function initialSelection(project, personId, segments) {
+  const person = project.people.find((item) => item.id === personId);
+  const output = latestExport(project, personId);
+  const story = person?.story;
+  const recommended =
+    story?.current && story.applied && person.applied_story_id === story.id
+      ? story.selected_ids
+      : null;
+  return (
+    output?.segment_ids ||
+    recommended ||
+    defaultSelection(segments)
+  ).filter((id) => segments.some((segment) => segment.id === id));
+}

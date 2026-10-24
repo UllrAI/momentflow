@@ -29,7 +29,9 @@ import {
   X,
   AlertCircle,
 } from "lucide-react";
-import { api, defaultSelection, latestExport, seconds } from "./api";
+import { api, initialSelection, latestExport, seconds } from "./api";
+import { ModelSettings } from "./ModelSettings";
+import { StoryPanel } from "./StoryPanel";
 
 const scenes = {
   adventure: {
@@ -173,6 +175,7 @@ export function App() {
   const [source, setSource] = useState(null);
   const [interval, setIntervalValue] = useState(1);
   const [recipient, setRecipient] = useState(null);
+  const [preserveAudio, setPreserveAudio] = useState(true);
   const scene = scenes[mode] || scenes.kindergarten;
   const person = project?.people.find((p) => p.id === selected);
   const personFaces =
@@ -181,6 +184,8 @@ export function App() {
   const output =
     currentOutput &&
     (!person || note === person.note) &&
+    (currentOutput.preserve_audio === undefined ||
+      currentOutput.preserve_audio === preserveAudio) &&
     (!selections[selected] ||
       selections[selected].join(",") === currentOutput.segment_ids.join(","))
       ? currentOutput
@@ -273,8 +278,7 @@ export function App() {
           ...all,
           [selected]: all[selected]
             ? all[selected].filter((id) => data.some((s) => s.id === id))
-            : latestExport(project, selected)?.segment_ids ||
-              defaultSelection(data),
+            : initialSelection(project, selected, data),
         }));
       })
       .catch((e) => {
@@ -284,6 +288,9 @@ export function App() {
       alive = false;
     };
   }, [project?.id, selected, project?.analysis_version, person?.revision]);
+  useEffect(() => {
+    setPreserveAudio(currentOutput?.preserve_audio ?? true);
+  }, [selected, currentOutput?.id]);
   useEffect(() => {
     setNote(person?.note || "");
     setFaceSelections([]);
@@ -407,7 +414,19 @@ export function App() {
       update(
         await api(`/projects/${project.id}/people/${person.id}/render`, {
           method: "POST",
-          body: { segment_ids: selectedSegments },
+          body: {
+            segment_ids: selectedSegments,
+            preserve_audio: preserveAudio,
+            story_id:
+              person.story?.current &&
+              person.applied_story_id === person.story.id &&
+              selectedSegments.length === person.story.selected_ids.length &&
+              selectedSegments.every((id) =>
+                person.story.selected_ids.includes(id),
+              )
+                ? person.story.id
+                : null,
+          },
         }),
       );
     });
@@ -498,7 +517,9 @@ export function App() {
     <>
       {modal === "new" && (
         <Modal title="新建素材批次" close={() => !busy && setModal(null)}>
-          <p className="muted">照片、视频、人物特征和影片保存在当前电脑。</p>
+          <p className="muted">
+            照片、视频、人物特征和影片保存在当前电脑。故事分析仅在你确认后发送候选画面。
+          </p>
           <label>
             批次名称
             <input
@@ -539,7 +560,9 @@ export function App() {
       )}
       {modal === "upload" && (
         <Modal title="导入照片与视频" close={() => !busy && setModal(null)}>
-          <p className="muted">上传到本机处理服务，不会发送至云端识别平台。</p>
+          <p className="muted">
+            素材先保存到本机。人脸识别在本地运行；故事分析由你另行确认后发送候选画面。
+          </p>
           <label className="dropzone">
             <Upload size={30} />
             <strong>选择活动照片与视频</strong>
@@ -703,7 +726,7 @@ export function App() {
               checked={reviewed}
               onChange={(e) => setReviewed(e.target.checked)}
             />
-            我已检查人物身份、非目标人脸遮盖、所选片段、文字记录和接收范围，确认可以交付。
+            我已检查人物身份、非目标人脸遮盖、所选片段、章节字幕、周记、原声授权和接收范围，确认可以交付。
           </label>
           <div className="notice">
             <ShieldCheck size={18} />
@@ -784,7 +807,8 @@ export function App() {
             <>
               <p className="eyebrow">A LITTLE STORY, JUST FOR YOU</p>
               <h1>
-                {deliveredPerson.name}的{scene.output}
+                {deliveredOutput.story_title ||
+                  `${deliveredPerson.name}的${scene.output}`}
               </h1>
               <p className="muted">{project.title}</p>
               <video
@@ -815,7 +839,9 @@ export function App() {
                 <ArrowRight size={18} />
               </a>
               <p className="recipient-foot">
-                真实生成的 720p MP4 · 无声 · {seconds(deliveredOutput.duration)}
+                真实生成的 720p MP4 ·{" "}
+                {deliveredOutput.muted ? "无原声音轨" : "保留原声"} ·{" "}
+                {seconds(deliveredOutput.duration)}
                 <br />
                 本页为本机领取演示，暂不支持跨设备分享。
               </p>
@@ -905,9 +931,9 @@ export function App() {
           <ShieldCheck size={18} />
           <strong>识别与素材，留在本机。</strong>
           <p>
-            照片、视频和人物特征
+            人物识别与原声剪辑在本机进行。
             <br />
-            不发送给云端识别服务。
+            故事分析经确认后发送候选画面。
           </p>
           <small>MomentFlow / LOCAL STUDIO</small>
         </div>
@@ -925,7 +951,7 @@ export function App() {
           </div>
           <span className="local-tag">
             <i />
-            本地真实处理
+            本地工作空间
           </span>
         </header>
         <section className="page-heading">
@@ -1089,6 +1115,7 @@ export function App() {
                 <small>保留已导入素材，可以重试。</small>
               </div>
             )}
+            {tab === "settings" && <ModelSettings reportError={setError} />}
             {!project ? (
               <div className="welcome">
                 <div>
@@ -1464,6 +1491,23 @@ export function App() {
                                 </div>
                               </div>
                             )}
+                            <StoryPanel
+                              key={`${project.id}:${person.id}`}
+                              project={project}
+                              person={person}
+                              segments={segments}
+                              disabled={disabled}
+                              update={update}
+                              choose={(ids) =>
+                                setSelections((all) => ({
+                                  ...all,
+                                  [selected]: ids,
+                                }))
+                              }
+                              reportError={setError}
+                              setWorkspaceBusy={setBusy}
+                              settings={() => setTab("settings")}
+                            />
                             <div className="section-heading">
                               <h3>
                                 {mode === "kindergarten"
@@ -1589,6 +1633,20 @@ export function App() {
                                 {note.length}/500 · 会展示给{scene.receiver}
                               </small>
                             </label>
+                            <label className="check-row audio-option">
+                              <input
+                                type="checkbox"
+                                checked={preserveAudio}
+                                disabled={disabled}
+                                onChange={(event) =>
+                                  setPreserveAudio(event.target.checked)
+                                }
+                              />
+                              保留视频原声（照片段补静音）
+                            </label>
+                            <p className="hint">
+                              原声包含当时所有人的声音，交付前请检查对白与环境声的授权范围。
+                            </p>
                             <div className="production-controls">
                               <button
                                 className="primary"
@@ -1644,7 +1702,7 @@ export function App() {
                               <ShieldCheck size={17} />
                               <p>
                                 成片为 720p
-                                无声视频，直接使用原视频动态画面。逐帧遮盖检测到的非目标人脸；仍需人工复核，不能保证零漏检。
+                                MP4，使用原视频动态画面，可保留原声。逐帧遮盖检测到的非目标人脸；仍需人工复核，不能保证零漏检。
                               </p>
                             </div>
                           </>
@@ -1719,7 +1777,8 @@ export function App() {
                         "抽帧与人脸检测",
                         "特征提取与聚类",
                         "人工核对人物",
-                        "原片剪辑与遮盖",
+                        "Luna 分析与故事草稿",
+                        "原片剪辑与原声保留",
                         "审核与专属领取",
                       ].map((text, i) => (
                         <div key={text}>
@@ -1735,7 +1794,9 @@ export function App() {
                       </div>
                       <div>
                         <dt>成片引擎</dt>
-                        <dd>FFmpeg + 逐帧人脸检测 · 720p MP4 · 无声</dd>
+                        <dd>
+                          FFmpeg + 逐帧人脸检测 · 720p MP4 · 可保留源视频原声
+                        </dd>
                       </div>
                       <div>
                         <dt>存储位置</dt>
@@ -1759,7 +1820,7 @@ export function App() {
                       <div>
                         <dt>还未接入</dt>
                         <dd>
-                          监控实时流、多模态事件理解、自动成长评价、云端存储、真实账号体系和真实支付。
+                          监控实时流、原声语义分析、自动成长评价、云端存储、真实账号体系和真实支付。
                         </dd>
                       </div>
                     </dl>

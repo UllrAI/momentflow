@@ -129,6 +129,7 @@ def test_local_session_isolation_and_atomic_validation(tmp_path):
             headers=HEADERS,
         )
         assert bad.status_code == 422
+        assert str(tmp_path) not in bad.text
         assert client.get(f"/api/projects/{pid}").json()["media"] == []
         upload = client.post(
             f"/api/projects/{pid}/media",

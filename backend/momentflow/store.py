@@ -1,5 +1,6 @@
 """Atomic project persistence. Embeddings and source paths never leave this module's views."""
 
+import hashlib
 import json
 import os
 import threading
@@ -102,6 +103,22 @@ def export_current(project, export):
     return bool(person and export["version"] == revision(project, person))
 
 
+def story_signature(project, person):
+    value = [
+        project["analysis_version"],
+        project["mode"],
+        person["id"],
+        person["name"],
+        sorted(person["face_ids"]),
+    ]
+    return hashlib.sha256(json.dumps(value, ensure_ascii=False).encode()).hexdigest()
+
+
+def current_story(project, person):
+    story = person.get("story")
+    return story if story and story["input_signature"] == story_signature(project, person) else None
+
+
 def public_view(project):
     result = deepcopy(project)
     result.pop("owner", None)
@@ -117,6 +134,8 @@ def public_view(project):
         face.pop("crop_path", None)
         face["thumbnail"] = f"/api/projects/{project['id']}/faces/{face['id']}"
     for person in result["people"]:
+        if person.get("story"):
+            person["story"]["current"] = current_story(project, person) is not None
         person["face_count"] = sum(
             not face.get("reference") and face["id"] in person["face_ids"]
             for face in result["faces"]

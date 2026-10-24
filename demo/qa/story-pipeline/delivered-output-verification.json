@@ -1,0 +1,134 @@
+[
+  {
+    "file": "lin-xiaoman-story.mp4",
+    "sha256": "c63e57556ad779cacc49adf810f1ee80e5bc7e58eb1bba0c1389ee7c3c5bb98c",
+    "person": "林小满",
+    "story_title": "桌前的积木与涂色",
+    "weekly_note": "这份记录中，林小满在桌前摆弄彩色积木，也手持画笔在树叶图案画纸上涂色。",
+    "chapters": [
+      {
+        "segment_id": "d55008c3640b7233ed48",
+        "heading": "桌前摆弄积木",
+        "caption": "林小满坐在桌前，手靠近桌上的彩色积木。"
+      },
+      {
+        "segment_id": "317f6380f27efe587bfa",
+        "heading": "画纸上涂色",
+        "caption": "林小满手持画笔，在树叶图案画纸上涂色。"
+      }
+    ],
+    "original_audio": false,
+    "ffprobe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "codec_type": "video",
+          "width": 1280,
+          "height": 720,
+          "duration": "6.000000"
+        },
+        {
+          "codec_name": "aac",
+          "codec_type": "audio",
+          "sample_rate": "48000",
+          "channels": 2,
+          "duration": "6.000000"
+        }
+      ],
+      "format": {
+        "duration": "6.020996",
+        "size": "219088"
+      }
+    }
+  },
+  {
+    "file": "zhou-yuan-story.mp4",
+    "sha256": "e9225acaafffdc4a17a26371121be8e67701afed078ba2e0e64b438b83a07b3f",
+    "person": "周予安",
+    "story_title": "桌前的搭建与绘画",
+    "weekly_note": "这份记录中，周予安在桌前伸手接触积木，也手持画笔在树叶主题画纸上作画。",
+    "chapters": [
+      {
+        "segment_id": "2d5d8c30f961b89c2044",
+        "heading": "桌前搭积木",
+        "caption": "周予安坐在桌前，手伸向摆放着的积木块。"
+      },
+      {
+        "segment_id": "be36457bee4f65655801",
+        "heading": "画纸上的树叶",
+        "caption": "周予安手持画笔在树叶主题画纸上作画，桌上摆有调色盘。"
+      }
+    ],
+    "original_audio": false,
+    "ffprobe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "codec_type": "video",
+          "width": 1280,
+          "height": 720,
+          "duration": "6.000000"
+        },
+        {
+          "codec_name": "aac",
+          "codec_type": "audio",
+          "sample_rate": "48000",
+          "channels": 2,
+          "duration": "6.000000"
+        }
+      ],
+      "format": {
+        "duration": "6.020996",
+        "size": "219472"
+      }
+    }
+  },
+  {
+    "file": "chen-yinuo-story.mp4",
+    "sha256": "e23a433feddb53955a6aab8002693aa11eeef6450a0cd92fc5009ff5b4ad8c44",
+    "person": "陈一诺",
+    "story_title": "桌边活动记录",
+    "weekly_note": "这份记录中，陈一诺在桌边手持积木，也手持画笔为纸上的叶片图案涂画。",
+    "chapters": [
+      {
+        "segment_id": "8049c292bf66ed24222b",
+        "heading": "桌边搭积木",
+        "caption": "陈一诺手持积木，桌面上摆着多块积木。"
+      },
+      {
+        "segment_id": "45bfec144845aaf7e53c",
+        "heading": "绘画涂色",
+        "caption": "陈一诺手持画笔，在纸上的叶片图案处涂画。"
+      }
+    ],
+    "original_audio": false,
+    "ffprobe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "codec_type": "video",
+          "width": 1280,
+          "height": 720,
+          "duration": "6.000000"
+        },
+        {
+          "codec_name": "aac",
+          "codec_type": "audio",
+          "sample_rate": "48000",
+          "channels": 2,
+          "duration": "6.000000"
+        }
+      ],
+      "format": {
+        "duration": "6.020996",
+        "size": "218565"
+      }
+    }
+  }
+]

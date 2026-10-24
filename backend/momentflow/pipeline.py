@@ -80,7 +80,12 @@ class Jobs:
                 project_id, lambda p: p["job"].update(status="cancelled", stage="已取消，可重试")
             )
         except Exception as error:  # noqa: BLE001 - persist errors at the job boundary
-            message = str(error)[:500]
+            if isinstance(error, subprocess.CalledProcessError):
+                message = "媒体编解码失败，请检查源视频编码与音轨后重试。"
+            elif isinstance(error, subprocess.TimeoutExpired):
+                message = "媒体处理超时，请缩短片段后重试。"
+            else:
+                message = str(error).replace(str(self.store.root), "[本地数据目录]")[:500]
             self.store.update(
                 project_id,
                 lambda p: p["job"].update(status="failed", error=message, stage="处理失败，可重试"),
@@ -149,7 +154,9 @@ class Jobs:
         check()
         self.store.update(project["id"], commit)
 
-    def render(self, project, person_id, selected_ids, check, progress):
+    def render(
+        self, project, person_id, selected_ids, check, progress, preserve_audio=True, story_id=None
+    ):
         engine = self.get_engine()
         person = next(p for p in project["people"] if p["id"] == person_id)
         catalog = {s["id"]: s for s in segments_for(project, person)}
@@ -165,6 +172,12 @@ class Jobs:
             for f in project["faces"]
             if f["id"] not in person["face_ids"] and f.get("embedding")
         ]
+        story = person.get("story") if story_id else None
+        chapters = {c["segment_id"]: c for c in story["chapters"]} if story else {}
+        story_title = person.get("story_title", "") if story else ""
+        has_audio = preserve_audio and any(
+            media_by_id[s["media_id"]].get("has_audio", False) for s in segments
+        )
         export_id = str(uuid.uuid4())
         outdir = self.store.directory(project["id"]) / "exports"
         outdir.mkdir(exist_ok=True)
@@ -183,6 +196,10 @@ class Jobs:
                 media = media_by_id[segment["media_id"]]
                 frames = max(1, round(segment["duration"] * 12))
                 target = temp / f"{index:03}.mp4"
+                silent_target = temp / f"{index:03}-silent.mp4"
+                chapter = chapters.get(segment["id"])
+                caption = f"{chapter['heading']} · {chapter['caption']}" if chapter else ""
+                heading = f"{person['name']} · {story_title}" if story_title else footer
                 command = [
                     "ffmpeg",
                     "-y",
@@ -211,7 +228,7 @@ class Jobs:
                     "yuv420p",
                     "-movflags",
                     "+faststart",
-                    str(target),
+                    str(silent_target),
                 ]
                 error_path = temp / "ffmpeg.log"
                 cap = None
@@ -221,7 +238,7 @@ class Jobs:
                         if media["kind"] == "image":
                             raw = load_image(media["path"])
                             masked = mask_others(raw, engine, targets, competitors)
-                            still = compose(masked, footer, font)
+                            still = compose(masked, heading, font, caption)
                         else:
                             cap = cv2.VideoCapture(media["path"])
                         for frame_index in range(frames):
@@ -244,7 +261,7 @@ class Jobs:
                                     )
                                 # Re-detect on every exported frame; never reuse a stale face mask.
                                 masked = mask_others(raw, engine, targets, competitors)
-                                still = compose(masked, footer, font)
+                                still = compose(masked, heading, font, caption)
                             process.stdin.write(still.tobytes())
                             rendered += 1
                             if frame_index % 4 == 0:
@@ -263,6 +280,48 @@ class Jobs:
                             process.wait()
                         with suppress(Exception):
                             process.stdin.close()
+                check()
+                duration = frames / 12
+                audio_input = (
+                    ["-ss", str(segment["start"]), "-i", media["path"]]
+                    if preserve_audio and media.get("has_audio")
+                    else ["-f", "lavfi", "-i", "anullsrc=r=48000:cl=stereo"]
+                )
+                subprocess.run(
+                    [
+                        "ffmpeg",
+                        "-y",
+                        "-loglevel",
+                        "error",
+                        "-i",
+                        str(silent_target),
+                        *audio_input,
+                        "-map",
+                        "0:v:0",
+                        "-map",
+                        "1:a:0",
+                        "-c:v",
+                        "copy",
+                        "-af",
+                        f"atrim=duration={duration},asetpts=PTS-STARTPTS,aresample=48000:async=1:first_pts=0,apad",
+                        "-t",
+                        str(duration),
+                        "-c:a",
+                        "aac",
+                        "-b:a",
+                        "160k",
+                        "-ar",
+                        "48000",
+                        "-ac",
+                        "2",
+                        "-movflags",
+                        "+faststart",
+                        str(target),
+                    ],
+                    check=True,
+                    capture_output=True,
+                    timeout=45,
+                )
             check()
             concat = temp / "segments.txt"
             concat.write_text("\n".join(f"file '{index:03}.mp4'" for index in range(len(segments))))
@@ -279,8 +338,16 @@ class Jobs:
                     "0",
                     "-i",
                     str(concat),
-                    "-c",
+                    "-c:v",
                     "copy",
+                    "-c:a",
+                    "aac",
+                    "-b:a",
+                    "160k",
+                    "-af",
+                    "aresample=48000:async=1:first_pts=0",
+                    "-t",
+                    str(rendered / 12),
                     "-movflags",
                     "+faststart",
                     str(final),
@@ -301,7 +368,11 @@ class Jobs:
                 "height": 720,
                 "approved": False,
                 "delivered": False,
-                "muted": True,
+                "muted": not has_audio,
+                "preserve_audio": preserve_audio,
+                "story_id": story_id,
+                "story_title": story_title,
+                "chapters": [chapters[sid] for sid in selected_ids] if story else [],
                 "note": person["note"],
             }
             self.store.update(project["id"], lambda p: p["exports"].append(export))
@@ -349,15 +420,40 @@ def get_font(size):
     return ImageFont.load_default(size=size)
 
 
-def compose(frame, caption, font):
+def compose(frame, caption, font, chapter_caption=""):
     height, width = frame.shape[:2]
-    scale = min(1280 / width, 640 / height)
+    content_height, content_top = (530, 122) if chapter_caption else (640, 0)
+    scale = min(1280 / width, content_height / height)
     resized = cv2.resize(frame, (round(width * scale), round(height * scale)))
     result = np.full((720, 1280, 3), (239, 245, 246), dtype=np.uint8)
-    x, y = (1280 - resized.shape[1]) // 2, (640 - resized.shape[0]) // 2
+    x = (1280 - resized.shape[1]) // 2
+    y = content_top + (content_height - resized.shape[0]) // 2
     result[y : y + resized.shape[0], x : x + resized.shape[1]] = resized
     image = Image.fromarray(cv2.cvtColor(result, cv2.COLOR_BGR2RGB))
     draw = ImageDraw.Draw(image)
-    draw.text((32, 664), caption, fill="#214c3c", font=font)
+
+    if chapter_caption:
+        # Keep narrative text clear of native player controls, including on mobile.
+        size = 30
+        heading_font = get_font(size)
+        while draw.textlength(caption, font=heading_font) > 1216 and size > 18:
+            size -= 2
+            heading_font = get_font(size)
+        draw.text((32, 12), caption, fill="#214c3c", font=heading_font)
+        small = get_font(24)
+        lines, line = [], ""
+        for character in chapter_caption:
+            if line and draw.textlength(line + character, font=small) > 1216:
+                lines.append(line)
+                line = ""
+            line += character
+        if line:
+            lines.append(line)
+        for index, line in enumerate(lines[:2]):
+            draw.text((32, 55 + index * 30), line, fill="#466253", font=small)
+    else:
+        while caption and draw.textlength(caption, font=font) > 980:
+            caption = caption[:-1]
+        draw.text((32, 664), caption, fill="#214c3c", font=font)
     draw.text((1030, 670), "MomentFlow", fill="#628574", font=get_font(18))
     return cv2.cvtColor(np.asarray(image), cv2.COLOR_RGB2BGR)

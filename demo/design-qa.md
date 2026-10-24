@@ -1,53 +1,59 @@
-# MomentFlow · Real pipeline acceptance
+# MomentFlow v4 · 故事分析与原声验收
 
-Date: 2026-10-24. Local app: http://localhost:4173 . This report supersedes the [frontend-only demo report](../docs/archive/frontend-only-demo-qa.md).
+日期：2026-10-24。本地应用：http://localhost:4173 。此前的 [v3 验收记录](../docs/archive/real-pipeline-v3-qa.md) 保留为历史资料。
 
-## Scope and evidence
+## 实际交付
 
-Real local file import → YuNet detection → SFace features → conservative clustering → human identity/authorization review → source-time selection → actual MP4 encoding → review → delivery → browser download.
+在已有人脸识别流程上接入 OpenRouter / `openai/gpt-6-luna`，完成候选画面分析、重复判断、精彩片段选择、故事标题、逐段字幕、周记草稿、人工修改、编码、审核与下载。原声音轨按对应源时间剪辑，可关闭。
 
-| Surface | Evidence | State / viewport |
-|---|---|---|
-| Kindergarten teacher workbench | `qa/real-pipeline/kindergarten-complete.png` | Three fictional children, three generated/reviewed/delivered films, first selected; 1440×1024 |
-| Identity review | `qa/real-pipeline/kindergarten-review.png` | Actual model face crops and source times; 1440×1024 |
-| Mobile recipient | `qa/real-pipeline/parent-mobile.png` | Current delivered film, download visible; 390×844 |
-| Mobile teacher | `qa/real-pipeline/teacher-mobile.png` | Responsive workbench; 390×844 |
-| Real media library | `qa/real-pipeline/media-import.png` | Native chooser uploaded real webcam video, extracted photo, no-face forest photo; 1440×1024 |
-| Real video result | `qa/real-pipeline/real-motion-workbench.png` | Manually reviewed/merged groups from the licensed webcam example; 1440×1024 |
+用户通过本地设置页保存 Key。真实模型联调读取该配置发起请求，没有把 Key 复制到其他会话，也没有使用测试模型输出作为应用数据。最终一轮为三个人物分别完成视觉观察与周记生成两阶段请求，共六次实际模型请求；结果见 `qa/story-pipeline/openrouter-live-verification.json`。
 
-Visual direction: `../design/archive/kindergarten/concepts/concept-01.png` (1487×1058). The full source and browser implementation were viewed together in `qa/real-pipeline/comparison-kindergarten.jpg`, normalized to equal 1440×1024 viewports. The implementation retains the dark green teacher rail, warm workspace, person list, selected video and review hierarchy. Intentional differences are three actual inferred people, source face crops, processing controls and explicit review/delivery states instead of illustrative classroom counts. System Chinese fonts, spacing, selected states, face crop quality, video controls and first-screen actions were visually checked. Additional content below the fold contains source segments and the teacher note.
+三个人物各分析四个候选，保留积木与绘画两种活动，排除同一绘画照片的推近视频重复画面。样例仅有两种活动，因此实际生成六秒，不强行凑成十五秒。老师视角将匿名称谓替换为已核对姓名，采用选段与文字，再生成、审核、交付和通过浏览器下载三份独立 MP4。
 
-## End-to-end checks
+已在用户保存 Key 的本地会话中另存一份“幼儿园 · Luna 故事成片示例”完成批次。原有批次和编辑保持不变；此副本来自实际处理的虚构样例，不是新项目的预制聚类或推理兜底。
 
-- Kindergarten example imported two generated photos and one synthetic pan/zoom video. Three fictional reference profiles were enrolled, actual model inference produced three groups, and each group was manually confirmed. Each film was generated, played, approved, delivered and downloaded through the visible UI.
-- Three independent H.264 files are retained: `lin-xiaoman.mp4`, `zhou-yuan.mp4`, `chen-yinuo.mp4` in `qa/real-pipeline/`. Each is 1280×720 at 12 fps, 11.583333 seconds, silent. Actual decoded first frames are shown in `three-person-results.jpg`: each keeps its target and pixels the other detected faces.
-- Native file chooser imported the licensed real webcam video and photo, plus a no-face image. Real head turns caused conservative fragments; these were inspected and manually merged, without lowering the matching threshold. Actual source motion and photo insertion appear in the downloaded `real-motion.mp4` (1280×720, 12 fps, 10.416667 seconds, silent).
-- `media-verification.json` records all four delivered file hashes and ffprobe metadata. Fixtures, licenses, synthetic labels and image prompts are documented in `public/samples/README.md`. No precomputed groups or personal films are used by the app.
-- Server/browser restarts preserved projects, review states and current exports. Other local browser sessions cannot read the project. Public project data contains no embeddings or private source paths.
-- Mobile teacher and recipient pages measured document width 390 at a 390 px viewport. Recipient download is visible at y=617–670. No final horizontal page overflow. Browser console error/warning inspection returned an empty list.
+## 证据
 
-## Corrected findings
+| 证据 | 状态 / 尺寸 |
+|---|---|
+| `qa/story-pipeline/workbench-complete.png` | 三份故事影片均已交付，菜单没有左侧色条；1280×720 |
+| `qa/story-pipeline/luna-story-controls.png` | 真实 Luna 草稿、来源与编辑界面；1280×720 |
+| `qa/story-pipeline/luna-draft.png` | 最终教师页完整截图，包含章节与周记；1280 px 宽 |
+| `qa/story-pipeline/luna-story-mobile.png` | 有真实草稿的手机教师页；390×844 |
+| `qa/story-pipeline/parent-story-mobile.png` | 故事标题、实际影片、周记和下载；390×844 |
+| `qa/story-pipeline/chapters-decoded.jpg` | 从实际 MP4 的 1s / 4s 解码，证明不同活动、章节字幕和遮盖已编码入影片 |
+| `qa/story-pipeline/three-person-story-results.jpg` | 三份实际影片各自保留目标人物，遮盖其他检测到的人脸 |
+| `qa/story-pipeline/delivered-output-verification.json` | 三份已下载影片的 SHA-256、标题、周记、章节和 ffprobe 元数据 |
+| `qa/story-pipeline/audio-cut-verification.mp4` | 真实动态视频加合成验证音的源时间剪辑，非真实课堂录音 |
+| `qa/story-pipeline/audio-verification.json` | 原声片段顺序、照片静音、显式关闭原声和时间轴验证 |
 
-1. **[P1, fixed] Video end-frame decoding failed near the source tail.** Clamp reads to the last decodable source-frame time and round output frame counts to the export frame rate. Both ordinary and 2 fps sources now render through the last selected segment; regression tests verify actual motion.
-2. **[P1, fixed] JPG thumbnail creation could overwrite the original source filename.** Thumbnails now have a distinct `.thumb.jpg` suffix. Tests compare the original upload SHA-256 after analysis and rendering.
-3. **[P2, fixed] Newly visible reference profiles initialized an empty segment selection while analysis was still running.** Initialize selection only once candidate segments exist; frontend regression covers it.
-4. **[P2, fixed] Client quality counters interpreted stripped private embeddings as rejected faces.** Public data now exposes a non-sensitive usability flag. The real media library correctly shows zero unusable detected faces and preserves the no-face image separately.
-5. **[P2, fixed] Recipient video briefly used an enlarged face-crop poster.** Removed that poster; the loaded real output frame shows the film and its masking. Final mobile capture records the corrected result.
-6. **[P2, fixed] Regeneration could leave a previously delivered version actionable.** Every new render advances the person revision; server preview/approval/claim checks current content versions. Local note or selection edits hide old actions until regeneration.
+三份故事影片：`lin-xiaoman-story.mp4`、`zhou-yuan-story.mp4`、`chen-yinuo-story.mp4`，均为 1280×720、12 fps、H.264，视频流时长 6.0s。该轮推荐均为照片，所以没有原声内容。声音功能由独立的 10.4167s 动态视频测试验证，不把合成测试音伪装成课堂声音。
 
-No unresolved P0/P1/P2 finding remains in the stated local-demo scope.
+视觉方向继续沿用归档幼儿园概念。本次是功能扩展，保留已有列表、预览、绿色教师工作台和暖色表面。菜单选中态只用背景与文字颜色；检查到活动菜单的左边框为 0px、box-shadow 为 none。桌面检查为 1280px，手机教师页与领取页均测得文档宽度 390px，无横向页面溢出；手机领取按钮 y=617.6–670.6，可在首屏触达。
 
-## Automated verification
+## 修正的发现
 
-- 10 backend tests passed with actual installed models and FFmpeg, no skips or warnings. Coverage includes complete-link grouping, same-frame conflicts, ambiguity, time gaps, reference enrollment, original-file preservation, invalid-upload rollback, session isolation, persistence, split/merge, selected-person masking, cancellation, stale output rejection, review/delivery/download, real motion and low-frame-rate tail handling.
-- 2 client boundary tests passed (candidate selection and stale export handling).
-- 4 original Sites worker/package tests passed; protected hosting files remain intact.
-- Ruff, Prettier and production frontend build passed. No GitHub workflow or cloud deployment was added.
+1. **评分尺度：** 真实 Luna 初次把精彩度理解成 0–5 分。补充字段说明与 0–100 明确评分锚点后，实际返回 70–78 等符合约定的分数；没有在服务端静默放大分数。
+2. **推近画面重复：** 单纯像素距离不能可靠识别裁剪/缩放后的重复画面。增加模型 `duplicate_of`、跨批次代表画面，以及只能引用已分析较早候选的校验。真实联调排除两段重复绘画视频，保留两类活动。
+3. **字幕遮挡：** 底部字幕被原生播放器控件盖住。改为影片顶部故事标题和章节字幕；从实际成片解码检查，图像内容在其下方完整缩放展示。
+4. **音频时间戳：** 直接复制拼接 AAC 包产生非单调时间戳警告。最终合并统一重编码并校准音频时间轴。现在解码无警告，音视频流时长差小于 120ms。
+5. **草稿刷新恢复：** 已采用、尚未生成的推荐选段从持久化故事恢复；不回退到默认选段。修改章节与周记保留原始 `model_draft` 以便对照。
+6. **测试与运行数据隔离：** pytest 收集时的默认 ASGI app 使用独立临时目录，避免恢复逻辑触及用户正在运行的任务。
 
-## Limits
+## 验证结果
 
-The kindergarten children are fictional, and its video is synthesized from a photo. It does not establish real-child recognition accuracy. The separate real webcam video establishes actual video processing and output motion only. Real camera/child datasets, occlusion, crowds and camera variation need field validation.
+- 15 项后端测试通过，无跳过或 pytest 警告。实际使用 OpenCV 模型和 FFmpeg；模型协议测试明确使用隔离的传输替身，真实 Luna 请求另有上述独立记录。
+- 3 项客户端边界测试通过：时长/数量、失效影片、已采用故事的刷新恢复。
+- 4 项原有 Sites worker/打包测试通过；受保护的 hosting / worker 文件未修改。
+- Ruff、Prettier 和前端生产构建通过。字幕布局最终调整后，故事采用/编码/版本失效测试重新通过，并解码实际成片人工检查。
+- 音频测试使用明确合成的 440/880Hz 输入：后段在前为 880Hz，中间照片段为静音，前段在后为 440Hz；关闭原声后的最大幅值低于 0.001。检查解码 stderr 为空。
+- 缺 Key、身份未确认、缺外部处理确认、未知/重复片段、非法重复引用、截断响应、失效草稿等都有明确错误；失败不会替换旧记录。会话隔离与 Key 权限 0600、读取不回显也有覆盖。
+- 浏览器检查了真实草稿编辑、采用、生成、审核、交付、领取和三个实际下载文件。
 
-The exporter masks detected non-target/uncertain faces; missed detections can remain visible. Human review is required. The output is silent 720p/12 fps. Real-time surveillance, multimodal event ranking, automated developmental assessment, cloud processing, actual teacher/guardian accounts and cross-device delivery are not implemented. The parent view is a same-session local demonstration.
+## 边界
 
-Final result: passed for the documented local processing demo.
+幼儿园样例儿童是虚构的，视频由照片合成，不能证明真实儿童识别准确率。模型分析的是每段 1–3 帧，不理解原声音义，也不能保证覆盖所有瞬间。文字与遮盖仍需人工复核，来源引用不等于事实自动验证。原声可能包含其他人的声音，交付时需核对授权。
+
+当前仍为本地演示，没有实时监控、真实教师/监护账号或跨设备领取。没有新增 GitHub workflow 或执行云端部署。
+
+Final result: passed for the documented local story-processing demo, including live Luna verification.

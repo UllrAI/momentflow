@@ -211,7 +211,6 @@ a {
 .sidebar nav button.active {
   background: #f1f5df17;
   color: white;
-  box-shadow: inset 2px 0 #efbb4d;
 }
 .sidebar-bottom {
   margin: auto 25px 29px;
@@ -1471,7 +1470,6 @@ progress {
 .adventure .sidebar nav button.active {
   background: #deebdd;
   color: #35684c;
-  box-shadow: inset 2px 0 #3a8a6c;
 }
 .adventure .sidebar-bottom strong {
   color: #6f9275;
@@ -2204,4 +2202,162 @@ progress {
     animation: none !important;
     transition: none !important;
   }
+}
+
+/* Story authoring and owner-scoped model configuration. */
+.model-settings,
+.story-panel {
+  border: 1px solid var(--line);
+  background: #f8faf1;
+  border-radius: 8px;
+  padding: 22px;
+  margin: 24px 0;
+}
+.model-settings {
+  max-width: 900px;
+}
+.model-settings h2,
+.story-panel h3,
+.story-draft strong,
+.inline-success {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.model-settings p,
+.story-panel > p,
+.story-draft p {
+  font-size: 12px;
+  line-height: 1.9;
+  margin: 12px 0;
+}
+.model-settings label,
+.story-draft > label {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  font-size: 12px;
+  margin: 16px 0;
+}
+.model-settings input,
+.model-settings select,
+.story-draft input,
+.story-draft textarea {
+  width: 100%;
+}
+.model-settings small,
+.story-panel > small,
+.story-draft > small {
+  display: block;
+  font-size: 11px;
+  line-height: 1.9;
+  color: #7d8d73;
+  margin: 12px 0;
+}
+.model-actions,
+.story-options {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.story-options label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+}
+.story-panel .check-row,
+.audio-option {
+  margin: 17px 0 8px;
+  font-size: 11px;
+  line-height: 1.9;
+}
+.story-panel .section-heading {
+  margin: 0;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.story-panel .text-button {
+  background: transparent;
+  border: 0;
+  padding: 3px;
+  min-height: 30px;
+}
+.story-draft {
+  border-top: 1px solid var(--line);
+  padding-top: 20px;
+  margin-top: 20px;
+}
+.story-draft.stale {
+  opacity: 0.7;
+}
+.story-draft .section-heading > span {
+  font-size: 9px;
+  overflow-wrap: anywhere;
+}
+.story-chapters {
+  padding: 0 0 0 22px;
+  margin: 18px 0;
+}
+.story-chapters li {
+  font-size: 12px;
+  padding: 8px 0 15px 5px;
+}
+.story-chapters p {
+  margin: 6px 0;
+}
+.story-chapters small,
+.all-observations small {
+  color: #809076;
+  font-size: 10px;
+}
+.story-draft textarea {
+  min-height: 145px;
+  line-height: 1.9;
+  resize: vertical;
+}
+.story-panel details {
+  font-size: 11px;
+  line-height: 1.8;
+  margin-top: 10px;
+}
+.story-panel summary {
+  cursor: pointer;
+  color: #47715a;
+}
+.story-panel .all-observations {
+  border-top: 1px solid var(--line);
+  padding-top: 14px;
+}
+.inline-success {
+  color: #34765a;
+  font-size: 12px;
+}
+@media (max-width: 600px) {
+  .model-settings,
+  .story-panel {
+    padding: 15px;
+  }
+  .model-actions > button {
+    flex: 1;
+  }
+  .story-options {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .story-options select {
+    flex: 1;
+  }
+}
+
+.story-chapters label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 10px 0;
+  font-size: 11px;
+}
+.story-chapters textarea {
+  min-height: 76px;
 }

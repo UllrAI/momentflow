@@ -1,0 +1,62 @@
+{
+  "output": "audio-cut-verification.mp4",
+  "sha256": "500a1f56bc9e68c11647ce9e85845818fb56577ec6ef8a0e2a844d93b6001018",
+  "source": "OpenCV webcam example with synthesized 440/880 Hz verification tones",
+  "synthetic_audio": true,
+  "duration": 10.416666666666666,
+  "selected_source_order": [
+    {
+      "name": "audio.mp4",
+      "kind": "video",
+      "start": 5.0,
+      "end": 7.417,
+      "duration": 2.417
+    },
+    {
+      "name": "photo.jpg",
+      "kind": "image",
+      "start": 0.0,
+      "end": 3.0,
+      "duration": 3.0
+    },
+    {
+      "name": "audio.mp4",
+      "kind": "video",
+      "start": 0.0,
+      "end": 5.0,
+      "duration": 5.0
+    }
+  ],
+  "checks": [
+    "late source = 880 Hz",
+    "photo interval = digital silence",
+    "early source = 440 Hz",
+    "explicit mute = digital silence",
+    "audio/video duration difference < 120 ms",
+    "decoded audio contains no FFmpeg warnings"
+  ],
+  "ffprobe": {
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "codec_name": "h264",
+        "codec_type": "video",
+        "width": 1280,
+        "height": 720,
+        "duration": "10.416667"
+      },
+      {
+        "codec_name": "aac",
+        "codec_type": "audio",
+        "sample_rate": "48000",
+        "channels": 2,
+        "duration": "10.416000"
+      }
+    ],
+    "format": {
+      "duration": "10.437663",
+      "size": "531077"
+    }
+  }
+}
