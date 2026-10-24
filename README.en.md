@@ -12,7 +12,7 @@ This repository contains a working local application. Face processing and editin
 
 ### A bilingual story workspace
 
-![MomentFlow English workspace](demo/qa/product/overview-en.png)
+![MomentFlow English story examples](demo/qa/product/overview-en.jpg)
 
 Four steps guide the workflow: **Add media → Confirm people → Create a story → Review and share**. Separate tabs keep story editing, clip selection and person review manageable.
 

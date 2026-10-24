@@ -12,7 +12,7 @@ MomentFlow 从照片和视频中整理人物出镜记录，辅助挑选精彩片
 
 ### 双语故事工作台
 
-![MomentFlow 中文工作台](demo/qa/product/overview-zh.png)
+![MomentFlow 中文故事示例](demo/qa/product/overview-zh.jpg)
 
 四步完成制作：**导入素材 → 确认人物 → 整理故事 → 审核交付**。界面支持中文与英文切换，故事、选片和人物核对分区编辑。
 
