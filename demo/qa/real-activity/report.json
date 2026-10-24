@@ -1,0 +1,276 @@
+{
+  "kind": "real_openrouter_activity_verification",
+  "model": "openai/gpt-6-luna",
+  "prompt_version": "visual-story-v2",
+  "manual_final_selection": false,
+  "manual_final_text_edits": false,
+  "clustering": {
+    "detected_face_crops": 365,
+    "original_groups": 287,
+    "reviewed_merge_operations": 286,
+    "final_people": 1,
+    "note": "All detected face crops and representative groups were visually reviewed before using the existing merge API. This is not fully automatic identity grouping."
+  },
+  "analysis": {
+    "catalog": 106,
+    "analyzed": 36,
+    "selected": 8,
+    "duplicate_count": 4,
+    "unusable_count": 1,
+    "real_requests_final_run": 7,
+    "real_requests_including_baseline": 14,
+    "final_run_total_tokens": 61467,
+    "story_roles": {
+      "opening": 1,
+      "action": 6,
+      "result": 1
+    }
+  },
+  "baseline": {
+    "prompt_version": "visual-story-v1",
+    "duration": 26.016,
+    "selected": 8,
+    "title": "厨房里的食材准备",
+    "all_observation_roles": [
+      "action"
+    ],
+    "finding": "All 36 observations were marked action; the initial automatic selection omitted the visibly recorded tasting. The prompt/schema role definitions and role coverage ranking were updated, then the same complete input was analyzed again."
+  },
+  "output": {
+    "file": "../../public/examples/kitchen/story-zh.mp4",
+    "sha256": "7d6e97be1a4b27a9db9b3aa287a6be043b6ef99ba1dcd730eaff04678918f037",
+    "bytes": 2845900,
+    "duration": 27.0,
+    "preserve_audio": true,
+    "streams": [
+      {
+        "codec_type": "video",
+        "codec_name": "h264",
+        "duration": "27.000000",
+        "width": 1280,
+        "height": 720,
+        "r_frame_rate": "12/1"
+      },
+      {
+        "codec_type": "audio",
+        "codec_name": "aac",
+        "duration": "27.000000",
+        "r_frame_rate": "0/0",
+        "sample_rate": "48000",
+        "channels": 2
+      }
+    ],
+    "decode_warnings": [],
+    "minimum_source_audio_correlation": 0.997963,
+    "maximum_absolute_audio_offset_ms": 0.0
+  },
+  "chapters": [
+    {
+      "segment_id": "e50cc845d5942ac36ed9",
+      "heading": "打开面粉包装",
+      "caption": "TA在台面上打开面粉包装，旁边放着面粉罐和空碗。",
+      "activity": "烘焙备料",
+      "stage": "opening",
+      "score": 65,
+      "reason": "开包装的准备动作清晰可见，尚未看到将材料倒入碗中。",
+      "source_file": "kitchen-part-1.mp4",
+      "source_start": 27.578,
+      "source_end": 32.578,
+      "original_start": 27.578,
+      "original_end": 32.578,
+      "output_start": 0.0,
+      "output_end": 5.0,
+      "audio": {
+        "correlation": 0.999635,
+        "offset_ms": 0.0,
+        "rms_dbfs": -22.98,
+        "original_file_match": {
+          "correlation": 0.982634,
+          "offset_ms": 23.25
+        }
+      }
+    },
+    {
+      "segment_id": "753dee63de7e7544eb4d",
+      "heading": "揉压面团",
+      "caption": "TA在案板上用双手按压、揉动面团。",
+      "activity": "揉面",
+      "stage": "action",
+      "score": 78,
+      "reason": "面团及双手揉压的操作清楚可见，首帧目标不可见，后两帧可见。",
+      "source_file": "kitchen-part-1.mp4",
+      "source_start": 169.72,
+      "source_end": 172.722,
+      "original_start": 169.72,
+      "original_end": 172.722,
+      "output_start": 5.0,
+      "output_end": 8.0,
+      "audio": {
+        "correlation": 0.999982,
+        "offset_ms": 0.0,
+        "rms_dbfs": -23.88,
+        "original_file_match": {
+          "correlation": 0.98587,
+          "offset_ms": 23.25
+        }
+      }
+    },
+    {
+      "segment_id": "d1c6be483c3019e8d7a8",
+      "heading": "给面团撒粉",
+      "caption": "TA把粉状材料撒在面团和案板上。",
+      "activity": "撒粉",
+      "stage": "action",
+      "score": 76,
+      "reason": "撒粉动作及粉末落在面团和案板上的状态清楚可见。",
+      "source_file": "kitchen-part-1.mp4",
+      "source_start": 194.745,
+      "source_end": 199.745,
+      "original_start": 194.745,
+      "original_end": 199.745,
+      "output_start": 8.0,
+      "output_end": 13.0,
+      "audio": {
+        "correlation": 0.997963,
+        "offset_ms": 0.0,
+        "rms_dbfs": -22.76,
+        "original_file_match": {
+          "correlation": 0.994504,
+          "offset_ms": 23.25
+        }
+      }
+    },
+    {
+      "segment_id": "0fa123a775b8266a6aa0",
+      "heading": "拉伸面团",
+      "caption": "TA双手握住长形面团，向两侧拉伸。",
+      "activity": "拉伸面团",
+      "stage": "action",
+      "score": 77,
+      "reason": "面团形状及双手向两侧拉伸的操作清楚可见。",
+      "source_file": "kitchen-part-1.mp4",
+      "source_start": 238.789,
+      "source_end": 239.789,
+      "original_start": 238.789,
+      "original_end": 239.789,
+      "output_start": 13.0,
+      "output_end": 14.0,
+      "audio": {
+        "correlation": 0.999613,
+        "offset_ms": 0.0,
+        "rms_dbfs": -19.38,
+        "original_file_match": {
+          "correlation": 0.974422,
+          "offset_ms": 23.25
+        }
+      }
+    },
+    {
+      "segment_id": "8e7638aab264a9f16889",
+      "heading": "切配绿色蔬菜",
+      "caption": "TA在砧板上切绿色蔬菜，旁边放着切开的蔬菜块。",
+      "activity": "切菜",
+      "stage": "action",
+      "score": 77,
+      "reason": "刀具、砧板和切菜动作清楚可见。",
+      "source_file": "kitchen-part-2.mp4",
+      "source_start": 62.608,
+      "source_end": 67.608,
+      "original_start": 302.608,
+      "original_end": 307.608,
+      "output_start": 14.0,
+      "output_end": 19.0,
+      "audio": {
+        "correlation": 0.999585,
+        "offset_ms": 0.0,
+        "rms_dbfs": -20.82,
+        "original_file_match": {
+          "correlation": 0.956252,
+          "offset_ms": -3.5
+        }
+      }
+    },
+    {
+      "segment_id": "72f1ea0379a1d54e2c71",
+      "heading": "将蔬菜倒入锅中",
+      "caption": "TA倾斜碗，把蔬菜倒入炉灶上的锅中。",
+      "activity": "倒入蔬菜",
+      "stage": "action",
+      "score": 82,
+      "reason": "倒入锅中的动作和蔬菜落入锅内的变化清晰可见。",
+      "source_file": "kitchen-part-3.mp4",
+      "source_start": 11.562,
+      "source_end": 12.562,
+      "original_start": 491.562,
+      "original_end": 492.562,
+      "output_start": 19.0,
+      "output_end": 20.0,
+      "audio": {
+        "correlation": 0.998332,
+        "offset_ms": 0.0,
+        "rms_dbfs": -35.45,
+        "original_file_match": {
+          "correlation": 0.994634,
+          "offset_ms": -9.875
+        }
+      }
+    },
+    {
+      "segment_id": "c3a5c5607cf006088357",
+      "heading": "将意面倒入锅中",
+      "caption": "TA倾斜金属滤盆，将意面倒入锅中。",
+      "activity": "倒入意面",
+      "stage": "action",
+      "score": 81,
+      "reason": "滤盆倾斜，意面落入锅中的过程清楚可见。",
+      "source_file": "kitchen-part-3.mp4",
+      "source_start": 153.704,
+      "source_end": 157.707,
+      "original_start": 633.704,
+      "original_end": 637.707,
+      "output_start": 20.0,
+      "output_end": 24.0,
+      "audio": {
+        "correlation": 0.998943,
+        "offset_ms": 0.0,
+        "rms_dbfs": -29.63,
+        "original_file_match": {
+          "correlation": 0.994823,
+          "offset_ms": -9.875
+        }
+      }
+    },
+    {
+      "segment_id": "b861a5a27500e0543aff",
+      "heading": "用勺品尝食物",
+      "caption": "TA手持碗和勺子，将勺中的食物送入口中。",
+      "activity": "品尝食物",
+      "stage": "result",
+      "score": 76,
+      "reason": "将勺子送入口中的品尝动作清楚可见。",
+      "source_file": "kitchen-part-3.mp4",
+      "source_start": 181.722,
+      "source_end": 184.734,
+      "original_start": 661.722,
+      "original_end": 664.734,
+      "output_start": 24.0,
+      "output_end": 27.0,
+      "audio": {
+        "correlation": 0.999787,
+        "offset_ms": 0.0,
+        "rms_dbfs": -24.61,
+        "original_file_match": {
+          "correlation": 0.99925,
+          "offset_ms": -9.875
+        }
+      }
+    }
+  ],
+  "limits": [
+    "The face clusters required manual review and merging; 287 groups were not 287 real people.",
+    "The model sees sampled images, not video motion or speech. Some candidate observations can still misdescribe objects.",
+    "Only target face observations produce candidate windows. Hand-only work and face-occluded intervals may be missing.",
+    "Several selected clips are short; source speech can start or end in the middle of a sentence.",
+    "One real adult demonstration does not measure multi-person or kindergarten accuracy."
+  ]
+}

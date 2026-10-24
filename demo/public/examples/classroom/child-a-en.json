@@ -1,0 +1,84 @@
+{
+  "id": "ddd9e8b8-282f-4ee7-842f-40d5d49d3493",
+  "person_id": "3004408e-30b0-4854-b450-fcf3d0e4f448",
+  "input_signature": "b07ecc0340406077034306f4623522e0da8528d3fe6f3eebfcf8cf11645c629d",
+  "created_at": "2026-10-24T13:49:08.017298+00:00",
+  "model_draft": {
+    "title": "A Moment of Prone Play",
+    "weekly_note": "In this record, they lie on their stomach, propped up on their arms, with their legs extended behind them.",
+    "chapters": [
+      {
+        "segment_id": "7d175ff1500d265e3719",
+        "heading": "Prone Play",
+        "caption": "They lie on their stomach, supported by their arms."
+      }
+    ]
+  },
+  "model": "openai/gpt-6-luna",
+  "provider": "OpenRouter",
+  "budget": 30,
+  "candidate_count": 1,
+  "total_candidates": 1,
+  "selected_ids": [
+    "7d175ff1500d265e3719"
+  ],
+  "observations": [
+    {
+      "segment_id": "7d175ff1500d265e3719",
+      "usable": true,
+      "duplicate_of": null,
+      "title": "Lying on the floor",
+      "activity": "Prone play",
+      "observation": "They lie on their stomach, propped up on their arms, with legs extended behind them. Their pose appears unchanged across the sampled frames.",
+      "stage": "action",
+      "score": 40,
+      "reason": "The target is clearly visible, but the sampled frames show a repeated pose with no distinct action change.",
+      "evidence_frames": [
+        1,
+        2,
+        3
+      ]
+    }
+  ],
+  "title": "A Moment of Prone Play",
+  "weekly_note": "In this record, they lie on their stomach, propped up on their arms, with their legs extended behind them.",
+  "chapters": [
+    {
+      "segment_id": "7d175ff1500d265e3719",
+      "heading": "Prone Play",
+      "caption": "They lie on their stomach, supported by their arms."
+    }
+  ],
+  "evidence": {
+    "7d175ff1500d265e3719": {
+      "times": [
+        32.707,
+        34.309,
+        35.911
+      ],
+      "target_visible": [
+        true,
+        true,
+        true
+      ],
+      "sha256": "3cdbfa9517ae490692b4c7c2ac6ddcceb97ac2b11dd4977847fd4f5623496391"
+    }
+  },
+  "usage": [
+    {
+      "prompt_tokens": 2079,
+      "completion_tokens": 292,
+      "total_tokens": 2371
+    },
+    {
+      "prompt_tokens": 930,
+      "completion_tokens": 85,
+      "total_tokens": 1015
+    }
+  ],
+  "applied": false,
+  "method": "sampled_visual_frames",
+  "prompt_version": "visual-story-v2",
+  "locale": "en",
+  "current": true
+}

@@ -9,7 +9,7 @@ import subprocess
 import uuid
 from contextlib import asynccontextmanager
 from pathlib import Path
-from typing import Annotated
+from typing import Annotated, Literal
 
 import cv2
 from fastapi import FastAPI, File, Form, HTTPException, Request, Response, UploadFile
@@ -60,6 +60,7 @@ class ModelConfig(BaseModel):
 
 
 class StoryRequest(BaseModel):
+    locale: Literal["zh", "en"] = "zh"
     consent: bool = False
     duration: int = Field(default=30, ge=5, le=60)
 
@@ -335,6 +336,8 @@ def create_app(data_root=None):
         with store.lock, ExitStack() as stack:
             project = project_for(project_id, request)
             editable(project)
+            project["practice_media"] = True
+            store.save(project)
             if project["mode"] == "kindergarten" and not project["people"]:
                 crops = store.directory(project_id) / "crops"
                 crops.mkdir(exist_ok=True)
@@ -547,7 +550,14 @@ def create_app(data_root=None):
                 from .story import analyze_story
 
                 result = analyze_story(
-                    snapshot, person_id, config, jobs.get_engine(), body.duration, check, progress
+                    snapshot,
+                    person_id,
+                    config,
+                    jobs.get_engine(),
+                    body.duration,
+                    check,
+                    progress,
+                    locale=body.locale,
                 )
                 check()
 

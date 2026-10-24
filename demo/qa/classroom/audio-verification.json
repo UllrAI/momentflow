@@ -1,0 +1,178 @@
+[
+  {
+    "person": "educator",
+    "locale": "zh",
+    "file": "/examples/classroom/educator-zh.mp4",
+    "duration": 7.5,
+    "sha256": "bb89bad4e9233bcbcc752007e30d8481f4d435b2b593d0b552fadbbb26549ed6",
+    "decode_warnings": [],
+    "source_audio_matches": [
+      {
+        "heading": "怀抱婴儿",
+        "correlation": 0.999591,
+        "offset_ms": 0.0
+      },
+      {
+        "heading": "用玩具逗婴儿",
+        "correlation": 0.99933,
+        "offset_ms": 0.0
+      }
+    ],
+    "comparison_source": "uploaded_input"
+  },
+  {
+    "person": "educator",
+    "locale": "en",
+    "file": "/examples/classroom/educator-en.mp4",
+    "duration": 7.5,
+    "sha256": "d8132c40f9dc500e55518eb9fc27b82800c3b29663837b2e4fe5b1f384a6fad0",
+    "decode_warnings": [],
+    "source_audio_matches": [
+      {
+        "heading": "Holding a Baby",
+        "correlation": 0.999591,
+        "offset_ms": 0.0
+      },
+      {
+        "heading": "Reaching for a Toy",
+        "correlation": 0.99933,
+        "offset_ms": 0.0
+      }
+    ],
+    "comparison_source": "uploaded_input"
+  },
+  {
+    "person": "child-a",
+    "locale": "zh",
+    "file": "/examples/classroom/child-a-zh.mp4",
+    "duration": 4.0,
+    "sha256": "490398dfe83c21b9b7df04e7cdb3675050e489370743a76be4c89e9dcf353bf2",
+    "decode_warnings": [],
+    "source_audio_matches": [
+      {
+        "heading": "双手撑地",
+        "correlation": 0.999547,
+        "offset_ms": 0.0
+      }
+    ],
+    "comparison_source": "uploaded_input"
+  },
+  {
+    "person": "child-a",
+    "locale": "en",
+    "file": "/examples/classroom/child-a-en.mp4",
+    "duration": 4.0,
+    "sha256": "349c9f60917e5ef0851f04c66b38f20215d27068514e4ff65e312f5cc68786d7",
+    "decode_warnings": [],
+    "source_audio_matches": [
+      {
+        "heading": "Prone Play",
+        "correlation": 0.999547,
+        "offset_ms": 0.0
+      }
+    ],
+    "comparison_source": "uploaded_input"
+  },
+  {
+    "person": "presenter",
+    "locale": "zh",
+    "file": "/examples/kitchen/story-zh.mp4",
+    "duration": 27,
+    "sha256": "7d6e97be1a4b27a9db9b3aa287a6be043b6ef99ba1dcd730eaff04678918f037",
+    "decode_warnings": [],
+    "source_audio_matches": [
+      {
+        "heading": "打开面粉包装",
+        "correlation": 0.987518,
+        "offset_ms": -20.25
+      },
+      {
+        "heading": "揉压面团",
+        "correlation": 0.991547,
+        "offset_ms": -20.25
+      },
+      {
+        "heading": "给面团撒粉",
+        "correlation": 0.997667,
+        "offset_ms": -20.25
+      },
+      {
+        "heading": "拉伸面团",
+        "correlation": 0.983905,
+        "offset_ms": -20.125
+      },
+      {
+        "heading": "切配绿色蔬菜",
+        "correlation": 0.935534,
+        "offset_ms": 6.5
+      },
+      {
+        "heading": "将蔬菜倒入锅中",
+        "correlation": 0.984666,
+        "offset_ms": 12.875
+      },
+      {
+        "heading": "将意面倒入锅中",
+        "correlation": 0.991599,
+        "offset_ms": 12.875
+      },
+      {
+        "heading": "用勺品尝食物",
+        "correlation": 0.999026,
+        "offset_ms": 12.875
+      }
+    ],
+    "comparison_source": "separately_transcoded_viewing_copy; exact-input validation is in qa/real-activity/report.json"
+  },
+  {
+    "person": "presenter",
+    "locale": "en",
+    "file": "/examples/kitchen/story-en.mp4",
+    "duration": 27,
+    "sha256": "f1b4dc9eea618cad9df896259c2da1cc748dacee2818800f389b3d78f36b9fa1",
+    "decode_warnings": [],
+    "source_audio_matches": [
+      {
+        "heading": "Opening the flour",
+        "correlation": 0.987518,
+        "offset_ms": -20.25
+      },
+      {
+        "heading": "Kneading dough",
+        "correlation": 0.991547,
+        "offset_ms": -20.25
+      },
+      {
+        "heading": "Flouring the dough",
+        "correlation": 0.997667,
+        "offset_ms": -20.25
+      },
+      {
+        "heading": "Stretching dough",
+        "correlation": 0.983905,
+        "offset_ms": -20.125
+      },
+      {
+        "heading": "Chopping greens",
+        "correlation": 0.935534,
+        "offset_ms": 6.5
+      },
+      {
+        "heading": "Adding greens",
+        "correlation": 0.984666,
+        "offset_ms": 12.875
+      },
+      {
+        "heading": "Adding pasta",
+        "correlation": 0.991599,
+        "offset_ms": 12.875
+      },
+      {
+        "heading": "Tasting the food",
+        "correlation": 0.999026,
+        "offset_ms": 12.875
+      }
+    ],
+    "comparison_source": "separately_transcoded_viewing_copy; exact-input validation is in qa/real-activity/report.json"
+  }
+]

@@ -1,0 +1,124 @@
+{
+  "id": "9aa83eb9-b57c-4f5c-b5f0-b78a9a4458f3",
+  "person_id": "d09af6e7-2dea-490b-b358-5c117f6e52dd",
+  "input_signature": "ebf491d6b405a881ca4f76fa933e1ff324472a1d2910aee439430658b81e3118",
+  "created_at": "2026-10-24T13:54:20.087032+00:00",
+  "model_draft": {
+    "title": "A Moment with a Baby",
+    "weekly_note": "This record shows them holding a baby across their lap and reaching toward a colorful toy beside a baby on a mat.",
+    "chapters": [
+      {
+        "segment_id": "159ffc8df99380101837",
+        "heading": "Holding a Baby",
+        "caption": "They hold a baby across their lap and look down."
+      },
+      {
+        "segment_id": "3e716a441c30f592c75e",
+        "heading": "Reaching for a Toy",
+        "caption": "They reach toward a colorful toy beside a baby on a mat."
+      }
+    ]
+  },
+  "model": "openai/gpt-6-luna",
+  "provider": "OpenRouter",
+  "budget": 30,
+  "candidate_count": 2,
+  "total_candidates": 2,
+  "selected_ids": [
+    "159ffc8df99380101837",
+    "3e716a441c30f592c75e"
+  ],
+  "observations": [
+    {
+      "segment_id": "159ffc8df99380101837",
+      "usable": true,
+      "duplicate_of": null,
+      "title": "Holding a baby",
+      "activity": "Holding baby",
+      "observation": "They hold a baby across their lap and look down toward them.",
+      "stage": "action",
+      "score": 70,
+      "reason": "The interaction is clearly visible, though the sampled frames show a similar pose.",
+      "evidence_frames": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "segment_id": "3e716a441c30f592c75e",
+      "usable": true,
+      "duplicate_of": null,
+      "title": "Reaching toward a toy",
+      "activity": "Playing with toys",
+      "observation": "They kneel beside a baby lying on a mat and reach toward a colorful toy near the baby.",
+      "stage": "action",
+      "score": 70,
+      "reason": "The target and their interaction with the toy are clearly visible.",
+      "evidence_frames": [
+        1,
+        2,
+        3
+      ]
+    }
+  ],
+  "title": "A Moment with a Baby",
+  "weekly_note": "This record shows them holding a baby across their lap and reaching toward a colorful toy beside a baby on a mat.",
+  "chapters": [
+    {
+      "segment_id": "159ffc8df99380101837",
+      "heading": "Holding a Baby",
+      "caption": "They hold a baby across their lap and look down."
+    },
+    {
+      "segment_id": "3e716a441c30f592c75e",
+      "heading": "Reaching for a Toy",
+      "caption": "They reach toward a colorful toy beside a baby on a mat."
+    }
+  ],
+  "evidence": {
+    "159ffc8df99380101837": {
+      "times": [
+        28.253,
+        30.055,
+        31.857
+      ],
+      "target_visible": [
+        true,
+        true,
+        true
+      ],
+      "sha256": "4de32a0746942bef7561b0d0c4b653a1cb63c2a8a3bdb4e434dbe1e00676090d"
+    },
+    "3e716a441c30f592c75e": {
+      "times": [
+        49.625,
+        50.826,
+        52.027
+      ],
+      "target_visible": [
+        true,
+        true,
+        true
+      ],
+      "sha256": "b6a51f94d77118af741bb3b4d0d27603a1cf30b43d0bfbdd6c42430e8e06b10f"
+    }
+  },
+  "usage": [
+    {
+      "prompt_tokens": 2748,
+      "completion_tokens": 323,
+      "total_tokens": 3071
+    },
+    {
+      "prompt_tokens": 1018,
+      "completion_tokens": 120,
+      "total_tokens": 1138
+    }
+  ],
+  "applied": false,
+  "method": "sampled_visual_frames",
+  "prompt_version": "visual-story-v2",
+  "locale": "en",
+  "current": true
+}

@@ -1,0 +1,137 @@
+{
+  "finding": "AAC clip padding accumulated across the edit before the PCM concat fix.",
+  "output": {
+    "file": "kitchen-story.mp4",
+    "sha256": "7328589fea7840413416adf2ea3e57d7785d78027aa343ae35b1f6cdb07747fd",
+    "bytes": 2848548,
+    "duration": 27.0,
+    "preserve_audio": true,
+    "streams": [
+      {
+        "codec_type": "video",
+        "codec_name": "h264",
+        "duration": "27.000000",
+        "width": 1280,
+        "height": 720,
+        "r_frame_rate": "12/1"
+      },
+      {
+        "codec_type": "audio",
+        "codec_name": "aac",
+        "duration": "27.000000",
+        "r_frame_rate": "0/0",
+        "sample_rate": "48000",
+        "channels": 2
+      }
+    ],
+    "decode_warnings": [],
+    "minimum_source_audio_correlation": 0.957185,
+    "maximum_absolute_audio_offset_ms": 85.375
+  },
+  "chapters": [
+    {
+      "heading": "打开面粉包装",
+      "output_start": 0.0,
+      "audio": {
+        "correlation": 0.968363,
+        "offset_ms": 21.375,
+        "rms_dbfs": -22.88,
+        "original_file_match": {
+          "correlation": 0.965681,
+          "offset_ms": 44.5
+        }
+      }
+    },
+    {
+      "heading": "揉压面团",
+      "output_start": 5.0,
+      "audio": {
+        "correlation": 0.973061,
+        "offset_ms": 34.625,
+        "rms_dbfs": -23.89,
+        "original_file_match": {
+          "correlation": 0.997823,
+          "offset_ms": 57.875
+        }
+      }
+    },
+    {
+      "heading": "给面团撒粉",
+      "output_start": 8.0,
+      "audio": {
+        "correlation": 0.957185,
+        "offset_ms": 42.625,
+        "rms_dbfs": -22.77,
+        "original_file_match": {
+          "correlation": 0.991815,
+          "offset_ms": 65.875
+        }
+      }
+    },
+    {
+      "heading": "拉伸面团",
+      "output_start": 13.0,
+      "audio": {
+        "correlation": 0.999703,
+        "offset_ms": 56.0,
+        "rms_dbfs": -19.39,
+        "original_file_match": {
+          "correlation": 0.975121,
+          "offset_ms": 79.25
+        }
+      }
+    },
+    {
+      "heading": "切配绿色蔬菜",
+      "output_start": 14.0,
+      "audio": {
+        "correlation": 0.974498,
+        "offset_ms": 58.625,
+        "rms_dbfs": -20.81,
+        "original_file_match": {
+          "correlation": 0.977412,
+          "offset_ms": 55.25
+        }
+      }
+    },
+    {
+      "heading": "将蔬菜倒入锅中",
+      "output_start": 19.0,
+      "audio": {
+        "correlation": 0.999435,
+        "offset_ms": 72.0,
+        "rms_dbfs": -37.66,
+        "original_file_match": {
+          "correlation": 0.997504,
+          "offset_ms": 62.125
+        }
+      }
+    },
+    {
+      "heading": "将意面倒入锅中",
+      "output_start": 20.0,
+      "audio": {
+        "correlation": 0.970301,
+        "offset_ms": 74.625,
+        "rms_dbfs": -29.64,
+        "original_file_match": {
+          "correlation": 0.955873,
+          "offset_ms": 64.75
+        }
+      }
+    },
+    {
+      "heading": "用勺品尝食物",
+      "output_start": 24.0,
+      "audio": {
+        "correlation": 0.997458,
+        "offset_ms": 85.375,
+        "rms_dbfs": -24.62,
+        "original_file_match": {
+          "correlation": 0.998347,
+          "offset_ms": 75.5
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,104 @@
+{
+  "source_title": "Cooking with Laura Homemade Pasta",
+  "creator": "Northampton Community Television",
+  "presenter_credit": "Laura Alpern",
+  "editor_credit": "Julia Alpern",
+  "source_page": "https://commons.wikimedia.org/wiki/File:Cooking_with_Laura_Homemade_Pasta.webm",
+  "download_url": "https://upload.wikimedia.org/wikipedia/commons/d/d7/Cooking_with_Laura_Homemade_Pasta.webm",
+  "license": "CC BY 3.0",
+  "license_url": "https://creativecommons.org/licenses/by/3.0/",
+  "source_duration": 669.5500000000001,
+  "source_sha256": "dc2830bf5ac94dc7ba7d723d4375eb419849e724162185099b5acadcef786dc4",
+  "source_bytes": 151942357,
+  "processing": "The complete recording is transcoded to H.264/AAC and split into three contiguous parts at 240 and 480 seconds. No scene selection, added music, TTS, or synthesized sound in the input. Original full download and processing inputs stay in ignored local storage. The output is edited and captioned by MomentFlow; no endorsement is implied.",
+  "parts": [
+    {
+      "file": "kitchen-part-1.mp4",
+      "original_start_seconds": 0,
+      "sha256": "c6bba797d969fa591e045a616e6ac06efc12bafa220c038cfc8f9089f66cbf25",
+      "bytes": 50346762,
+      "duration": 240.026424,
+      "video": [
+        {
+          "codec_name": "h264",
+          "width": 1280,
+          "height": 720,
+          "r_frame_rate": "30000/1001",
+          "duration": "240.006433"
+        }
+      ],
+      "audio": [
+        {
+          "codec_name": "aac",
+          "sample_rate": "44100",
+          "channels": 2,
+          "duration": "239.978231"
+        }
+      ]
+    },
+    {
+      "file": "kitchen-part-2.mp4",
+      "original_start_seconds": 240,
+      "sha256": "e7ea5bea82818c0c72300e037a47ddcde65667440ce60799b526b1657cc92d8e",
+      "bytes": 46491267,
+      "duration": 240.006433,
+      "video": [
+        {
+          "codec_name": "h264",
+          "width": 1280,
+          "height": 720,
+          "r_frame_rate": "30000/1001",
+          "duration": "240.006433"
+        }
+      ],
+      "audio": [
+        {
+          "codec_name": "aac",
+          "sample_rate": "44100",
+          "channels": 2,
+          "duration": "239.952993"
+        }
+      ]
+    },
+    {
+      "file": "kitchen-part-3.mp4",
+      "original_start_seconds": 480,
+      "sha256": "79a832a1cc3af87a43a9d3399c9c8bb5ab3be5cda944576bdb2257f38abe73a0",
+      "bytes": 43085836,
+      "duration": 189.552993,
+      "video": [
+        {
+          "codec_name": "h264",
+          "width": 1280,
+          "height": 720,
+          "r_frame_rate": "30000/1001",
+          "duration": "189.522667"
+        }
+      ],
+      "audio": [
+        {
+          "codec_name": "aac",
+          "sample_rate": "44100",
+          "channels": 2,
+          "duration": "189.552993"
+        }
+      ]
+    }
+  ],
+  "rejected_sources": [
+    {
+      "source_page": "https://commons.wikimedia.org/wiki/File:Kettlebell_juggling_flow_by_Taco_Fleur.webm",
+      "reason": "Decoded all-zero audio despite an audio stream; not used."
+    },
+    {
+      "source_page": "https://commons.wikimedia.org/wiki/File:Pottery_01.webm",
+      "reason": "Decoded all-zero audio despite an audio stream; not used."
+    }
+  ],
+  "bundled_viewing_copy": {
+    "path": "demo/public/examples/kitchen/source.mp4",
+    "sha256": "71c87395f7a2f8291f20bb22ca4f38e0321e8083d2a920178b00ff91a6a8c4a1",
+    "bytes": 31768496,
+    "changes": "Full continuous 669.55-second source transcoded to 640px-wide H.264 CRF29 / AAC160k for reliable browser playback. Analysis used the original documented three consecutive parts."
+  }
+}

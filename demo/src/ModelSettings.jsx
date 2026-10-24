@@ -1,7 +1,7 @@
+import { t } from "./i18n";
 import { useEffect, useState } from "react";
 import { CheckCircle2, LoaderCircle, Plug, ShieldCheck } from "lucide-react";
 import { api } from "./api";
-
 export function ModelSettings({ reportError }) {
   const [config, setConfig] = useState(null);
   const [model, setModel] = useState("openai/gpt-6-luna");
@@ -24,7 +24,15 @@ export function ModelSettings({ reportError }) {
         method: "PUT",
         body: {
           model,
-          ...(remove ? { api_key: "" } : key ? { api_key: key } : {}),
+          ...(remove
+            ? {
+                api_key: "",
+              }
+            : key
+              ? {
+                  api_key: key,
+                }
+              : {}),
         },
       });
       setConfig(data);
@@ -42,7 +50,9 @@ export function ModelSettings({ reportError }) {
     setBusy(true);
     setMessage("");
     try {
-      await api("/model-config/test", { method: "POST" });
+      await api("/model-config/test", {
+        method: "POST",
+      });
       setMessage("连接成功，模型支持结构化响应。视觉分析将在选定人物后发起。");
     } catch (error) {
       reportError(error.message);
@@ -54,20 +64,18 @@ export function ModelSettings({ reportError }) {
     <section className="model-settings">
       <div className="section-heading">
         <h2>
-          <Plug size={20} /> 多模态模型
+          <Plug size={20} />
+          {t("多模态模型")}
         </h2>
-        <span>{config?.configured ? "已保存 Key" : "待配置"}</span>
+        <span>{config?.configured ? t("已保存 Key") : t("待配置")}</span>
       </div>
       <p>
-        通过 OpenRouter 调用
-        Luna，分析候选画面、挑选片段并起草周记。每次分析前会单独确认发送范围。
+        {t(
+          "通过 OpenRouter 调用 Luna，分析候选画面、挑选片段并起草周记。每次分析前会单独确认发送范围。",
+        )}
       </p>
       <label>
-        服务地址
-        <input value="https://openrouter.ai/api/v1" readOnly />
-      </label>
-      <label>
-        视觉模型
+        {t("视觉模型")}
         <select
           value={model}
           onChange={(event) => setModel(event.target.value)}
@@ -90,8 +98,8 @@ export function ModelSettings({ reportError }) {
           onChange={(event) => setKey(event.target.value)}
           placeholder={
             config?.configured
-              ? "已保存；留空保留，填写可替换"
-              : "在此填写 API Key，仅保存在本机"
+              ? t("已保存；留空保留，填写可替换")
+              : t("在此填写 API Key，仅保存在本机")
           }
           disabled={busy}
         />
@@ -103,7 +111,7 @@ export function ModelSettings({ reportError }) {
           ) : (
             <ShieldCheck size={15} />
           )}
-          保存配置
+          {t("保存配置")}
         </button>
         <button
           onClick={test}
@@ -114,24 +122,24 @@ export function ModelSettings({ reportError }) {
             model !== config?.model
           }
         >
-          验证连接
+          {t("验证连接")}
         </button>
         {config?.configured && (
           <button onClick={() => save(true)} disabled={busy}>
-            移除 Key
+            {t("移除 Key")}
           </button>
         )}
       </div>
       {message && (
         <p className="inline-success" role="status">
           <CheckCircle2 size={16} />
-          {message}
+          {t(message)}
         </p>
       )}
       <small>
-        Key 不写入代码、localStorage 或 Git。分析会将抽取的候选画面发送至
-        OpenRouter 及
-        OpenAI；人物特征和参考档案留在本机。检测到的其他人脸会先遮盖，但仍需检查漏检。原声只用于本地成片，不上传分析。
+        {t(
+          "Key 不写入代码、localStorage 或 Git。分析会将抽取的候选画面发送至 OpenRouter 及 OpenAI；人物特征和参考档案留在本机。检测到的其他人脸会先遮盖，但仍需检查漏检。原声只用于本地成片，不上传分析。",
+        )}
       </small>
     </section>
   );

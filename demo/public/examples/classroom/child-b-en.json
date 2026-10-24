@@ -1,0 +1,165 @@
+{
+  "id": "c6a56f96-5dd6-404f-9f1a-e1bb019e3187",
+  "person_id": "de3a5948-29b3-42cb-be56-5ed74e5cf23e",
+  "input_signature": "23368111bfde3cc472988d512acde58a47304a8c2edcea8f2c673f6b0146fcab",
+  "created_at": "2026-10-24T13:53:45.317501+00:00",
+  "model_draft": {
+    "title": "躺卧中的片刻",
+    "weekly_note": "这份记录中，TA躺着含着安抚奶嘴，手臂有轻微移动；另有画面记录了TA躺卧时手臂靠近成人手掌。",
+    "chapters": [
+      {
+        "segment_id": "0c26e9304a0ea561e88d",
+        "heading": "安静躺卧",
+        "caption": "TA躺着含着绿色安抚奶嘴，手臂靠近身体。"
+      },
+      {
+        "segment_id": "cc5e0d6e3a2ec7de8377",
+        "heading": "手臂轻动",
+        "caption": "TA躺着含着安抚奶嘴，手臂有轻微移动。"
+      },
+      {
+        "segment_id": "938c79a6e78b9cdd5306",
+        "heading": "手臂靠近手掌",
+        "caption": "TA躺着含着安抚奶嘴，一只手臂靠近画面中的成人手掌。"
+      }
+    ]
+  },
+  "model": "openai/gpt-6-luna",
+  "provider": "OpenRouter",
+  "budget": 30,
+  "candidate_count": 3,
+  "total_candidates": 3,
+  "selected_ids": [
+    "0c26e9304a0ea561e88d",
+    "cc5e0d6e3a2ec7de8377",
+    "938c79a6e78b9cdd5306"
+  ],
+  "observations": [
+    {
+      "segment_id": "0c26e9304a0ea561e88d",
+      "usable": true,
+      "duplicate_of": null,
+      "title": "婴儿躺卧",
+      "activity": "躺卧",
+      "observation": "婴儿躺着，嘴里含着绿色安抚奶嘴，手臂靠近身体。",
+      "stage": "action",
+      "score": 45,
+      "reason": "目标清晰可见，但画面中婴儿姿势基本保持不变，可见活动有限。",
+      "evidence_frames": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "segment_id": "cc5e0d6e3a2ec7de8377",
+      "usable": true,
+      "duplicate_of": null,
+      "title": "婴儿躺卧",
+      "activity": "躺卧",
+      "observation": "婴儿躺着含着安抚奶嘴，手臂有轻微移动。",
+      "stage": "action",
+      "score": 45,
+      "reason": "目标清晰，能看到轻微肢体变化，但整体仍是躺卧姿势。",
+      "evidence_frames": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "segment_id": "938c79a6e78b9cdd5306",
+      "usable": true,
+      "duplicate_of": null,
+      "title": "婴儿躺卧",
+      "activity": "躺卧",
+      "observation": "婴儿躺着含着安抚奶嘴，一只手臂靠近画面中的成人手掌。",
+      "stage": "action",
+      "score": 45,
+      "reason": "目标清晰可见，姿势与前段相近，未显示明显的新活动或完成状态。",
+      "evidence_frames": [
+        1,
+        2,
+        3
+      ]
+    }
+  ],
+  "title": "A Moment in Caring Arms",
+  "weekly_note": "In this record, they rest in an adult’s arms with a pacifier in their mouth, remaining in a similar position.",
+  "chapters": [
+    {
+      "segment_id": "0c26e9304a0ea561e88d",
+      "heading": "Resting in arms",
+      "caption": "Resting in an adult’s arms with a pacifier."
+    },
+    {
+      "segment_id": "cc5e0d6e3a2ec7de8377",
+      "heading": "Resting in arms",
+      "caption": "Resting in an adult’s arms with a pacifier."
+    },
+    {
+      "segment_id": "938c79a6e78b9cdd5306",
+      "heading": "Resting in arms",
+      "caption": "Resting in an adult’s arms with a pacifier."
+    }
+  ],
+  "evidence": {
+    "0c26e9304a0ea561e88d": {
+      "times": [
+        41.366,
+        41.566,
+        41.766
+      ],
+      "target_visible": [
+        true,
+        true,
+        true
+      ],
+      "sha256": "09f4738cf6ee222c047e54b33b12248a842e815f4c25210a52f0bce5abeff333"
+    },
+    "cc5e0d6e3a2ec7de8377": {
+      "times": [
+        42.418,
+        42.818,
+        43.218
+      ],
+      "target_visible": [
+        true,
+        true,
+        true
+      ],
+      "sha256": "aec4e7da92f167cbac95309f5f4b86077a79f1e1fc687b7292a40abed6b825ff"
+    },
+    "938c79a6e78b9cdd5306": {
+      "times": [
+        44.97,
+        45.571,
+        46.171
+      ],
+      "target_visible": [
+        true,
+        true,
+        true
+      ],
+      "sha256": "009e5f73269e2e6d7471a1c2cdccef30009f8bb8df834170bc2c9dc43fc96f6b"
+    }
+  },
+  "usage": [
+    {
+      "prompt_tokens": 3396,
+      "completion_tokens": 596,
+      "total_tokens": 3992
+    },
+    {
+      "prompt_tokens": 1143,
+      "completion_tokens": 225,
+      "total_tokens": 1368
+    }
+  ],
+  "applied": false,
+  "method": "sampled_visual_frames",
+  "prompt_version": "visual-story-v2",
+  "locale": "zh",
+  "current": true,
+  "translation_method": "Human English translation of the saved Chinese draft; same selected footage."
+}

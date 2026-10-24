@@ -1,0 +1,187 @@
+{
+  "source_url": "https://commons.wikimedia.org/wiki/File:Ramstein_Child_Development_Center_Expands_Childcare_Support_(993791).webm",
+  "original_url": "https://upload.wikimedia.org/wikipedia/commons/f/f6/Ramstein_Child_Development_Center_Expands_Childcare_Support_%28993791%29.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "original_sha256": "b58bac821030f81c163ba19aadda3098b9b7c853deda6718250d46dbe7ca732f",
+  "input_sha256": "d517b73fa8001850d1ae82ad1aad2f7ce1f3a3fc1ce8cee6596806fcba1e0862",
+  "input_bytes": 35515973,
+  "raw_groups": 15,
+  "detected_faces": 102,
+  "manual_merges": 2,
+  "quality_thresholds_changed": false,
+  "results": [
+    {
+      "id": "child-a",
+      "name": {
+        "zh": "孩子 A",
+        "en": "Child A"
+      },
+      "versions": {
+        "zh": {
+          "title": "地面上的爬行姿势",
+          "note": "这份记录中，TA趴在地面，双手撑地并抬起上身。",
+          "chapters": [
+            {
+              "segment_id": "7d175ff1500d265e3719",
+              "heading": "双手撑地",
+              "caption": "TA趴在地面，双手撑地抬起上身。",
+              "start": 0,
+              "source_start": 32.307,
+              "source_end": 36.311
+            }
+          ],
+          "duration": 4.0,
+          "movie": "/examples/classroom/child-a-zh.mp4",
+          "export_id": "archived-example"
+        },
+        "en": {
+          "title": "A Moment of Prone Play",
+          "note": "In this record, they lie on their stomach, propped up on their arms, with their legs extended behind them.",
+          "chapters": [
+            {
+              "segment_id": "7d175ff1500d265e3719",
+              "heading": "Prone Play",
+              "caption": "They lie on their stomach, supported by their arms.",
+              "start": 0,
+              "source_start": 32.307,
+              "source_end": 36.311
+            }
+          ],
+          "duration": 4.0,
+          "movie": "/examples/classroom/child-a-en.mp4",
+          "export_id": "archived-example"
+        }
+      },
+      "portrait": "/examples/classroom/child-a-portrait.jpg",
+      "poster": "/examples/classroom/child-a-poster.jpg"
+    },
+    {
+      "id": "child-b",
+      "name": {
+        "zh": "孩子 B",
+        "en": "Child B"
+      },
+      "versions": {
+        "zh": {
+          "title": "怀抱中的静静时刻",
+          "note": "这份记录中，TA躺在成人怀中，口含奶嘴，姿势基本不变。",
+          "chapters": [
+            {
+              "segment_id": "0c26e9304a0ea561e88d",
+              "heading": "怀抱中的静静时刻",
+              "caption": "TA躺在成人怀中，口含奶嘴，面向前方。",
+              "start": 0,
+              "source_start": 41.316,
+              "source_end": 41.816
+            }
+          ],
+          "duration": 0.5,
+          "movie": "/examples/classroom/child-b-zh.mp4",
+          "export_id": "archived-example"
+        },
+        "en": {
+          "title": "A Moment in Caring Arms",
+          "note": "In this record, they rest in an adult’s arms with a pacifier in their mouth, remaining in a similar position.",
+          "chapters": [
+            {
+              "segment_id": "0c26e9304a0ea561e88d",
+              "heading": "Resting in arms",
+              "caption": "Resting in an adult’s arms with a pacifier.",
+              "start": 0,
+              "source_start": 41.316,
+              "source_end": 41.816
+            },
+            {
+              "segment_id": "cc5e0d6e3a2ec7de8377",
+              "heading": "Resting in arms",
+              "caption": "Resting in an adult’s arms with a pacifier.",
+              "start": 0.5,
+              "source_start": 42.318,
+              "source_end": 43.318
+            },
+            {
+              "segment_id": "938c79a6e78b9cdd5306",
+              "heading": "Resting in arms",
+              "caption": "Resting in an adult’s arms with a pacifier.",
+              "start": 1.5,
+              "source_start": 44.82,
+              "source_end": 46.321
+            }
+          ],
+          "duration": 3.0,
+          "movie": "/examples/classroom/child-b-en.mp4",
+          "export_id": "8c3f1583-db93-44f9-8950-afb38ce2a34d"
+        }
+      },
+      "portrait": "/examples/classroom/child-b-portrait.jpg",
+      "poster": "/examples/classroom/child-b-poster.jpg"
+    },
+    {
+      "id": "educator",
+      "name": {
+        "zh": "照护者",
+        "en": "Educator"
+      },
+      "versions": {
+        "zh": {
+          "title": "与婴儿的互动",
+          "note": "这份记录中，TA怀抱婴儿，也在躺着的婴儿旁将玩具放到其上方。",
+          "chapters": [
+            {
+              "segment_id": "159ffc8df99380101837",
+              "heading": "怀抱婴儿",
+              "caption": "TA坐着抱住婴儿，婴儿横躺在臂弯中。",
+              "start": 0,
+              "source_start": 27.803,
+              "source_end": 32.307
+            },
+            {
+              "segment_id": "3e716a441c30f592c75e",
+              "heading": "用玩具逗婴儿",
+              "caption": "TA跪在婴儿旁，将玩具放到婴儿上方。",
+              "start": 4.5,
+              "source_start": 49.325,
+              "source_end": 52.327
+            }
+          ],
+          "duration": 7.5,
+          "movie": "/examples/classroom/educator-zh.mp4",
+          "export_id": "4b09ebdc-cc1b-4f09-b217-0e26b72d213a"
+        },
+        "en": {
+          "title": "A Moment with a Baby",
+          "note": "This record shows them holding a baby across their lap and reaching toward a colorful toy beside a baby on a mat.",
+          "chapters": [
+            {
+              "segment_id": "159ffc8df99380101837",
+              "heading": "Holding a Baby",
+              "caption": "They hold a baby across their lap and look down.",
+              "start": 0,
+              "source_start": 27.803,
+              "source_end": 32.307
+            },
+            {
+              "segment_id": "3e716a441c30f592c75e",
+              "heading": "Reaching for a Toy",
+              "caption": "They reach toward a colorful toy beside a baby on a mat.",
+              "start": 4.5,
+              "source_start": 49.325,
+              "source_end": 52.327
+            }
+          ],
+          "duration": 7.5,
+          "movie": "/examples/classroom/educator-en.mp4",
+          "export_id": "d684769f-e6ee-4dd0-bf64-5368d7af93f2"
+        }
+      },
+      "portrait": "/examples/classroom/educator-portrait.jpg",
+      "poster": "/examples/classroom/educator-poster.jpg"
+    }
+  ],
+  "limitations": [
+    "60-second news report, not a full week of coverage. Original soundtrack includes narration.",
+    "Caregiver groups at 28s, 49s and 52s were visually reviewed and merged twice.",
+    "Child B Chinese output is 0.5 seconds; not featured in the gallery. Two English analysis attempts found insufficient usable evidence. A fresh Chinese result was translated and rendered via the normal editable-draft API; the English record preserves translation_method.",
+    "English caregiver and Child A drafts were generated directly in English. Cooking English is a faithful human translation of the saved Chinese draft.",
+    "No recognition accuracy claim or real guardian-account/authorization validation. Public source reuse does not imply endorsement or permissions for other footage."
+  ]
+}

@@ -1,0 +1,1190 @@
+{
+  "id": "779f0d74-8ea1-4ae7-a4f5-e24a18f564b8",
+  "person_id": "cb0d0e4c-1079-4210-9b92-00b7d4bfdc79",
+  "input_signature": "97db07909b90c48867ce854146418edd6c132918069a1b58d1aa33c70f65f067",
+  "created_at": "2026-10-24T13:05:58.648796+00:00",
+  "model_draft": {
+    "title": "揉面与下厨记录",
+    "weekly_note": "这份记录中，TA打开面粉包装、揉压并拉伸面团，也切了绿色蔬菜，将蔬菜和意面倒入锅中，最后用勺子品尝碗中的食物。",
+    "chapters": [
+      {
+        "segment_id": "e50cc845d5942ac36ed9",
+        "heading": "打开面粉包装",
+        "caption": "TA在台面上打开面粉包装，旁边放着面粉罐和空碗。"
+      },
+      {
+        "segment_id": "753dee63de7e7544eb4d",
+        "heading": "揉压面团",
+        "caption": "TA在案板上用双手按压、揉动面团。"
+      },
+      {
+        "segment_id": "d1c6be483c3019e8d7a8",
+        "heading": "给面团撒粉",
+        "caption": "TA把粉状材料撒在面团和案板上。"
+      },
+      {
+        "segment_id": "0fa123a775b8266a6aa0",
+        "heading": "拉伸面团",
+        "caption": "TA双手握住长形面团，向两侧拉伸。"
+      },
+      {
+        "segment_id": "8e7638aab264a9f16889",
+        "heading": "切配绿色蔬菜",
+        "caption": "TA在砧板上切绿色蔬菜，旁边放着切开的蔬菜块。"
+      },
+      {
+        "segment_id": "72f1ea0379a1d54e2c71",
+        "heading": "将蔬菜倒入锅中",
+        "caption": "TA倾斜碗，把蔬菜倒入炉灶上的锅中。"
+      },
+      {
+        "segment_id": "c3a5c5607cf006088357",
+        "heading": "将意面倒入锅中",
+        "caption": "TA倾斜金属滤盆，将意面倒入锅中。"
+      },
+      {
+        "segment_id": "b861a5a27500e0543aff",
+        "heading": "用勺品尝食物",
+        "caption": "TA手持碗和勺子，将勺中的食物送入口中。"
+      }
+    ]
+  },
+  "model": "openai/gpt-6-luna",
+  "provider": "OpenRouter",
+  "budget": 60,
+  "candidate_count": 36,
+  "total_candidates": 106,
+  "selected_ids": [
+    "e50cc845d5942ac36ed9",
+    "753dee63de7e7544eb4d",
+    "d1c6be483c3019e8d7a8",
+    "0fa123a775b8266a6aa0",
+    "8e7638aab264a9f16889",
+    "72f1ea0379a1d54e2c71",
+    "c3a5c5607cf006088357",
+    "b861a5a27500e0543aff"
+  ],
+  "observations": [
+    {
+      "segment_id": "d1ac179dbc8622dfd4bf",
+      "usable": true,
+      "duplicate_of": null,
+      "title": "厨房备料场景",
+      "activity": "烘焙备料",
+      "observation": "她站在厨房台面后，面前摆着面粉、碗等材料和器具，双手在台面附近活动。",
+      "stage": "opening",
+      "score": 60,
+      "reason": "厨房与材料清晰可见，主要呈现备料场景，尚无明确的实际制作或成品展示。",
+      "evidence_frames": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "segment_id": "d6c82e893233c967196a",
+      "usable": true,
+      "duplicate_of": null,
+      "title": "处理台面面团",
+      "activity": "涂抹酱料",
+      "observation": "她在台面上的面团表面用工具涂抹，随后手持工具在面团附近操作。",
+      "stage": "action",
+      "score": 72,
+      "reason": "能看到对面团进行具体操作，动作和材料较清楚。",
+      "evidence_frames": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "segment_id": "6cfcb09336368d94e7b3",
+      "usable": true,
+      "duplicate_of": null,
+      "title": "调整食材摆放",
+      "activity": "整理食材",
+      "observation": "她移动台面上的碗，将碗放到前方，旁边可见切好的食材和其他器具。",
+      "stage": "opening",
+      "score": 55,
+      "reason": "可见调整碗的位置，但没有明确的切配或烹煮动作。",
+      "evidence_frames": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "segment_id": "e50cc845d5942ac36ed9",
+      "usable": true,
+      "duplicate_of": null,
+      "title": "打开面粉包装",
+      "activity": "烘焙备料",
+      "observation": "她在台面上打开面粉包装，旁边摆有面粉罐和空碗。",
+      "stage": "opening",
+      "score": 65,
+      "reason": "开包装的准备动作清晰可见，尚未看到将材料倒入碗中。",
+      "evidence_frames": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "segment_id": "c196874bb64d6ed04fd9",
+      "usable": true,
+      "duplicate_of": null,
+      "title": "向面团添加配料",
+      "activity": "添加配料",
+      "observation": "她在台面上的面团附近拿取并放置小块配料。",
+      "stage": "action",
+      "score": 68,
+      "reason": "能看到她处理并向面团上添加配料，操作过程清楚。",
+      "evidence_frames": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "segment_id": "72f1ea0379a1d54e2c71",
+      "usable": true,
+      "duplicate_of": null,
+      "title": "将蔬菜倒入锅中",
+      "activity": "倒入蔬菜",
+      "observation": "她将装有蔬菜的碗倾斜，把蔬菜倒入炉灶上的锅中。",
+      "stage": "action",
+      "score": 82,
+      "reason": "倒入锅中的动作和蔬菜落入锅内的变化清晰可见。",
+      "evidence_frames": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "segment_id": "3c7956b6648e960ecac4",
+      "usable": true,
+      "duplicate_of": null,
+      "title": "将面粉倒入碗中",
+      "activity": "倒入面粉",
+      "observation": "她倾斜面粉包装，将里面的粉状材料倒入台面上的碗中。",
+      "stage": "action",
+      "score": 76,
+      "reason": "倾倒包装并将粉料加入碗中的操作清楚可见。",
+      "evidence_frames": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "segment_id": "06157283af970cd4c500",
+      "usable": true,
+      "duplicate_of": null,
+      "title": "整理烤盘上的面团块",
+      "activity": "整理面团",
+      "observation": "她在台面上处理小块面团，随后将烤盘移到身前。",
+      "stage": "action",
+      "score": 70,
+      "reason": "面团块和她的手部操作清晰可见，烤盘位置也有变化。",
+      "evidence_frames": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "segment_id": "7d8c7c636cc3dca19675",
+      "usable": true,
+      "duplicate_of": null,
+      "title": "翻炒锅中蔬菜",
+      "activity": "翻炒蔬菜",
+      "observation": "她用长柄工具翻动炉灶上锅中的蔬菜。",
+      "stage": "action",
+      "score": 78,
+      "reason": "锅中蔬菜和翻动动作清楚可见。",
+      "evidence_frames": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "segment_id": "79f7993b46f82771f0b2",
+      "usable": true,
+      "duplicate_of": null,
+      "title": "搅拌碗中材料",
+      "activity": "搅拌面糊",
+      "observation": "她手持工具在碗中反复搅拌，碗内可见混合物。",
+      "stage": "action",
+      "score": 74,
+      "reason": "碗中材料及搅拌操作清晰可见。",
+      "evidence_frames": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "segment_id": "8e7638aab264a9f16889",
+      "usable": true,
+      "duplicate_of": null,
+      "title": "切配绿色蔬菜",
+      "activity": "切菜",
+      "observation": "她在砧板上用刀切绿色蔬菜，旁边放有已切开的蔬菜块。",
+      "stage": "action",
+      "score": 77,
+      "reason": "刀具、砧板和切菜动作清楚可见。",
+      "evidence_frames": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "segment_id": "e8b16c0cd82ab698ff1b",
+      "usable": true,
+      "duplicate_of": null,
+      "title": "翻动锅中蔬菜",
+      "activity": "翻炒蔬菜",
+      "observation": "她用长柄工具翻动炉灶上锅中的蔬菜。",
+      "stage": "action",
+      "score": 73,
+      "reason": "后两帧可见目标正在翻动锅中蔬菜；首帧未见目标。",
+      "evidence_frames": [
+        2,
+        3
+      ]
+    },
+    {
+      "segment_id": "688dae42939092fb0044",
+      "usable": true,
+      "duplicate_of": null,
+      "title": "倒入液体并搅拌",
+      "activity": "搅拌面糊",
+      "observation": "她先将小容器中的液体倒入碗中，随后用工具搅拌碗内混合物。",
+      "stage": "action",
+      "score": 75,
+      "reason": "倒液体和搅拌的操作可见，与参考画面中的单纯搅拌过程不同。",
+      "evidence_frames": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "segment_id": "6a692853ca5e8b7e62ec",
+      "usable": true,
+      "duplicate_of": "8e7638aab264a9f16889",
+      "title": "切配绿色蔬菜",
+      "activity": "切菜",
+      "observation": "她在砧板上用刀处理绿色蔬菜，旁边放着切好的蔬菜。",
+      "stage": "action",
+      "score": 40,
+      "reason": "画面内容与较早候选中的切绿色蔬菜场景和操作重复。",
+      "evidence_frames": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "segment_id": "42d9bfd36b265c7f406f",
+      "usable": true,
+      "duplicate_of": null,
+      "title": "向锅中添加调料",
+      "activity": "添加调料",
+      "observation": "她手持瓶罐，在炉灶旁向锅中添加瓶罐里的材料。",
+      "stage": "action",
+      "score": 70,
+      "reason": "她将瓶罐移向锅边并进行倾倒操作，动作清楚可见。",
+      "evidence_frames": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "segment_id": "d15f80953e2c9b1917cc",
+      "usable": true,
+      "duplicate_of": "79f7993b46f82771f0b2",
+      "title": "搅拌碗中材料",
+      "activity": "搅拌面糊",
+      "observation": "她用工具搅拌碗中的混合物。",
+      "stage": "action",
+      "score": 40,
+      "reason": "与较早候选中在同一碗内搅拌混合物的画面重复。",
+      "evidence_frames": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "segment_id": "e66278b74ab01810105c",
+      "usable": true,
+      "duplicate_of": null,
+      "title": "整理台面用具",
+      "activity": "整理厨具",
+      "observation": "她将装有绿色食材的碗移到台面前方，随后把工具放在砧板上并伸手拿取旁边的物品。",
+      "stage": "action",
+      "score": 60,
+      "reason": "台面上移动碗和放置工具的动作可见，但没有清楚呈现新的食材处理过程。",
+      "evidence_frames": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "segment_id": "35646ae4a10e123ff290",
+      "usable": true,
+      "duplicate_of": null,
+      "title": "操作炉灶控制",
+      "activity": "操作炉灶",
+      "observation": "后两帧中她站在炉灶旁，手伸向灶台前方的控制区域。",
+      "stage": "action",
+      "score": 55,
+      "reason": "目标在后两帧可见，手部靠近炉灶控制区域；第一帧目标未显示。",
+      "evidence_frames": [
+        2,
+        3
+      ]
+    },
+    {
+      "segment_id": "31cc0782010921d64e5c",
+      "usable": true,
+      "duplicate_of": null,
+      "title": "搅拌并揉拌面糊",
+      "activity": "搅拌面糊",
+      "observation": "她用刮刀搅动碗中的混合物，随后用双手在碗内揉拌。",
+      "stage": "action",
+      "score": 76,
+      "reason": "碗中混合物和刮刀搅拌、双手揉拌的操作清楚可见。",
+      "evidence_frames": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "segment_id": "66a249ecb1c9e6fd2d13",
+      "usable": true,
+      "duplicate_of": "8e7638aab264a9f16889",
+      "title": "切配绿色蔬菜",
+      "activity": "切菜",
+      "observation": "她在砧板上切绿色蔬菜，旁边有已切好的蔬菜。",
+      "stage": "action",
+      "score": 40,
+      "reason": "与较早候选中的切菜场景和操作重复。",
+      "evidence_frames": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "segment_id": "912e46bbd587a703af7a",
+      "usable": true,
+      "duplicate_of": null,
+      "title": "向锅中倒入液体",
+      "activity": "倒入液体",
+      "observation": "她手持纸盒状容器靠近炉灶上的锅，倾斜容器向锅内倒入液体。",
+      "stage": "action",
+      "score": 71,
+      "reason": "向锅中倾倒液体的动作可见，但部分画面较模糊。",
+      "evidence_frames": [
+        1,
+        2
+      ]
+    },
+    {
+      "segment_id": "58c3f91dc1407a7a174c",
+      "usable": true,
+      "duplicate_of": null,
+      "title": "将混合物倒到面团上",
+      "activity": "倒入面团",
+      "observation": "她把碗倾斜，将碗中的混合物倒到台面上的面团上。",
+      "stage": "action",
+      "score": 82,
+      "reason": "碗中混合物倒出并落在面团上的过程清楚可见。",
+      "evidence_frames": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "segment_id": "9cd5b1dca58a93a092a3",
+      "usable": true,
+      "duplicate_of": null,
+      "title": "手持小物进行处理",
+      "activity": "手工处理",
+      "observation": "她在砧板前用双手拿着一个小物件进行操作。",
+      "stage": "action",
+      "score": 55,
+      "reason": "双手操作可见，但小物件细节不够清晰，具体动作难以判断。",
+      "evidence_frames": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "segment_id": "947dfc1f423a78daf32a",
+      "usable": true,
+      "duplicate_of": "912e46bbd587a703af7a",
+      "title": "向锅中倒入液体",
+      "activity": "倒入液体",
+      "observation": "她手持容器靠近炉灶上的锅，倾斜容器向锅内倾倒液体。",
+      "stage": "action",
+      "score": 40,
+      "reason": "与较早候选中向锅内倾倒液体的场景和动作重复，且画面较短。",
+      "evidence_frames": [
+        1,
+        2
+      ]
+    },
+    {
+      "segment_id": "753dee63de7e7544eb4d",
+      "usable": true,
+      "duplicate_of": null,
+      "title": "揉压面团",
+      "activity": "揉面",
+      "observation": "她在案板上用双手按压、揉动一团面团。",
+      "stage": "action",
+      "score": 78,
+      "reason": "面团及双手揉压的操作清楚可见，首帧目标不可见，后两帧可见。",
+      "evidence_frames": [
+        2,
+        3
+      ]
+    },
+    {
+      "segment_id": "ac470da8845a0fb58baf",
+      "usable": true,
+      "duplicate_of": null,
+      "title": "在砧板上切配食材",
+      "activity": "切菜",
+      "observation": "她在砧板上用手整理、切配少量绿色食材。",
+      "stage": "action",
+      "score": 61,
+      "reason": "人物在砧板前操作可见，但食材和具体切割动作较小、不够清晰。",
+      "evidence_frames": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "segment_id": "e8534c0c1c5c35cfd0c6",
+      "usable": true,
+      "duplicate_of": null,
+      "title": "向锅中加入材料",
+      "activity": "加料入锅",
+      "observation": "她将手中的容器靠近炉灶上的锅，另一只手持工具在锅中搅动。",
+      "stage": "action",
+      "score": 65,
+      "reason": "目标仅在第二帧可见，向锅中加入材料的具体内容不清楚。",
+      "evidence_frames": [
+        2
+      ]
+    },
+    {
+      "segment_id": "d1c6be483c3019e8d7a8",
+      "usable": true,
+      "duplicate_of": null,
+      "title": "给面团撒粉",
+      "activity": "撒粉",
+      "observation": "她将粉状材料撒在案板上的面团和周围台面上。",
+      "stage": "action",
+      "score": 76,
+      "reason": "撒粉动作及粉末落在面团和案板上的状态清楚可见。",
+      "evidence_frames": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "segment_id": "894b766ffce0707922f9",
+      "usable": true,
+      "duplicate_of": null,
+      "title": "挤压柠檬",
+      "activity": "挤柠檬",
+      "observation": "她用手持挤汁器挤压柠檬，器具下方放着一个碗。",
+      "stage": "action",
+      "score": 74,
+      "reason": "挤压柠檬的操作清楚可见，末帧目标不可见。",
+      "evidence_frames": [
+        1,
+        2
+      ]
+    },
+    {
+      "segment_id": "76be9ce75aefbb280aaa",
+      "usable": false,
+      "duplicate_of": null,
+      "title": "搅拌锅中食材",
+      "activity": "翻炒蔬菜",
+      "observation": "锅中的蔬菜在长柄工具搅动下翻动；后两帧她站在炉灶旁。",
+      "stage": "action",
+      "score": 73,
+      "reason": "描述缺少可见目标画面的有效引用，已排除。",
+      "evidence_frames": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "segment_id": "6fd6893ee17b1b7218e3",
+      "usable": true,
+      "duplicate_of": null,
+      "title": "揉压面团",
+      "activity": "揉面",
+      "observation": "她把一团面团放在撒有面粉的案板上，用双手按压、揉动。",
+      "stage": "action",
+      "score": 76,
+      "reason": "面团和双手揉压的操作清楚可见，与参考画面中的揉面活动相同，但此处是另一段面团操作画面。",
+      "evidence_frames": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "segment_id": "0cbe51582b640f1aa017",
+      "usable": true,
+      "duplicate_of": null,
+      "title": "挤压柠檬",
+      "activity": "挤柠檬",
+      "observation": "她手持柠檬状的黄色水果和挤压工具，在碗上方挤压。",
+      "stage": "action",
+      "score": 70,
+      "reason": "目标仅在第二帧清晰可见，手持水果和工具在碗上方操作可见。",
+      "evidence_frames": [
+        2
+      ]
+    },
+    {
+      "segment_id": "c3a5c5607cf006088357",
+      "usable": true,
+      "duplicate_of": null,
+      "title": "将意面倒入锅中",
+      "activity": "倒入意面",
+      "observation": "她倾斜金属滤盆，将里面的意面倒入水槽旁的锅中。",
+      "stage": "action",
+      "score": 81,
+      "reason": "滤盆倾斜，意面落入锅中的过程清楚可见。",
+      "evidence_frames": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "segment_id": "0fa123a775b8266a6aa0",
+      "usable": true,
+      "duplicate_of": null,
+      "title": "拉伸面团",
+      "activity": "拉伸面团",
+      "observation": "她双手握住一条长形面团并向两侧拉伸。",
+      "stage": "action",
+      "score": 77,
+      "reason": "面团形状及双手向两侧拉伸的操作清楚可见。",
+      "evidence_frames": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "segment_id": "6a4e278777ce0fcffbdf",
+      "usable": true,
+      "duplicate_of": null,
+      "title": "削剥黄色食材",
+      "activity": "削皮",
+      "observation": "她手持黄色食材和削皮工具，在碗上方进行削剥。",
+      "stage": "action",
+      "score": 65,
+      "reason": "手持食材和工具的操作可见，但具体食材及削剥细节不够清晰。",
+      "evidence_frames": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "segment_id": "b861a5a27500e0543aff",
+      "usable": true,
+      "duplicate_of": null,
+      "title": "用勺品尝碗中食物",
+      "activity": "品尝食物",
+      "observation": "她手持碗和勺子，将勺中的食物送入口中。",
+      "stage": "result",
+      "score": 76,
+      "reason": "将勺子送入口中的品尝动作清楚可见。",
+      "evidence_frames": [
+        1,
+        2,
+        3
+      ]
+    }
+  ],
+  "title": "揉面与下厨记录",
+  "weekly_note": "这份记录中，TA打开面粉包装、揉压并拉伸面团，也切了绿色蔬菜，将蔬菜和意面倒入锅中，最后用勺子品尝碗中的食物。",
+  "chapters": [
+    {
+      "segment_id": "e50cc845d5942ac36ed9",
+      "heading": "打开面粉包装",
+      "caption": "TA在台面上打开面粉包装，旁边放着面粉罐和空碗。"
+    },
+    {
+      "segment_id": "753dee63de7e7544eb4d",
+      "heading": "揉压面团",
+      "caption": "TA在案板上用双手按压、揉动面团。"
+    },
+    {
+      "segment_id": "d1c6be483c3019e8d7a8",
+      "heading": "给面团撒粉",
+      "caption": "TA把粉状材料撒在面团和案板上。"
+    },
+    {
+      "segment_id": "0fa123a775b8266a6aa0",
+      "heading": "拉伸面团",
+      "caption": "TA双手握住长形面团，向两侧拉伸。"
+    },
+    {
+      "segment_id": "8e7638aab264a9f16889",
+      "heading": "切配绿色蔬菜",
+      "caption": "TA在砧板上切绿色蔬菜，旁边放着切开的蔬菜块。"
+    },
+    {
+      "segment_id": "72f1ea0379a1d54e2c71",
+      "heading": "将蔬菜倒入锅中",
+      "caption": "TA倾斜碗，把蔬菜倒入炉灶上的锅中。"
+    },
+    {
+      "segment_id": "c3a5c5607cf006088357",
+      "heading": "将意面倒入锅中",
+      "caption": "TA倾斜金属滤盆，将意面倒入锅中。"
+    },
+    {
+      "segment_id": "b861a5a27500e0543aff",
+      "heading": "用勺品尝食物",
+      "caption": "TA手持碗和勺子，将勺中的食物送入口中。"
+    }
+  ],
+  "evidence": {
+    "d1ac179dbc8622dfd4bf": {
+      "times": [
+        10.06,
+        12.06,
+        14.06
+      ],
+      "target_visible": [
+        true,
+        true,
+        true
+      ],
+      "sha256": "afb7b4d9ce3834b8a349c6d33a191d530fa3ede4e9fd7f239fd327ae455bbee0"
+    },
+    "d6c82e893233c967196a": {
+      "times": [
+        0.5,
+        2.5,
+        4.5
+      ],
+      "target_visible": [
+        true,
+        true,
+        true
+      ],
+      "sha256": "1da2539db9753747a467666162df6cc33d966c7d1b7b3864ec2a9be8c4283ed6"
+    },
+    "6cfcb09336368d94e7b3": {
+      "times": [
+        0.355,
+        1.776,
+        3.198
+      ],
+      "target_visible": [
+        true,
+        true,
+        true
+      ],
+      "sha256": "739edb92fc27398403660edb258c71736be3a153c2afea0fb54f3f39156d2d5c"
+    },
+    "e50cc845d5942ac36ed9": {
+      "times": [
+        28.078,
+        30.078,
+        32.078
+      ],
+      "target_visible": [
+        true,
+        true,
+        true
+      ],
+      "sha256": "89d3f61a947b29ede44f54d4e626fbf8877067d29f67e41d609ebb4720804d03"
+    },
+    "c196874bb64d6ed04fd9": {
+      "times": [
+        17.968,
+        19.57,
+        21.171
+      ],
+      "target_visible": [
+        true,
+        true,
+        true
+      ],
+      "sha256": "8558a43400bd37737c54a6091c235709ce5cc4d9d1968fe638aab63388e15c53"
+    },
+    "72f1ea0379a1d54e2c71": {
+      "times": [
+        11.662,
+        12.062,
+        12.462
+      ],
+      "target_visible": [
+        true,
+        true,
+        true
+      ],
+      "sha256": "bfbc3f66fc71e65d209cf211df803e985e96c1f6010b49bb9169f15876fdbd2b"
+    },
+    "3c7956b6648e960ecac4": {
+      "times": [
+        47.092,
+        49.092,
+        51.092
+      ],
+      "target_visible": [
+        true,
+        true,
+        true
+      ],
+      "sha256": "ef6f0584fa007f960d3e863ea805b504ecc56d0d0704ab33cf875b53ae86ef96"
+    },
+    "06157283af970cd4c500": {
+      "times": [
+        45.085,
+        47.085,
+        49.085
+      ],
+      "target_visible": [
+        true,
+        true,
+        true
+      ],
+      "sha256": "8eae4c619fe2f406785cce6ff065fd3d6cda1326f4e0c35ed776201ebe67e3be"
+    },
+    "7d8c7c636cc3dca19675": {
+      "times": [
+        16.867,
+        18.068,
+        19.269
+      ],
+      "target_visible": [
+        true,
+        true,
+        true
+      ],
+      "sha256": "89bf44940c9454474c27ef51b10230a429f43a414ef9b97957ab445838715244"
+    },
+    "79f7993b46f82771f0b2": {
+      "times": [
+        72.122,
+        74.122,
+        76.122
+      ],
+      "target_visible": [
+        true,
+        true,
+        true
+      ],
+      "sha256": "761a433a4375311b0c44a5fc920ea132dc0a68e8891e76b33adf6a93fc6047a0"
+    },
+    "8e7638aab264a9f16889": {
+      "times": [
+        63.108,
+        65.108,
+        67.108
+      ],
+      "target_visible": [
+        true,
+        true,
+        true
+      ],
+      "sha256": "8b696c06169358d28ea2656107730984b998f389f601c64c9302b1bf1f55a892"
+    },
+    "e8b16c0cd82ab698ff1b": {
+      "times": [
+        29.78,
+        30.58,
+        31.381
+      ],
+      "target_visible": [
+        false,
+        true,
+        true
+      ],
+      "sha256": "6e580719e0806e58197905715a64d7b4866bb3c80e6988098ed19283f7a6c641"
+    },
+    "688dae42939092fb0044": {
+      "times": [
+        87.132,
+        89.132,
+        91.132
+      ],
+      "target_visible": [
+        true,
+        true,
+        true
+      ],
+      "sha256": "aaf01ef59b0af419e02ca09f958a8bdfb93f793a9111f565ed0336b4904953f8"
+    },
+    "6a692853ca5e8b7e62ec": {
+      "times": [
+        97.147,
+        99.147,
+        101.147
+      ],
+      "target_visible": [
+        true,
+        true,
+        true
+      ],
+      "sha256": "9b692b993f36d187df7a015b7f5de76b97a1df235d9029062fdfeb6ab10210e6"
+    },
+    "42d9bfd36b265c7f406f": {
+      "times": [
+        51.702,
+        52.102,
+        52.502
+      ],
+      "target_visible": [
+        true,
+        true,
+        true
+      ],
+      "sha256": "10b7eb02b99b0dba44c75f810979db9cd20dbf93f7c9de262ba91b45c2408d92"
+    },
+    "d15f80953e2c9b1917cc": {
+      "times": [
+        111.061,
+        112.662,
+        114.264
+      ],
+      "target_visible": [
+        true,
+        true,
+        true
+      ],
+      "sha256": "96108d002487330293944ed54b1e4824a3e7e85cd905eeedb4aeefc6f81e9d3e"
+    },
+    "e66278b74ab01810105c": {
+      "times": [
+        111.161,
+        113.161,
+        115.161
+      ],
+      "target_visible": [
+        true,
+        true,
+        true
+      ],
+      "sha256": "60ccc2a31384f74780673c95cd332879cda7fc58343bc39a8fdf57304ee665bc"
+    },
+    "35646ae4a10e123ff290": {
+      "times": [
+        64.715,
+        65.115,
+        65.515
+      ],
+      "target_visible": [
+        false,
+        true,
+        true
+      ],
+      "sha256": "637a008916852403390c587a6b06340c7a2352a78aff4449d797ba4d04b79783"
+    },
+    "31cc0782010921d64e5c": {
+      "times": [
+        127.177,
+        129.177,
+        131.177
+      ],
+      "target_visible": [
+        true,
+        true,
+        true
+      ],
+      "sha256": "8dc39751eb790b1acad780d104437e8be1c10b1b127bc3bf92b4fae8a195fc51"
+    },
+    "66a249ecb1c9e6fd2d13": {
+      "times": [
+        139.189,
+        141.189,
+        143.189
+      ],
+      "target_visible": [
+        true,
+        true,
+        true
+      ],
+      "sha256": "463ce9653dab63df1a0ab89fe513d7885a010c6e06f339a63295f7b35ba89278"
+    },
+    "912e46bbd587a703af7a": {
+      "times": [
+        70.721,
+        71.121,
+        71.521
+      ],
+      "target_visible": [
+        true,
+        true,
+        false
+      ],
+      "sha256": "24142908e2183eb6251696787c7345ab8041fd36d07aa627ffff0d817800182e"
+    },
+    "58c3f91dc1407a7a174c": {
+      "times": [
+        143.188,
+        145.188,
+        147.188
+      ],
+      "target_visible": [
+        true,
+        true,
+        true
+      ],
+      "sha256": "9918a1d1e73002d6433c21a6f8f55528a513ea46c52a29111d742dc81cc91df8"
+    },
+    "9cd5b1dca58a93a092a3": {
+      "times": [
+        159.1,
+        160.706,
+        162.311
+      ],
+      "target_visible": [
+        true,
+        true,
+        true
+      ],
+      "sha256": "d139b669974892287a2e6ab0d05e64f6e50740889516d0d2978d993a0b6ec5b0"
+    },
+    "947dfc1f423a78daf32a": {
+      "times": [
+        90.741,
+        91.141,
+        91.541
+      ],
+      "target_visible": [
+        true,
+        true,
+        false
+      ],
+      "sha256": "2ca5b194df90671fc91d246835ee65d13f46a7b295b32b0e88db83e9e5fbc3e5"
+    },
+    "753dee63de7e7544eb4d": {
+      "times": [
+        170.02,
+        171.221,
+        172.422
+      ],
+      "target_visible": [
+        false,
+        true,
+        true
+      ],
+      "sha256": "92dc1a55e47bd7b7b8535fe4f3701f7058f89819582352ae034e6256bbc21dce"
+    },
+    "ac470da8845a0fb58baf": {
+      "times": [
+        187.829,
+        188.233,
+        188.637
+      ],
+      "target_visible": [
+        true,
+        true,
+        true
+      ],
+      "sha256": "fe84899b0ccbe3f3a77f12e62881983d86e93777cc32c3b763aad5841d549d05"
+    },
+    "e8534c0c1c5c35cfd0c6": {
+      "times": [
+        121.772,
+        122.172,
+        122.572
+      ],
+      "target_visible": [
+        false,
+        true,
+        false
+      ],
+      "sha256": "04930f0c35792f6c174b9397d9499c799eddbd8ca7ddaa9e37121d3a25de3aaf"
+    },
+    "d1c6be483c3019e8d7a8": {
+      "times": [
+        195.245,
+        197.245,
+        199.245
+      ],
+      "target_visible": [
+        true,
+        true,
+        true
+      ],
+      "sha256": "72b40cbaa7010bad599da7ebe15811bd37d5461fc74e7cc5a7050f2bc1bcf4dc"
+    },
+    "894b766ffce0707922f9": {
+      "times": [
+        208.95,
+        209.755,
+        210.559
+      ],
+      "target_visible": [
+        true,
+        true,
+        false
+      ],
+      "sha256": "02124d1460dcdd444c0db0d8b4ca8c9c7bf6ad6fe3382a314af6182658ec6b63"
+    },
+    "76be9ce75aefbb280aaa": {
+      "times": [
+        146.797,
+        147.197,
+        147.597
+      ],
+      "target_visible": [
+        false,
+        true,
+        true
+      ],
+      "sha256": "253e7e9725c197289077d50babb7a6cb756f250e26fca2eb3a780f644d7c8a17"
+    },
+    "6fd6893ee17b1b7218e3": {
+      "times": [
+        220.27,
+        222.27,
+        224.27
+      ],
+      "target_visible": [
+        true,
+        true,
+        true
+      ],
+      "sha256": "2ed099c34fc3da0a02dcbf7ecc0a7f6addbc7348f11b39a18d71dcb4c11be1d5"
+    },
+    "0cbe51582b640f1aa017": {
+      "times": [
+        225.876,
+        226.276,
+        226.676
+      ],
+      "target_visible": [
+        false,
+        true,
+        false
+      ],
+      "sha256": "1abe86e62813513c3e96ed1897a724828617d23634868fe6d7bcc9d670afad61"
+    },
+    "c3a5c5607cf006088357": {
+      "times": [
+        154.104,
+        155.706,
+        157.307
+      ],
+      "target_visible": [
+        true,
+        true,
+        true
+      ],
+      "sha256": "6f4b476012f6115600ee14d751298febdd43e320384e77a4529a07e216de4fb0"
+    },
+    "0fa123a775b8266a6aa0": {
+      "times": [
+        238.889,
+        239.289,
+        239.689
+      ],
+      "target_visible": [
+        true,
+        true,
+        true
+      ],
+      "sha256": "f06ad7664264a67d6f88f79eb0bb9bf4f852b50c1e7c375053d2fb5295a5850f"
+    },
+    "6a4e278777ce0fcffbdf": {
+      "times": [
+        237.984,
+        238.786,
+        239.588
+      ],
+      "target_visible": [
+        true,
+        true,
+        true
+      ],
+      "sha256": "0567307b6fec25dd01fafce06fd14a0709d37b94d4cd419db5f6e79072ff222b"
+    },
+    "b861a5a27500e0543aff": {
+      "times": [
+        182.023,
+        183.228,
+        184.433
+      ],
+      "target_visible": [
+        true,
+        true,
+        true
+      ],
+      "sha256": "f55f9a4c5267043405519feeea8ddf2c8287dbb7d1370b3e93d53995dc598845"
+    }
+  },
+  "usage": [
+    {
+      "prompt_tokens": 5405,
+      "completion_tokens": 998,
+      "total_tokens": 6403
+    },
+    {
+      "prompt_tokens": 9038,
+      "completion_tokens": 900,
+      "total_tokens": 9938
+    },
+    {
+      "prompt_tokens": 9752,
+      "completion_tokens": 931,
+      "total_tokens": 10683
+    },
+    {
+      "prompt_tokens": 9772,
+      "completion_tokens": 1105,
+      "total_tokens": 10877
+    },
+    {
+      "prompt_tokens": 9779,
+      "completion_tokens": 868,
+      "total_tokens": 10647
+    },
+    {
+      "prompt_tokens": 9753,
+      "completion_tokens": 970,
+      "total_tokens": 10723
+    },
+    {
+      "prompt_tokens": 1751,
+      "completion_tokens": 445,
+      "total_tokens": 2196
+    }
+  ],
+  "applied": true,
+  "method": "sampled_visual_frames",
+  "prompt_version": "visual-story-v2",
+  "current": true
+}

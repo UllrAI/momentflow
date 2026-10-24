@@ -1,0 +1,124 @@
+{
+  "id": "c7dbc581-fa90-4d0e-ab74-585eed6fb7fc",
+  "person_id": "d09af6e7-2dea-490b-b358-5c117f6e52dd",
+  "input_signature": "5559f76e7efcfda2abbdb8f5504067fe064d41ba4d62919c6ed91ccdedea6dd4",
+  "created_at": "2026-10-24T13:53:58.607847+00:00",
+  "model_draft": {
+    "title": "与婴儿的互动",
+    "weekly_note": "这份记录中，TA怀抱婴儿，也在躺着的婴儿旁将玩具放到其上方。",
+    "chapters": [
+      {
+        "segment_id": "159ffc8df99380101837",
+        "heading": "怀抱婴儿",
+        "caption": "TA坐着抱住婴儿，婴儿横躺在臂弯中。"
+      },
+      {
+        "segment_id": "3e716a441c30f592c75e",
+        "heading": "用玩具逗婴儿",
+        "caption": "TA跪在婴儿旁，将玩具放到婴儿上方。"
+      }
+    ]
+  },
+  "model": "openai/gpt-6-luna",
+  "provider": "OpenRouter",
+  "budget": 30,
+  "candidate_count": 2,
+  "total_candidates": 2,
+  "selected_ids": [
+    "159ffc8df99380101837",
+    "3e716a441c30f592c75e"
+  ],
+  "observations": [
+    {
+      "segment_id": "159ffc8df99380101837",
+      "usable": true,
+      "duplicate_of": null,
+      "title": "怀抱婴儿",
+      "activity": "抱婴儿",
+      "observation": "蓝衣女子坐着怀抱婴儿，婴儿横躺在她臂弯中；采样画面中姿势基本相同。",
+      "stage": "action",
+      "score": 70,
+      "reason": "人物与怀抱婴儿的姿势清晰可见，但画面中没有明显动作变化。",
+      "evidence_frames": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "segment_id": "3e716a441c30f592c75e",
+      "usable": true,
+      "duplicate_of": null,
+      "title": "用玩具逗婴儿",
+      "activity": "逗婴儿",
+      "observation": "蓝衣女子跪在躺着的婴儿旁，伸手将玩具置于婴儿上方。",
+      "stage": "action",
+      "score": 70,
+      "reason": "与婴儿及玩具的互动清晰可见，采样画面中的动作变化较少。",
+      "evidence_frames": [
+        1,
+        2,
+        3
+      ]
+    }
+  ],
+  "title": "与婴儿的互动",
+  "weekly_note": "这份记录中，TA怀抱婴儿，也在躺着的婴儿旁将玩具放到其上方。",
+  "chapters": [
+    {
+      "segment_id": "159ffc8df99380101837",
+      "heading": "怀抱婴儿",
+      "caption": "TA坐着抱住婴儿，婴儿横躺在臂弯中。"
+    },
+    {
+      "segment_id": "3e716a441c30f592c75e",
+      "heading": "用玩具逗婴儿",
+      "caption": "TA跪在婴儿旁，将玩具放到婴儿上方。"
+    }
+  ],
+  "evidence": {
+    "159ffc8df99380101837": {
+      "times": [
+        28.253,
+        30.055,
+        31.857
+      ],
+      "target_visible": [
+        true,
+        true,
+        true
+      ],
+      "sha256": "4de32a0746942bef7561b0d0c4b653a1cb63c2a8a3bdb4e434dbe1e00676090d"
+    },
+    "3e716a441c30f592c75e": {
+      "times": [
+        49.625,
+        50.826,
+        52.027
+      ],
+      "target_visible": [
+        true,
+        true,
+        true
+      ],
+      "sha256": "b6a51f94d77118af741bb3b4d0d27603a1cf30b43d0bfbdd6c42430e8e06b10f"
+    }
+  },
+  "usage": [
+    {
+      "prompt_tokens": 2715,
+      "completion_tokens": 383,
+      "total_tokens": 3098
+    },
+    {
+      "prompt_tokens": 1022,
+      "completion_tokens": 151,
+      "total_tokens": 1173
+    }
+  ],
+  "applied": false,
+  "method": "sampled_visual_frames",
+  "prompt_version": "visual-story-v2",
+  "locale": "zh",
+  "current": true
+}

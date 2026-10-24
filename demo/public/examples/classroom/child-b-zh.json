@@ -1,0 +1,142 @@
+{
+  "id": "09118ec6-85f2-43cb-924d-ea0eca535623",
+  "person_id": "de3a5948-29b3-42cb-be56-5ed74e5cf23e",
+  "input_signature": "63ed326582c6617016123f190025c7748f3c5010f2a5e47e29870feac500319a",
+  "created_at": "2026-10-24T13:49:23.547760+00:00",
+  "model_draft": {
+    "title": "怀抱中的静静时刻",
+    "weekly_note": "这份记录中，TA躺在成人怀中，口含奶嘴，姿势基本不变。",
+    "chapters": [
+      {
+        "segment_id": "0c26e9304a0ea561e88d",
+        "heading": "怀抱中的静静时刻",
+        "caption": "TA躺在成人怀中，口含奶嘴，面向前方。"
+      }
+    ]
+  },
+  "model": "openai/gpt-6-luna",
+  "provider": "OpenRouter",
+  "budget": 30,
+  "candidate_count": 3,
+  "total_candidates": 3,
+  "selected_ids": [
+    "0c26e9304a0ea561e88d"
+  ],
+  "observations": [
+    {
+      "segment_id": "0c26e9304a0ea561e88d",
+      "usable": true,
+      "duplicate_of": null,
+      "title": "躺卧含着奶嘴",
+      "activity": "含奶嘴",
+      "observation": "目标躺在成人怀中，口含奶嘴，面向前方；几帧中姿势基本不变。",
+      "stage": "action",
+      "score": 40,
+      "reason": "目标清晰可见，但仅呈现含着奶嘴的静态姿势，没有明显动作变化。",
+      "evidence_frames": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "segment_id": "cc5e0d6e3a2ec7de8377",
+      "usable": true,
+      "duplicate_of": "0c26e9304a0ea561e88d",
+      "title": "躺卧含着奶嘴",
+      "activity": "含奶嘴",
+      "observation": "目标躺在成人怀中，口含奶嘴，面向前方；姿势与较早画面基本相同。",
+      "stage": "action",
+      "score": 40,
+      "reason": "与较早候选呈现同一场景和相近姿势，没有清晰的新动作或状态。",
+      "evidence_frames": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "segment_id": "938c79a6e78b9cdd5306",
+      "usable": true,
+      "duplicate_of": "0c26e9304a0ea561e88d",
+      "title": "躺卧含着奶嘴",
+      "activity": "含奶嘴",
+      "observation": "目标躺在成人怀中，口含奶嘴，面向前方；姿势与较早画面基本相同。",
+      "stage": "action",
+      "score": 40,
+      "reason": "与较早候选为同一场景，目标姿势基本不变，未见新的活动状态。",
+      "evidence_frames": [
+        1,
+        2,
+        3
+      ]
+    }
+  ],
+  "title": "怀抱中的静静时刻",
+  "weekly_note": "这份记录中，TA躺在成人怀中，口含奶嘴，姿势基本不变。",
+  "chapters": [
+    {
+      "segment_id": "0c26e9304a0ea561e88d",
+      "heading": "怀抱中的静静时刻",
+      "caption": "TA躺在成人怀中，口含奶嘴，面向前方。"
+    }
+  ],
+  "evidence": {
+    "0c26e9304a0ea561e88d": {
+      "times": [
+        41.366,
+        41.566,
+        41.766
+      ],
+      "target_visible": [
+        true,
+        true,
+        true
+      ],
+      "sha256": "09f4738cf6ee222c047e54b33b12248a842e815f4c25210a52f0bce5abeff333"
+    },
+    "cc5e0d6e3a2ec7de8377": {
+      "times": [
+        42.418,
+        42.818,
+        43.218
+      ],
+      "target_visible": [
+        true,
+        true,
+        true
+      ],
+      "sha256": "aec4e7da92f167cbac95309f5f4b86077a79f1e1fc687b7292a40abed6b825ff"
+    },
+    "938c79a6e78b9cdd5306": {
+      "times": [
+        44.97,
+        45.571,
+        46.171
+      ],
+      "target_visible": [
+        true,
+        true,
+        true
+      ],
+      "sha256": "009e5f73269e2e6d7471a1c2cdccef30009f8bb8df834170bc2c9dc43fc96f6b"
+    }
+  },
+  "usage": [
+    {
+      "prompt_tokens": 3396,
+      "completion_tokens": 664,
+      "total_tokens": 4060
+    },
+    {
+      "prompt_tokens": 879,
+      "completion_tokens": 100,
+      "total_tokens": 979
+    }
+  ],
+  "applied": false,
+  "method": "sampled_visual_frames",
+  "prompt_version": "visual-story-v2",
+  "locale": "zh",
+  "current": true
+}

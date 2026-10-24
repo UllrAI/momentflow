@@ -1,0 +1,84 @@
+{
+  "id": "16fe1000-fe25-47c6-8386-2fb562962e32",
+  "person_id": "3004408e-30b0-4854-b450-fcf3d0e4f448",
+  "input_signature": "a930ef4128a1c28c5e67f6a159c172b599b1dd1d3104d7b22528bb1a6ab9b483",
+  "created_at": "2026-10-24T13:48:57.450114+00:00",
+  "model_draft": {
+    "title": "地面上的爬行姿势",
+    "weekly_note": "这份记录中，TA趴在地面，双手撑地并抬起上身。",
+    "chapters": [
+      {
+        "segment_id": "7d175ff1500d265e3719",
+        "heading": "双手撑地",
+        "caption": "TA趴在地面，双手撑地抬起上身。"
+      }
+    ]
+  },
+  "model": "openai/gpt-6-luna",
+  "provider": "OpenRouter",
+  "budget": 30,
+  "candidate_count": 1,
+  "total_candidates": 1,
+  "selected_ids": [
+    "7d175ff1500d265e3719"
+  ],
+  "observations": [
+    {
+      "segment_id": "7d175ff1500d265e3719",
+      "usable": true,
+      "duplicate_of": null,
+      "title": "趴在地面支撑身体",
+      "activity": "爬行",
+      "observation": "目标人物趴在地面，双手撑地、上身抬起；三帧姿势基本相同。",
+      "stage": "action",
+      "score": 60,
+      "reason": "目标清晰可见，但采样画面中姿势变化不明显。",
+      "evidence_frames": [
+        1,
+        2,
+        3
+      ]
+    }
+  ],
+  "title": "地面上的爬行姿势",
+  "weekly_note": "这份记录中，TA趴在地面，双手撑地并抬起上身。",
+  "chapters": [
+    {
+      "segment_id": "7d175ff1500d265e3719",
+      "heading": "双手撑地",
+      "caption": "TA趴在地面，双手撑地抬起上身。"
+    }
+  ],
+  "evidence": {
+    "7d175ff1500d265e3719": {
+      "times": [
+        32.707,
+        34.309,
+        35.911
+      ],
+      "target_visible": [
+        true,
+        true,
+        true
+      ],
+      "sha256": "3cdbfa9517ae490692b4c7c2ac6ddcceb97ac2b11dd4977847fd4f5623496391"
+    }
+  },
+  "usage": [
+    {
+      "prompt_tokens": 2046,
+      "completion_tokens": 125,
+      "total_tokens": 2171
+    },
+    {
+      "prompt_tokens": 872,
+      "completion_tokens": 94,
+      "total_tokens": 966
+    }
+  ],
+  "applied": false,
+  "method": "sampled_visual_frames",
+  "prompt_version": "visual-story-v2",
+  "locale": "zh",
+  "current": true
+}

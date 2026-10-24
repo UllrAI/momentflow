@@ -1,0 +1,465 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>真实活动实测 · MomentFlow 拾光</title>
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: #233b30;
+        background: #f6f7f2;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+      }
+      main {
+        max-width: 1240px;
+        margin: auto;
+        padding: 30px 28px 60px;
+      }
+      a {
+        color: #286948;
+        text-underline-offset: 3px;
+      }
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        padding-bottom: 28px;
+      }
+      .brand {
+        font-size: 18px;
+        font-weight: 750;
+        letter-spacing: -0.5px;
+      }
+      .pill {
+        font-size: 12px;
+        padding: 7px 12px;
+        border-radius: 30px;
+        background: #e7eddf;
+      }
+      .eyebrow {
+        color: #657d62;
+        font-size: 11px;
+        letter-spacing: 2px;
+        margin-top: 12px;
+      }
+      h1 {
+        font-size: clamp(27px, 4vw, 44px);
+        letter-spacing: -1px;
+        margin: 12px 0;
+        line-height: 1.2;
+      }
+      .intro {
+        color: #657266;
+        line-height: 1.8;
+        max-width: 850px;
+        margin: 0 0 24px;
+      }
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        border: 1px solid #dfe5d9;
+        border-radius: 15px;
+        background: #fffefa;
+        margin-bottom: 24px;
+      }
+      .stat {
+        padding: 18px 22px;
+      }
+      .stat strong {
+        display: block;
+        font-size: 26px;
+        font-weight: 650;
+        margin-bottom: 5px;
+      }
+      .stat span {
+        color: #718071;
+        font-size: 12px;
+      }
+      .layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1.65fr) minmax(300px, 1fr);
+        gap: 22px;
+        align-items: start;
+      }
+      .card {
+        background: #fffefa;
+        border: 1px solid #dfe5d9;
+        border-radius: 16px;
+        overflow: hidden;
+      }
+      .pad {
+        padding: 22px;
+      }
+      .video-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 18px 22px;
+        align-items: center;
+      }
+      h2 {
+        font-size: 17px;
+        margin: 0;
+        font-weight: 650;
+      }
+      .small {
+        color: #718071;
+        font-size: 12px;
+      }
+      video {
+        display: block;
+        width: 100%;
+        aspect-ratio: 16/9;
+        background: #1c2923;
+      }
+      .note {
+        font-size: 15px;
+        line-height: 1.95;
+        margin: 14px 0 0;
+      }
+      .chapter-list {
+        display: grid;
+        gap: 0;
+      }
+      .chapter {
+        border: 0;
+        background: transparent;
+        border-top: 1px solid #e9ecdf;
+        color: inherit;
+        cursor: pointer;
+        text-align: left;
+        width: 100%;
+        padding: 15px 22px;
+        display: flex;
+        align-items: start;
+        gap: 12px;
+        font: inherit;
+      }
+      .chapter:hover,
+      .chapter:focus-visible {
+        background: #edf3e8;
+      }
+      .chapter.active {
+        background: #e9f0e2;
+      }
+      .number {
+        color: #73876b;
+        font-variant-numeric: tabular-nums;
+        font-size: 12px;
+        padding-top: 3px;
+      }
+      .chapter strong {
+        font-size: 14px;
+        display: block;
+        margin-bottom: 6px;
+      }
+      .chapter span {
+        display: block;
+        font-size: 12px;
+        line-height: 1.6;
+        color: #6a7869;
+      }
+      .chapter em {
+        font-style: normal;
+        font-size: 11px;
+        color: #74836e;
+        display: block;
+        margin-top: 4px;
+      }
+      .secondary {
+        margin-top: 22px;
+      }
+      .source-grid {
+        display: grid;
+        grid-template-columns: 1.35fr 1fr;
+        align-items: start;
+        gap: 22px;
+      }
+      .source-card {
+        background: #eef2e8;
+        padding: 18px;
+        border-radius: 12px;
+        font-size: 13px;
+        line-height: 1.85;
+      }
+      .source-card p {
+        margin: 8px 0;
+      }
+      .source-card strong {
+        font-weight: 650;
+      }
+      .notice {
+        background: #f0eadc;
+        border-radius: 12px;
+        padding: 18px 22px;
+        line-height: 1.8;
+        font-size: 13px;
+        margin-top: 22px;
+        color: #716247;
+      }
+      footer {
+        font-size: 12px;
+        line-height: 1.9;
+        color: #73806f;
+        margin-top: 28px;
+      }
+      footer p {
+        margin: 5px 0;
+      }
+      .links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-top: 14px;
+      }
+      .error {
+        padding: 24px;
+        color: #9a4532;
+      }
+      @media (max-width: 760px) {
+        main {
+          padding: 22px 16px 40px;
+        }
+        .layout,
+        .source-grid {
+          grid-template-columns: 1fr;
+        }
+        .stats {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        header {
+          padding-bottom: 15px;
+        }
+        .stat {
+          padding: 15px 18px;
+        }
+        .pad,
+        .video-head {
+          padding: 18px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <div class="brand">MomentFlow · 拾光</div>
+        <span class="pill">真实素材 / 真实 Luna 调用</span>
+      </header>
+      <p class="eyebrow">A REAL CLASS, A SMALL STORY</p>
+      <h1 id="title">一堂厨房课，成为一份活动手记</h1>
+      <p class="intro">
+        从完整的成人烹饪教学录像出发，经本地人脸识别、人工核对合并、Luna
+        画面分析与自动挑选，生成章节、活动手记和原声影片。这里展示实际结果与未解决的问题。
+      </p>
+      <section class="stats" aria-label="实测数据" id="stats"></section>
+      <div class="layout">
+        <div>
+          <section class="card">
+            <div class="video-head">
+              <h2>自动编排的故事影片</h2>
+              <span class="small" id="output-meta"></span>
+            </div>
+            <video
+              id="result"
+              src="/examples/kitchen/story-zh.mp4"
+              poster="poster.jpg"
+              controls
+              preload="metadata"
+              aria-label="自动生成的原声集锦"
+            ></video>
+            <div class="pad">
+              <h2>活动手记 · 模型原始草稿</h2>
+              <p class="note" id="weekly"></p>
+              <p class="small">
+                本次为一堂成人教学课；没有把单次活动写成虚构的一周，也没有人工改写最终文案。
+              </p>
+            </div>
+          </section>
+          <div class="notice" id="limits"></div>
+        </div>
+        <section class="card" aria-label="章节与自动挑选依据">
+          <div class="video-head">
+            <h2>跟着章节，看挑选依据</h2>
+            <span class="small">点击播放</span>
+          </div>
+          <div class="chapter-list" id="chapters"></div>
+        </section>
+      </div>
+      <section class="card secondary pad">
+        <div class="video-head" style="padding: 0 0 18px">
+          <h2>回到原片，核对时间与声音</h2>
+          <span class="small">按需加载原片</span>
+        </div>
+        <div class="source-grid">
+          <video
+            id="source"
+            controls
+            preload="none"
+            aria-label="原始公开课堂视频"
+          ></video>
+          <div class="source-card">
+            <strong id="current-source">选择右上方任一章节</strong>
+            <p id="reason"></p>
+            <p id="audio-check"></p>
+            <p>
+              原声按所选画面的同一源时间裁剪。没有添加配乐、配音或合成声音。当前模型只分析画面，不理解对白，也没有按完整语句寻找剪点。
+            </p>
+            <button
+              id="play-source"
+              type="button"
+              class="chapter"
+              style="padding: 10px 0; color: #286948"
+            >
+              ▶ 播放当前章节对应原片
+            </button>
+          </div>
+        </div>
+      </section>
+      <footer>
+        <p>
+          素材：<a id="credit" target="_blank" rel="noreferrer"
+            >Cooking with Laura Homemade Pasta</a
+          >
+          · Northampton Community Television；出镜 Laura Alpern，剪辑 Julia
+          Alpern。<a
+            href="https://creativecommons.org/licenses/by/3.0/"
+            target="_blank"
+            rel="noreferrer"
+            >CC BY 3.0</a
+          >。本演示有转码、选段和字幕改编，不表示原作者认可或代言本产品。
+        </p>
+        <div class="links">
+          <a href="report.json">实测报告 JSON</a
+          ><a href="story.json">Luna 观察与草稿</a
+          ><a href="source.json">素材来源与哈希</a
+          ><a href="/examples/kitchen/story-zh.mp4" download>下载实际 MP4</a
+          ><a href="/">打开产品工作台</a>
+        </div>
+      </footer>
+    </main>
+    <script type="module">
+      const $ = (id) => document.getElementById(id);
+      const time = (n) =>
+        `${Math.floor(n / 60)
+          .toString()
+          .padStart(2, "0")}:${Math.floor(n % 60)
+          .toString()
+          .padStart(2, "0")}`;
+      try {
+        const responses = await Promise.all([
+          fetch("report.json"),
+          fetch("source.json"),
+          fetch("story.json"),
+        ]);
+        if (responses.some((r) => !r.ok))
+          throw new Error("实测数据尚未生成，请稍后刷新。");
+        const [report, source, story] = await Promise.all(
+          responses.map((r) => r.json()),
+        );
+        $("title").textContent = story.title;
+        $("weekly").textContent = story.weekly_note;
+        $("output-meta").textContent =
+          `${report.output.duration.toFixed(1)} 秒 · 保留原声`;
+        const stats = [
+          [
+            `${Math.round(source.source_duration / 60)} 分钟`,
+            "完整真实课堂输入",
+          ],
+          [
+            `${story.candidate_count} / ${story.total_candidates}`,
+            "分散候选 / 全部出镜片段",
+          ],
+          [`${report.chapters.length} 个章节`, "由模型观察自动挑选"],
+          [`${report.output.duration.toFixed(1)} 秒`, "720p 原声故事影片"],
+        ];
+        for (const [value, label] of stats) {
+          const el = document.createElement("div");
+          el.className = "stat";
+          const strong = document.createElement("strong");
+          strong.textContent = value;
+          const span = document.createElement("span");
+          span.textContent = label;
+          el.append(strong, span);
+          $("stats").append(el);
+        }
+        $("limits").textContent =
+          `实测边界：人物自动聚类产生 ${report.clustering.original_groups} 个碎片组，经人工核对合并为 1 人后继续。自动挑片和文案没有手工替换。人脸漏检区间、仅拍手部的动作可能遗漏；语句可能在剪点处被截断。它已经能产出真实影片，仍需要人工核对与审核。`;
+        $("credit").href = source.source_page;
+        $("source").src = "/examples/kitchen/source.mp4";
+        let current = report.chapters[0];
+        const buttons = [];
+        function show(chapter, index) {
+          current = chapter;
+          buttons.forEach((b, i) => {
+            b.classList.toggle("active", i === index);
+            b.setAttribute("aria-pressed", String(i === index));
+          });
+          $("current-source").textContent =
+            `原片 ${time(chapter.original_start)}–${time(chapter.original_end)} · ${chapter.heading}`;
+          $("reason").textContent =
+            `Luna ${chapter.score} 分 · ${chapter.reason}`;
+          $("audio-check").textContent =
+            `该段音频与输入源波形相关系数 ${chapter.audio.correlation.toFixed(4)}；测得相对偏移 ${chapter.audio.offset_ms.toFixed(1)} ms。`;
+        }
+        report.chapters.forEach((chapter, index) => {
+          const button = document.createElement("button");
+          button.className = "chapter";
+          button.type = "button";
+          const number = document.createElement("div");
+          number.className = "number";
+          number.textContent = String(index + 1).padStart(2, "0");
+          const body = document.createElement("div");
+          const heading = document.createElement("strong");
+          heading.textContent = chapter.heading;
+          const caption = document.createElement("span");
+          caption.textContent = chapter.caption;
+          const meta = document.createElement("em");
+          meta.textContent = `${time(chapter.output_start)} · 原片 ${time(chapter.original_start)} · ${chapter.score} 分`;
+          body.append(heading, caption, meta);
+          button.append(number, body);
+          button.addEventListener("click", () => {
+            $("source").pause();
+            show(chapter, index);
+            $("result").currentTime = chapter.output_start;
+            $("result")
+              .play()
+              .catch(() => {});
+          });
+          buttons.push(button);
+          $("chapters").append(button);
+        });
+        $("play-source").addEventListener("click", () => {
+          $("result").pause();
+          $("source").currentTime = current.original_start;
+          $("source")
+            .play()
+            .catch(() => {});
+        });
+        $("result").addEventListener("timeupdate", () => {
+          const index = report.chapters.findIndex(
+            (c) =>
+              $("result").currentTime >= c.output_start &&
+              $("result").currentTime < c.output_end,
+          );
+          if (index >= 0 && current !== report.chapters[index])
+            show(report.chapters[index], index);
+        });
+        show(current, 0);
+      } catch (error) {
+        const el = document.createElement("p");
+        el.className = "error";
+        el.textContent = error.message;
+        $("stats").replaceWith(el);
+      }
+    </script>
+  </body>
+</html>

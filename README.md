@@ -1,95 +1,123 @@
 # MomentFlow · 拾光
 
-让一次体验里属于你的照片和视频，自动汇成可以领取、保存或购买的个人回忆。
+[简体中文](README.md) · [English](README.en.md)
 
-面向场馆、体验项目、营地及活动组织者的个人体验影像平台。覆盖游乐项目纪念片、活动个人相册、结营/研学合辑和幼儿园成长周记。
+**把一次共同的活动，整理成每个人自己的故事。**
 
-> 当前阶段：已实现本地照片/视频导入、真实人脸检测与聚类、人物核对、Luna 视觉分析、精彩选段与周记草稿、保留原声的个人集锦生成及审核领取，包含体验和幼儿园 Demo。没有接入实时监控、云端账户/监护体系或真实支付。
+MomentFlow 从照片和视频中整理人物出镜记录，辅助挑选精彩片段、编排章节和撰写活动记录，生成保留原声的个人影片。适用于幼儿园日常、营地、课堂和体验活动。
 
-## 运行真实处理 Demo
+目前提供可运行的本地应用：人脸识别与剪辑在本机完成，AI 故事分析通过你自己的 OpenRouter 账户调用 Luna。所有影片交付前都需人工核对。
 
-前置：Node.js、Python 3.11–3.13、uv、FFmpeg/ffprobe。本地人脸识别无需 Key；故事分析使用自己的 OpenRouter Key。
+## 效果展示
+
+### 双语故事工作台
+
+![MomentFlow 中文工作台](demo/qa/product/overview-zh.png)
+
+四步完成制作：**导入素材 → 确认人物 → 整理故事 → 审核交付**。界面支持中文与英文切换，故事、选片和人物核对分区编辑。
+
+### 同一段活动，不同人的影片
+
+[![真实托育课堂成片，点击观看 MP4](docs/assets/classroom-story.gif)](demo/public/examples/classroom/educator-zh.mp4)
+
+实际输入为一段 **60 秒的真实托育中心报道**，包含多人同框、照护互动和婴儿活动。示例保留来源录音，包括报道旁白；没有添加合成配音。原片较短，成片只记录拍到的活动，不包装成完整一周的观察。
+
+| 示例 | 实际输出 | 观看与数据 |
+| --- | --- | --- |
+| 照护者 | 2 章、7.5 秒；怀抱婴儿、与玩具互动 | [中文影片](demo/public/examples/classroom/educator-zh.mp4) · [English film](demo/public/examples/classroom/educator-en.mp4) |
+| 孩子 A | 1 章、4 秒；地垫上的活动记录 | [中文影片](demo/public/examples/classroom/child-a-zh.mp4) · [English film](demo/public/examples/classroom/child-a-en.mp4) |
+| 手工意面课堂 | 完整 11 分钟录像中自动选出 8 章、27 秒，包含准备、操作和品尝 | [中文影片](demo/public/examples/kitchen/story-zh.mp4) · [English film](demo/public/examples/kitchen/story-en.mp4) |
+
+[多人课堂原片](demo/public/examples/classroom/source.mp4) · [成品与章节数据](demo/public/examples/catalog.json) · [课堂实测记录](demo/qa/classroom/README.md) · [长视频分析与原声验证](demo/qa/real-activity/README.md)
+
+应用的“故事示例”页可以切换人物、对照原片、点击章节播放并下载影片，**查看成品不需要模型 Key，也不会调用付费接口**。这些是实际处理后保存的示例；导入新素材会重新运行识别与分析。
+
+素材署名：托育课堂由 Cherise Vaught / AFN Kaiserslautern / Defense Media Activity 制作，[原发布页](https://www.dvidshub.net/video/993791/ramstein-child-development-center-expands-childcare-support)标注 Public Domain；适用[来源使用限制](https://www.dvidshub.net/about/copyright)。The appearance of U.S. Department of War (DoW) visual information does not imply or constitute DoW endorsement. 烹饪课堂由 Northampton Community Television 制作，Laura Alpern 出镜、Julia Alpern 剪辑，按 [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) 使用。两份示例均经过剪辑与字幕等改编，不代表原作者或机构背书。[完整素材说明](demo/public/examples/README.md)。
+
+## 已实现的功能
+
+| 环节 | 当前能力 |
+| --- | --- |
+| 素材导入 | 照片与本地视频混合导入，保留原文件和来源时间 |
+| 人物整理 | YuNet 检测、SFace 特征、保守聚类；参考照片、人工合并与拆分 |
+| 故事助手 | 实际调用 Luna 分析候选画面、去重、挑片、编排章节及起草中文或英文记录 |
+| 影片制作 | 动态原片剪辑、章节字幕、原声保留；检测到的非目标人脸遮盖 |
+| 审核领取 | 版本审核、交付状态、本机领取页和 MP4 下载 |
+| 工作空间 | 中英文界面、任务进度、取消重试、本地持久化及浏览器会话隔离 |
+
+流程：`照片 / 视频 → 出镜记录 → 人物核对 → AI 故事草稿 → 编辑确认 → 原声影片 → 审核领取`
+
+## 快速开始
+
+需要 **Node.js 20.19+、Python 3.11–3.13、uv、FFmpeg 和 ffprobe**。
 
 ```bash
-cd demo
+git clone https://github.com/UllrAI/momentflow.git
+cd momentflow/demo
 npm ci
 npm run setup
 npm run dev -- --port 4173
 ```
 
-打开 http://localhost:4173 。默认进入幼儿园场景，可切换体验影像。点击“打开幼儿园示例”，会实际加载模型分析示例媒体；也可以新建批次导入自己的授权照片和视频。
+打开 **http://localhost:4173**，进入“故事示例”即可观看成品。`setup` 安装后端依赖，下载并校验人脸模型；`dev` 同时启动界面与本地 API。
 
-演示流程：**照片/视频导入 → YuNet 检测 → SFace 特征与聚类 → 核对/纠错人物 → Luna 分析/挑片/起草周记 → 确认采用 → 带原声与章节字幕的真实 MP4 → 审核交付 → 每人专属领取**。
+处理自己的素材：
 
-素材、特征、人物与输出保存在本机，刷新/重启后保留。故事分析前需确认将候选画面发送至 OpenRouter / OpenAI；不发送人物特征和参考档案。幼儿园示例儿童为 AI 虚构，示例视频由照片合成；另用公开授权真人动态视频验证原视频识别与剪辑。相似人物、遮挡和低清仍需人工复核，当前没有经过真实幼儿园识别效果验证。
+1. 新建活动，确认素材处理权限，导入照片和视频。
+2. 开始人物识别，核对每个人的出镜记录；有需要时合并或拆分。
+3. 在“设置”填写自己的 OpenRouter Key。回到人物的“故事”标签，确认候选画面发送范围，推荐并编辑故事。也可以在“片段”中手动选片。
+4. 采用故事后生成影片，完整检查画面、字幕、原声和其他人物遮盖，再审核、交付与下载。
 
-详见 [Demo 运行与边界](demo/README.md)、[真实处理链路](docs/implementation-v3.md)、[故事分析与原声](docs/implementation-v4-story.md)、[验收记录](demo/design-qa.md)。
+中文或英文界面会用于新生成的故事。切换界面语言不会改写你已经保存的姓名、活动名或故事内容。
 
-## 从哪里开始
+本地识别、手动选片和剪辑无需 Key；AI 分析可能产生 OpenRouter 费用。不要把密钥写入代码或提交到 Git。
 
-先验证一个起止明确、有拍摄授权的体验项目：体验码绑定场次和设备，采集照片/视频，生成纪念片，通过私密页面领取或购买。先跑通正确关联、成片、交付和异常恢复，再增加点位或行业。
+## 数据与能力边界
 
-已有幼儿园/营地渠道时，也可先验证周期合辑；不需要为了扩大定位而放弃已有客户优势。
+- **本地保存**：原始素材、人物特征与输出保存在被 Git 忽略的 `.momentflow-data/`。识别和剪辑无需上传原片。签名会话用于隔离本机不同浏览器的数据，不能替代生产账号体系。
+- **按次同意 AI 分析**：最多发送 36 个分散候选的采样画面，视频每段最多 3 帧；不发送姓名、参考照片、特征向量或原声。不是全量视频或语音理解。
+- **人物核对不可省略**：侧脸、低清与遮挡可能漏检或造成分组碎片化。烹饪实测出现 287 个碎片组，经人工复核合并后才自动选片；不能据此宣称已支持无人审核的商用识别。
+- **自动剪辑仍有限制**：检测不到人脸的活动可能缺失，短片可能截断对白。自动遮盖只覆盖检测到的人脸，必须复核；文案不能作为儿童能力、性格或发展评价。
+- **文件限制**：单文件 100 MB、单段视频 5 分钟、最高 4K；每活动 30 份、总计 500 MB。成片最多 60 秒，输出 720p、12 fps、H.264/AAC MP4。
+- **尚未接入**：监控实时流、语音语义分析、云端存储、真实家长/游客账号、跨设备邀请与支付。`npm run build` 仅打包前端，静态托管不能独立运行 Python/FFmpeg 链路。
 
-## 两种生产模式
+## 开发与文档
 
-```mermaid
-flowchart TD
-    A[视频/照片与采集事件] --> B[场次与参与者关联]
-    B --> C[固定体验：时间窗口与模板成片]
-    B --> D[自由活动：候选事件与多模态整理]
-    C --> E[权限核验与必要复核]
-    D --> E
-    E --> F[私密相册或纪念片预览]
-    F --> G[免费领取/票内包含/付费解锁]
-    G --> H[高清交付与恢复领取]
+```bash
+cd demo
+npm test
+npm run check:backend
+npm run check:format
+npm run build
+npm run test:sites
 ```
 
-关联支持二维码、RFID、订单/场次、人工标记和授权的视觉匹配。人脸不是必填项，大模型也不是每段固定体验视频必须经过的实时步骤。素材匹配、账户认证、内容使用权和下载权益分别管理。
+后端测试会实际调用本地识别和 FFmpeg；模型接口单元测试使用明确的测试替身，不作为实际 AI 效果证据。真实模型实测另存于 QA 记录。
 
-## 调研与产品资料
+```text
+backend/             本地 API、识别、故事与渲染
+  momentflow/
+  tests/
+demo/                React 工作台与领取页
+  src/               界面、中英文文案
+  public/examples/   经整理的公开素材与真实成品
+  qa/                实测数据与界面验收证据
+docs/                产品设计、实现、市场研究与演示图
+design/              视觉方向与历史概念
+```
 
-| 资料 | 内容 |
-|---|---|
-| [市场深入比较与切入建议 · 2026-10-24](docs/research/market-entry-deep-dive-2026-10-24.md) | 九类场景的规模证据、购买者、竞争与销售阻力；付费场景测算、首单客户画像和验证计划 |
-| [跨场景竞品与市场调研 · 2026-10-24](docs/research/cross-scenario-landscape-2026-10-24.md) | Disney、Universal、Revl、Pomvom、PicThrive、营地/赛事/活动产品和国内方案；证据边界、公开收费、技术路线和市场切入判断 |
-| [产品设计 v2](docs/product-design-v2.md) | 跨场景定位、即时/周期流程、运营端与游客端、数据模型、订单权益、技术架构、异常恢复和试点标准 |
-| [本轮视觉生成记录](design/generation-prompts.md) | 运营交付、成片工作室与游客领取页的概念提示词 |
-| [幼儿园 v1 · 历史方案](docs/archive/kindergarten-product-design-v1.md) | 保留幼教场景的教师审核、监护关系与观察证据设计 |
-| [幼儿园 v1 · 历史视觉](design/archive/kindergarten/generation-prompts.md) | 原始三张幼教概念及生成记录 |
+| 文档 | 内容 |
+| --- | --- |
+| [应用使用与开发](demo/README.md) | 安装、配置、数据管理和验证 |
+| [真实处理链路](docs/implementation-v3.md) | 导入、识别、人物纠错、渲染及版本边界 |
+| [故事分析与原声](docs/implementation-v4-story.md) | 证据约束、选片、章节与音频处理 |
+| [界面验收](demo/design-qa.md) | 视觉对照、双语与交互测试 |
+| [产品设计](docs/product-design-v2.md) | 即时影像与周期故事的产品流程和数据模型 |
+| [市场切入研究](docs/research/market-entry-deep-dive-2026-10-24.md) | 场景、购买者、竞争和销售阻力 |
+| [跨场景竞品研究](docs/research/cross-scenario-landscape-2026-10-24.md) | 体验场馆、营地、赛事与活动产品 |
 
-## 核心触点概念
+## 开源准备与许可
 
-以下三个触点是同一产品的视觉方向。Demo 已实现其核心业务流程；实际功能范围以 Demo 说明为准，实时设备采集、生产级账户与付费交付仍未接入。
+当前尚未为项目代码指定开源许可证；请勿把第三方模型或示例素材的许可证视为本项目代码许可。后续公开前仍需确定代码许可证、完成第三方素材与人物权利检查，以及生产部署的账号和访问控制评审。当前修改不改变仓库可见性。
 
-### 运营交付工作台
-
-处理场次绑定、缺片与交付待办，审核可交付影片。
-
-![运营交付工作台](design/concepts/operations.png)
-
-### 成片工作室
-
-核验场次与同行范围，查看原片，更换片段并确认成片。
-
-![成片工作室](design/concepts/studio.png)
-
-### 游客私密领取页
-
-观看本人/授权同行纪念影像，按服务模式领取、购买或恢复下载。
-
-![游客私密领取页](design/concepts/guest.png)
-
-## 验证重点
-
-最新研究将首批客户进一步限定为“已有拍摄素材、已有影像收费或明确交付义务、负责人可决策”的体验运营商；稳定期次的营地/研学机构作为第二条验证路径。国内已有低价人脸检索、找视频及快剪平台，不把基础功能当作已证明的竞争壁垒。
-
-- 可服务体验中实际拍到多少，关联是否正确，未知/待核验是否被准确保留。
-- 采集到可领取预览的端到端时延，峰值与断网情况下能否恢复。
-- 实际预览、领取、实收购买、退款与高清交付，避免把游客数直接算成收入。
-- 未售媒体、设备/现场服务、推理、渲染、存储和流量的完整成本。
-- 参与者、同行、监护关系、拍摄用途及接收权限是否可执行、可修正、可撤回。
-
-详细目标和演示商业计算均为待验证假设。竞品公开资料不等同于我们已经实现或已经证明的能力。
-
-产品与仓库工作名为 MomentFlow；未完成商标/域名核验。当前方案日期：2026-10-24。
+YuNet、SFace 及现有示例分别保留其许可证；新增公开素材和改编说明见 [素材清单](demo/public/examples/README.md)。运行时原片、密钥、特征向量和模型权重不进入 Git；仓库仅包含专门整理用于展示的公开示例。

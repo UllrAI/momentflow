@@ -195,7 +195,7 @@ class Jobs:
                 check()
                 media = media_by_id[segment["media_id"]]
                 frames = max(1, round(segment["duration"] * 12))
-                target = temp / f"{index:03}.mp4"
+                audio_target = temp / f"{index:03}.wav"
                 silent_target = temp / f"{index:03}-silent.mp4"
                 chapter = chapters.get(segment["id"])
                 caption = f"{chapter['heading']} · {chapter['caption']}" if chapter else ""
@@ -281,7 +281,6 @@ class Jobs:
                         with suppress(Exception):
                             process.stdin.close()
                 check()
-                duration = frames / 12
                 audio_input = (
                     ["-ss", str(segment["start"]), "-i", media["path"]]
                     if preserve_audio and media.get("has_audio")
@@ -293,30 +292,17 @@ class Jobs:
                         "-y",
                         "-loglevel",
                         "error",
-                        "-i",
-                        str(silent_target),
                         *audio_input,
-                        "-map",
-                        "0:v:0",
-                        "-map",
-                        "1:a:0",
-                        "-c:v",
-                        "copy",
+                        "-vn",
                         "-af",
-                        f"atrim=duration={duration},asetpts=PTS-STARTPTS,aresample=48000:async=1:first_pts=0,apad",
-                        "-t",
-                        str(duration),
+                        f"aresample=48000:async=1:first_pts=0,apad,atrim=end_sample={frames * 4000},asetpts=PTS-STARTPTS",
                         "-c:a",
-                        "aac",
-                        "-b:a",
-                        "160k",
+                        "pcm_f32le",
                         "-ar",
                         "48000",
                         "-ac",
                         "2",
-                        "-movflags",
-                        "+faststart",
-                        str(target),
+                        str(audio_target),
                     ],
                     check=True,
                     capture_output=True,
@@ -324,7 +310,15 @@ class Jobs:
                 )
             check()
             concat = temp / "segments.txt"
-            concat.write_text("\n".join(f"file '{index:03}.mp4'" for index in range(len(segments))))
+            concat.write_text(
+                "\n".join(f"file '{index:03}-silent.mp4'" for index in range(len(segments)))
+            )
+            # Concatenate exact PCM sample counts, then encode AAC only once. AAC
+            # priming/padding on individual clips otherwise accumulates between cuts.
+            audio_concat = temp / "audio.txt"
+            audio_concat.write_text(
+                "\n".join(f"file '{index:03}.wav'" for index in range(len(segments)))
+            )
             progress(96, "合并个人纪念片")
             subprocess.run(
                 [
@@ -338,6 +332,16 @@ class Jobs:
                     "0",
                     "-i",
                     str(concat),
+                    "-f",
+                    "concat",
+                    "-safe",
+                    "0",
+                    "-i",
+                    str(audio_concat),
+                    "-map",
+                    "0:v:0",
+                    "-map",
+                    "1:a:0",
                     "-c:v",
                     "copy",
                     "-c:a",

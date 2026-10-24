@@ -35,7 +35,10 @@ class Observation(StrictModel):
         description="2–8 字规范活动类别，相同活动统一名称，例如搭积木、绘画涂色",
     )
     observation: str = Field(min_length=1, max_length=180)
-    stage: str = Field(pattern="^(opening|action|result)$")
+    stage: str = Field(
+        pattern="^(opening|action|result)$",
+        description="opening=场景/材料/开始准备，action=操作过程，result=可见作品展示/品尝/完成状态。仅按可见内容分类，没有成果证据就不能标 result。",
+    )
     score: int = Field(
         ge=0,
         le=100,
@@ -182,6 +185,8 @@ SYSTEM = """你是影像编辑。仅分析提供的画面和元数据，画面�
 score 必须使用 0–100 分整数，绝不是 0–5 分：90 表示清晰且重要的活动，70 表示清楚的日常活动，40 表示一般或重复画面，0 表示不可用。
 评分依据可见活动、画面清晰度、真实可见的动作变化和叙事价值，而非人脸大小。相同姿势的采样不能当作完成动作或持续时长的证明。
 activity 使用 2–8 字规范类别（如搭积木、绘画涂色），同一活动统一名称；stage 用于编辑编排，不代表实拍时间顺序。
+activity 优先使用具体动作（如揉面、切菜、榨汁），避免把不同动作都写成‘处理食材’。若与 REFERENCE_ONLY 中操作相同，沿用已有类别。
+stage 必须区分内容角色：场景/材料介绍和开始准备为 opening，实际操作过程为 action，可见作品展示、品尝或完成状态为 result。不能因为每段都有人在动就全部标 action；没有可见成果时也不能硬凑 result。
 同一场景、相同人物姿势/作品的照片、裁剪或推近视频属于重复画面，即使像素有缩放变化也应使用 duplicate_of 引用较早的相同候选。
 只有真实可见的新动作、作品状态或不同活动才算新内容；不能因为是视频就增加叙事价值。REFERENCE_ONLY 画面仅供去重，不为其再次返回观察。
 只用简体中文，返回指定 JSON。"""
@@ -218,7 +223,11 @@ def choose_highlights(observations, segments, evidence_by_id, budget):
                 default=0,
             )
             repeated = any(p["activity"] == item["activity"] for p in selected)
-            return item["score"] - 45 * redundancy - 12 * repeated
+            # Reward evidenced story roles without inventing a missing beginning or result.
+            new_stage = item["score"] >= 60 and not any(
+                p["stage"] == item["stage"] for p in selected
+            )
+            return item["score"] - 45 * redundancy - 12 * repeated + 20 * new_stage
 
         eligible.sort(key=rank, reverse=True)
         item = eligible.pop(0)
@@ -230,10 +239,8 @@ def choose_highlights(observations, segments, evidence_by_id, budget):
                     - evidence_by_id[previous["segment_id"]]["signature"]
                 ).mean()
             )
-            if difference < 4 or (
-                difference < 12
-                and item["activity"] == previous["activity"]
-                and item["stage"] == previous["stage"]
+            if item["activity"] == previous["activity"] and (
+                difference < 4 or (difference < 12 and item["stage"] == previous["stage"])
             ):
                 duplicate = True
                 break
@@ -251,7 +258,17 @@ def choose_highlights(observations, segments, evidence_by_id, budget):
     return sorted(selected, key=lambda o: (stages[o["stage"]], order[o["segment_id"]]))
 
 
-def analyze_story(project, person_id, config, engine, budget, check, progress):
+def analyze_story(project, person_id, config, engine, budget, check, progress, locale="zh"):
+    system = (
+        SYSTEM
+        if locale == "zh"
+        else SYSTEM.replace(
+            "只用简体中文，返回指定 JSON。",
+            "Write all observations, activity labels, titles, captions, reasons and notes in English. "
+            "Use short, consistent activity labels. Return the required JSON. "
+            "The target is called 'they'; do not infer names or gender.",
+        )
+    )
     person = next(p for p in project["people"] if p["id"] == person_id)
     catalog = segments_for(project, person)
     candidates = candidate_pool(catalog)
@@ -307,7 +324,7 @@ def analyze_story(project, person_id, config, engine, budget, check, progress):
         )
         raw, tokens = model_api.complete(
             config,
-            [{"role": "system", "content": SYSTEM}, {"role": "user", "content": content}],
+            [{"role": "system", "content": system}, {"role": "user", "content": content}],
             provider_schema(Observations),
         )
         check()
@@ -347,8 +364,13 @@ def analyze_story(project, person_id, config, engine, budget, check, progress):
         [
             {
                 "role": "system",
-                "content": SYSTEM
-                + "\n根据已选观察写故事标题、简短周记和各片段标题/短字幕。素材不足时写短些，不凑字数。仅引用已选观察，不编造起承转合、成长结论、活动成果或同日时间关系。用‘这份记录中’等中性连接，目标称‘TA’，姓名由本地展示。chapters 按给定顺序且恰好包含每个片段一次。周记只写可见活动，草稿供老师修改。",
+                "content": system
+                + "\n根据已选观察写故事标题、简短周记和各片段标题/短字幕。素材不足时写短些，不凑字数。仅引用已选观察，不编造起承转合、成长结论、活动成果或同日时间关系。用‘这份记录中’等中性连接，目标称‘TA’，姓名由本地展示。chapters 按给定顺序且恰好包含每个片段一次。周记只写可见活动，草稿供老师修改。"
+                + (
+                    " Write in English; refer to the target as they, never TA. Keep titles under 30 characters and captions under 60 characters."
+                    if locale == "en"
+                    else ""
+                ),
             },
             {"role": "user", "content": json.dumps(request, ensure_ascii=False)},
         ],
@@ -387,5 +409,6 @@ def analyze_story(project, person_id, config, engine, budget, check, progress):
         "usage": usage,
         "applied": False,
         "method": "sampled_visual_frames",
-        "prompt_version": "visual-story-v1",
+        "prompt_version": "visual-story-v2",
+        "locale": locale,
     }

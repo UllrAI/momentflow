@@ -113,6 +113,31 @@ def test_selection_budget_diversity_and_unseen_target():
     assert len({s["id"] for s in pool}) == 36
 
 
+def test_selection_keeps_distinct_actions_in_fixed_camera_and_evidenced_story_roles():
+    segments = [{"id": str(i), "media_id": "fixed-camera", "duration": 5} for i in range(10)]
+    observations = [
+        {
+            "segment_id": str(i),
+            "usable": True,
+            "score": 85 if i < 8 else 70,
+            "activity": f"操作{i}",
+            "stage": "action" if i < 8 else "opening" if i == 8 else "result",
+        }
+        for i in range(10)
+    ]
+    # A fixed room can look almost identical while the participant does different things.
+    frames = {str(i): {"visible": [True], "signature": np.full(256, 40.0)} for i in range(10)}
+    selected = choose_highlights(observations, segments, frames, 15)
+    assert [row["stage"] for row in selected] == ["opening", "action", "result"]
+    assert {row["segment_id"] for row in selected} == {"0", "8", "9"}
+    assert sum(segments[int(row["segment_id"])]["duration"] for row in selected) == 15
+    for row in observations:
+        row["stage"] = "action"
+    assert all(
+        row["stage"] == "action" for row in choose_highlights(observations, segments, frames, 15)
+    )
+
+
 class ModelDouble:
     def __init__(self):
         self.requests = []
@@ -196,6 +221,7 @@ def test_story_end_to_end_source_binding_apply_render_and_invalid_response(tmp_p
         client.post(f"/api/projects/{pid}/samples", headers=HEADERS)
         client.post(f"/api/projects/{pid}/analyze", json={"sample_interval": 1}, headers=HEADERS)
         project = wait_job(client, pid)
+        assert project["practice_media"]
         person = project["people"][0]
         path = f"/api/projects/{pid}/people/{person['id']}"
         assert (
@@ -217,13 +243,19 @@ def test_story_end_to_end_source_binding_apply_render_and_invalid_response(tmp_p
         assert not transport.requests
         assert (
             client.post(
-                path + "/story", json={"consent": True, "duration": 15}, headers=HEADERS
+                path + "/story",
+                json={"consent": True, "duration": 15, "locale": "en"},
+                headers=HEADERS,
             ).status_code
             == 200
         )
         project = wait_job(client, pid)
         person = next(p for p in project["people"] if p["id"] == person["id"])
         story = person["story"]
+        assert story["locale"] == "en"
+        assert all(
+            "Write all observations" in req["messages"][0]["content"] for req in transport.requests
+        )
         assert story["current"] and story["selected_ids"]
         assert person["note"] != story["weekly_note"]  # no automatic replacement
         assert all(sid in story["evidence"] for sid in story["selected_ids"])
@@ -356,7 +388,7 @@ def test_original_audio_cut_order_silent_photos_and_mute(tmp_path):
             "-f",
             "lavfi",
             "-i",
-            "aevalsrc=0.18*sin(2*PI*if(lt(t\\,3)\\,440\\,880)*t):s=48000:d=7.416667",
+            "aevalsrc=0.18*sin(2*PI*if(lt(t\\,3)\\,440\\,880)*t)+0.08*sin(2*PI*(173*t+227*t*t)):s=48000:d=7.416667",
             "-map",
             "0:v:0",
             "-map",
@@ -434,6 +466,24 @@ def test_original_audio_cut_order_silent_photos_and_mute(tmp_path):
         assert streams["audio"]["sample_rate"] == "48000" and streams["audio"]["channels"] == 2
         assert abs(float(streams["audio"]["duration"]) - float(streams["video"]["duration"])) < 0.12
         audio = decoded_audio(output["path"])
+        source_audio = decoded_audio(source)
+        output_time = 0
+        for segment in [late, photo, early]:
+            duration = round(segment["duration"] * 12) / 12
+            if segment["kind"] == "video":
+                count = round((duration - 0.6) * 8000)
+                source_start = round((segment["start"] + 0.3) * 8000)
+                output_start = round((output_time + 0.3) * 8000)
+                expected = source_audio[source_start : source_start + count]
+                actual = audio[output_start : output_start + count]
+                # A chirp disambiguates periodic tones: a 20 ms AAC padding shift
+                # must not pass merely because the frequency still sounds right.
+                correlation = max(
+                    np.corrcoef(actual[2:-2], expected[2 + shift : count - 2 + shift])[0, 1]
+                    for shift in range(-2, 3)
+                )
+                assert correlation > 0.95
+            output_time += duration
         assert abs(dominant(audio, 0.2, 0.8) - 880) < 4
         boundary = round(late["duration"] * 12) / 12
         assert (

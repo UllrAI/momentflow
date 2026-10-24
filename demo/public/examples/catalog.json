@@ -1,0 +1,612 @@
+[
+  {
+    "id": "classroom",
+    "people": [
+      {
+        "id": "educator",
+        "name": {
+          "zh": "照护者",
+          "en": "Educator"
+        },
+        "versions": {
+          "zh": {
+            "title": "与婴儿的互动",
+            "note": "这份记录中，TA怀抱婴儿，也在躺着的婴儿旁将玩具放到其上方。",
+            "chapters": [
+              {
+                "segment_id": "159ffc8df99380101837",
+                "heading": "怀抱婴儿",
+                "caption": "TA坐着抱住婴儿，婴儿横躺在臂弯中。",
+                "start": 0,
+                "source_start": 27.803,
+                "source_end": 32.307
+              },
+              {
+                "segment_id": "3e716a441c30f592c75e",
+                "heading": "用玩具逗婴儿",
+                "caption": "TA跪在婴儿旁，将玩具放到婴儿上方。",
+                "start": 4.5,
+                "source_start": 49.325,
+                "source_end": 52.327
+              }
+            ],
+            "duration": 7.5,
+            "movie": "/examples/classroom/educator-zh.mp4"
+          },
+          "en": {
+            "title": "A Moment with a Baby",
+            "note": "This record shows them holding a baby across their lap and reaching toward a colorful toy beside a baby on a mat.",
+            "chapters": [
+              {
+                "segment_id": "159ffc8df99380101837",
+                "heading": "Holding a Baby",
+                "caption": "They hold a baby across their lap and look down.",
+                "start": 0,
+                "source_start": 27.803,
+                "source_end": 32.307
+              },
+              {
+                "segment_id": "3e716a441c30f592c75e",
+                "heading": "Reaching for a Toy",
+                "caption": "They reach toward a colorful toy beside a baby on a mat.",
+                "start": 4.5,
+                "source_start": 49.325,
+                "source_end": 52.327
+              }
+            ],
+            "duration": 7.5,
+            "movie": "/examples/classroom/educator-en.mp4"
+          }
+        },
+        "portrait": "/examples/classroom/educator-portrait.jpg",
+        "poster": "/examples/classroom/educator-poster.jpg"
+      },
+      {
+        "id": "child-a",
+        "name": {
+          "zh": "孩子 A",
+          "en": "Child A"
+        },
+        "versions": {
+          "zh": {
+            "title": "地面上的爬行姿势",
+            "note": "这份记录中，TA趴在地面，双手撑地并抬起上身。",
+            "chapters": [
+              {
+                "segment_id": "7d175ff1500d265e3719",
+                "heading": "双手撑地",
+                "caption": "TA趴在地面，双手撑地抬起上身。",
+                "start": 0,
+                "source_start": 32.307,
+                "source_end": 36.311
+              }
+            ],
+            "duration": 4.0,
+            "movie": "/examples/classroom/child-a-zh.mp4"
+          },
+          "en": {
+            "title": "A Moment of Prone Play",
+            "note": "In this record, they lie on their stomach, propped up on their arms, with their legs extended behind them.",
+            "chapters": [
+              {
+                "segment_id": "7d175ff1500d265e3719",
+                "heading": "Prone Play",
+                "caption": "They lie on their stomach, supported by their arms.",
+                "start": 0,
+                "source_start": 32.307,
+                "source_end": 36.311
+              }
+            ],
+            "duration": 4.0,
+            "movie": "/examples/classroom/child-a-en.mp4"
+          }
+        },
+        "portrait": "/examples/classroom/child-a-portrait.jpg",
+        "poster": "/examples/classroom/child-a-poster.jpg"
+      }
+    ],
+    "title": {
+      "zh": "托育课堂 · 陪伴与互动",
+      "en": "Little moments in the classroom"
+    },
+    "description": {
+      "zh": "同一段活动，两个人的专属记录",
+      "en": "One activity, two personal stories"
+    },
+    "intro": {
+      "zh": "怀抱中的陪伴，地垫上的探索。从同一段课堂视频，看看每个人被记录下来的瞬间。",
+      "en": "A moment in caring arms. A little exploration on the mat. See two perspectives from the same classroom video."
+    },
+    "source": "/examples/classroom/source.mp4",
+    "source_duration": 60.026,
+    "poster": "/examples/classroom/poster.jpg",
+    "source_url": "https://www.dvidshub.net/video/993791/ramstein-child-development-center-expands-childcare-support",
+    "credit": "Cherise Vaught · AFN Kaiserslautern / Defense Media Activity",
+    "license": "Public domain (US government)",
+    "license_url": "https://www.dvidshub.net/about/copyright",
+    "context": {
+      "zh": "原素材为 60 秒真实托育中心报道，保留来源录音（含旁白）。称呼仅用于演示，不识别真实姓名；这份短片不代表一整周的观察记录。",
+      "en": "The source is a 60-second report from a real childcare center, with its recorded soundtrack including narration. Labels are anonymous; this short example does not represent a full week of observation."
+    },
+    "changes": {
+      "zh": "示例经过人脸分组人工核对、AI 选片与文案整理，并剪辑、添加字幕及遮盖检测到的其他人脸。原作者与机构不为本产品背书。",
+      "en": "Adapted with reviewed person groups, AI-selected clips and notes, editing, captions and masking of detected other faces. No endorsement by the creator or organizations is implied."
+    },
+    "endorsement_notice": "The appearance of U.S. Department of War (DoW) visual information does not imply or constitute DoW endorsement."
+  },
+  {
+    "id": "kitchen",
+    "title": {
+      "zh": "手工意面课堂",
+      "en": "A handmade pasta class"
+    },
+    "description": {
+      "zh": "11 分钟课堂，八章原声故事",
+      "en": "An 11-minute class, eight story chapters"
+    },
+    "intro": {
+      "zh": "从打开面粉、揉面，到下锅与品尝。看看较长的活动录像如何整理出一条完整的操作线索。",
+      "en": "From opening the flour and kneading dough to cooking and tasting. Follow a longer class through eight selected moments."
+    },
+    "source": "/examples/kitchen/source.mp4",
+    "source_duration": 669.55,
+    "poster": "/examples/kitchen/poster.jpg",
+    "source_url": "https://commons.wikimedia.org/wiki/File:Cooking_with_Laura_Homemade_Pasta.webm",
+    "credit": "Northampton Community Television · Laura Alpern · Julia Alpern",
+    "license": "CC BY 3.0",
+    "license_url": "https://creativecommons.org/licenses/by/3.0/",
+    "context": {
+      "zh": "原素材为完整的公开授权烹饪课堂。中文影片与文案来自实际 AI 分析和自动选片；英文文案是对同一份草稿的人工忠实翻译，选片保持一致。",
+      "en": "The complete, openly licensed cooking class was analyzed to create the Chinese draft and automatic clip selection. English captions and notes are a faithful human translation of that draft, using the same clips."
+    },
+    "changes": {
+      "zh": "剪辑、添加章节字幕，并保留来源录音。人物分组经过人工复核合并，自动挑片可能截断对白，分享前仍需审核。",
+      "en": "Adapted with editing and chapter captions, keeping the source recording. Person groups were manually reviewed and combined. Automatic cuts can interrupt speech; review before sharing."
+    },
+    "people": [
+      {
+        "id": "presenter",
+        "name": {
+          "zh": "课堂演示者",
+          "en": "Class presenter"
+        },
+        "portrait": "/examples/kitchen/portrait.jpg",
+        "poster": "/examples/kitchen/poster.jpg",
+        "versions": {
+          "zh": {
+            "title": "揉面与下厨记录",
+            "note": "这份记录中，TA打开面粉包装、揉压并拉伸面团，也切了绿色蔬菜，将蔬菜和意面倒入锅中，最后用勺子品尝碗中的食物。",
+            "chapters": [
+              {
+                "segment_id": "e50cc845d5942ac36ed9",
+                "heading": "打开面粉包装",
+                "caption": "TA在台面上打开面粉包装，旁边放着面粉罐和空碗。",
+                "activity": "烘焙备料",
+                "stage": "opening",
+                "score": 65,
+                "reason": "开包装的准备动作清晰可见，尚未看到将材料倒入碗中。",
+                "source_file": "kitchen-part-1.mp4",
+                "source_start": 27.578,
+                "source_end": 32.578,
+                "original_start": 27.578,
+                "original_end": 32.578,
+                "output_start": 0.0,
+                "output_end": 5.0,
+                "audio": {
+                  "correlation": 0.999635,
+                  "offset_ms": 0.0,
+                  "rms_dbfs": -22.98,
+                  "original_file_match": {
+                    "correlation": 0.982634,
+                    "offset_ms": 23.25
+                  }
+                },
+                "start": 0.0
+              },
+              {
+                "segment_id": "753dee63de7e7544eb4d",
+                "heading": "揉压面团",
+                "caption": "TA在案板上用双手按压、揉动面团。",
+                "activity": "揉面",
+                "stage": "action",
+                "score": 78,
+                "reason": "面团及双手揉压的操作清楚可见，首帧目标不可见，后两帧可见。",
+                "source_file": "kitchen-part-1.mp4",
+                "source_start": 169.72,
+                "source_end": 172.722,
+                "original_start": 169.72,
+                "original_end": 172.722,
+                "output_start": 5.0,
+                "output_end": 8.0,
+                "audio": {
+                  "correlation": 0.999982,
+                  "offset_ms": 0.0,
+                  "rms_dbfs": -23.88,
+                  "original_file_match": {
+                    "correlation": 0.98587,
+                    "offset_ms": 23.25
+                  }
+                },
+                "start": 5.0
+              },
+              {
+                "segment_id": "d1c6be483c3019e8d7a8",
+                "heading": "给面团撒粉",
+                "caption": "TA把粉状材料撒在面团和案板上。",
+                "activity": "撒粉",
+                "stage": "action",
+                "score": 76,
+                "reason": "撒粉动作及粉末落在面团和案板上的状态清楚可见。",
+                "source_file": "kitchen-part-1.mp4",
+                "source_start": 194.745,
+                "source_end": 199.745,
+                "original_start": 194.745,
+                "original_end": 199.745,
+                "output_start": 8.0,
+                "output_end": 13.0,
+                "audio": {
+                  "correlation": 0.997963,
+                  "offset_ms": 0.0,
+                  "rms_dbfs": -22.76,
+                  "original_file_match": {
+                    "correlation": 0.994504,
+                    "offset_ms": 23.25
+                  }
+                },
+                "start": 8.0
+              },
+              {
+                "segment_id": "0fa123a775b8266a6aa0",
+                "heading": "拉伸面团",
+                "caption": "TA双手握住长形面团，向两侧拉伸。",
+                "activity": "拉伸面团",
+                "stage": "action",
+                "score": 77,
+                "reason": "面团形状及双手向两侧拉伸的操作清楚可见。",
+                "source_file": "kitchen-part-1.mp4",
+                "source_start": 238.789,
+                "source_end": 239.789,
+                "original_start": 238.789,
+                "original_end": 239.789,
+                "output_start": 13.0,
+                "output_end": 14.0,
+                "audio": {
+                  "correlation": 0.999613,
+                  "offset_ms": 0.0,
+                  "rms_dbfs": -19.38,
+                  "original_file_match": {
+                    "correlation": 0.974422,
+                    "offset_ms": 23.25
+                  }
+                },
+                "start": 13.0
+              },
+              {
+                "segment_id": "8e7638aab264a9f16889",
+                "heading": "切配绿色蔬菜",
+                "caption": "TA在砧板上切绿色蔬菜，旁边放着切开的蔬菜块。",
+                "activity": "切菜",
+                "stage": "action",
+                "score": 77,
+                "reason": "刀具、砧板和切菜动作清楚可见。",
+                "source_file": "kitchen-part-2.mp4",
+                "source_start": 62.608,
+                "source_end": 67.608,
+                "original_start": 302.608,
+                "original_end": 307.608,
+                "output_start": 14.0,
+                "output_end": 19.0,
+                "audio": {
+                  "correlation": 0.999585,
+                  "offset_ms": 0.0,
+                  "rms_dbfs": -20.82,
+                  "original_file_match": {
+                    "correlation": 0.956252,
+                    "offset_ms": -3.5
+                  }
+                },
+                "start": 14.0
+              },
+              {
+                "segment_id": "72f1ea0379a1d54e2c71",
+                "heading": "将蔬菜倒入锅中",
+                "caption": "TA倾斜碗，把蔬菜倒入炉灶上的锅中。",
+                "activity": "倒入蔬菜",
+                "stage": "action",
+                "score": 82,
+                "reason": "倒入锅中的动作和蔬菜落入锅内的变化清晰可见。",
+                "source_file": "kitchen-part-3.mp4",
+                "source_start": 11.562,
+                "source_end": 12.562,
+                "original_start": 491.562,
+                "original_end": 492.562,
+                "output_start": 19.0,
+                "output_end": 20.0,
+                "audio": {
+                  "correlation": 0.998332,
+                  "offset_ms": 0.0,
+                  "rms_dbfs": -35.45,
+                  "original_file_match": {
+                    "correlation": 0.994634,
+                    "offset_ms": -9.875
+                  }
+                },
+                "start": 19.0
+              },
+              {
+                "segment_id": "c3a5c5607cf006088357",
+                "heading": "将意面倒入锅中",
+                "caption": "TA倾斜金属滤盆，将意面倒入锅中。",
+                "activity": "倒入意面",
+                "stage": "action",
+                "score": 81,
+                "reason": "滤盆倾斜，意面落入锅中的过程清楚可见。",
+                "source_file": "kitchen-part-3.mp4",
+                "source_start": 153.704,
+                "source_end": 157.707,
+                "original_start": 633.704,
+                "original_end": 637.707,
+                "output_start": 20.0,
+                "output_end": 24.0,
+                "audio": {
+                  "correlation": 0.998943,
+                  "offset_ms": 0.0,
+                  "rms_dbfs": -29.63,
+                  "original_file_match": {
+                    "correlation": 0.994823,
+                    "offset_ms": -9.875
+                  }
+                },
+                "start": 20.0
+              },
+              {
+                "segment_id": "b861a5a27500e0543aff",
+                "heading": "用勺品尝食物",
+                "caption": "TA手持碗和勺子，将勺中的食物送入口中。",
+                "activity": "品尝食物",
+                "stage": "result",
+                "score": 76,
+                "reason": "将勺子送入口中的品尝动作清楚可见。",
+                "source_file": "kitchen-part-3.mp4",
+                "source_start": 181.722,
+                "source_end": 184.734,
+                "original_start": 661.722,
+                "original_end": 664.734,
+                "output_start": 24.0,
+                "output_end": 27.0,
+                "audio": {
+                  "correlation": 0.999787,
+                  "offset_ms": 0.0,
+                  "rms_dbfs": -24.61,
+                  "original_file_match": {
+                    "correlation": 0.99925,
+                    "offset_ms": -9.875
+                  }
+                },
+                "start": 24.0
+              }
+            ],
+            "duration": 27,
+            "movie": "/examples/kitchen/story-zh.mp4"
+          },
+          "en": {
+            "title": "Making Pasta, Step by Step",
+            "note": "In this record, they open a flour package, knead and stretch dough, chop green vegetables, add greens and pasta to a pot, then taste the food with a spoon.",
+            "chapters": [
+              {
+                "segment_id": "e50cc845d5942ac36ed9",
+                "heading": "Opening the flour",
+                "caption": "They open a flour package on the worktop.",
+                "activity": "烘焙备料",
+                "stage": "opening",
+                "score": 65,
+                "reason": "开包装的准备动作清晰可见，尚未看到将材料倒入碗中。",
+                "source_file": "kitchen-part-1.mp4",
+                "source_start": 27.578,
+                "source_end": 32.578,
+                "original_start": 27.578,
+                "original_end": 32.578,
+                "output_start": 0.0,
+                "output_end": 5.0,
+                "audio": {
+                  "correlation": 0.999635,
+                  "offset_ms": 0.0,
+                  "rms_dbfs": -22.98,
+                  "original_file_match": {
+                    "correlation": 0.982634,
+                    "offset_ms": 23.25
+                  }
+                },
+                "start": 0.0
+              },
+              {
+                "segment_id": "753dee63de7e7544eb4d",
+                "heading": "Kneading dough",
+                "caption": "They press and knead the dough with both hands.",
+                "activity": "揉面",
+                "stage": "action",
+                "score": 78,
+                "reason": "面团及双手揉压的操作清楚可见，首帧目标不可见，后两帧可见。",
+                "source_file": "kitchen-part-1.mp4",
+                "source_start": 169.72,
+                "source_end": 172.722,
+                "original_start": 169.72,
+                "original_end": 172.722,
+                "output_start": 5.0,
+                "output_end": 8.0,
+                "audio": {
+                  "correlation": 0.999982,
+                  "offset_ms": 0.0,
+                  "rms_dbfs": -23.88,
+                  "original_file_match": {
+                    "correlation": 0.98587,
+                    "offset_ms": 23.25
+                  }
+                },
+                "start": 5.0
+              },
+              {
+                "segment_id": "d1c6be483c3019e8d7a8",
+                "heading": "Flouring the dough",
+                "caption": "They dust the dough with flour.",
+                "activity": "撒粉",
+                "stage": "action",
+                "score": 76,
+                "reason": "撒粉动作及粉末落在面团和案板上的状态清楚可见。",
+                "source_file": "kitchen-part-1.mp4",
+                "source_start": 194.745,
+                "source_end": 199.745,
+                "original_start": 194.745,
+                "original_end": 199.745,
+                "output_start": 8.0,
+                "output_end": 13.0,
+                "audio": {
+                  "correlation": 0.997963,
+                  "offset_ms": 0.0,
+                  "rms_dbfs": -22.76,
+                  "original_file_match": {
+                    "correlation": 0.994504,
+                    "offset_ms": 23.25
+                  }
+                },
+                "start": 8.0
+              },
+              {
+                "segment_id": "0fa123a775b8266a6aa0",
+                "heading": "Stretching dough",
+                "caption": "They stretch the dough by hand.",
+                "activity": "拉伸面团",
+                "stage": "action",
+                "score": 77,
+                "reason": "面团形状及双手向两侧拉伸的操作清楚可见。",
+                "source_file": "kitchen-part-1.mp4",
+                "source_start": 238.789,
+                "source_end": 239.789,
+                "original_start": 238.789,
+                "original_end": 239.789,
+                "output_start": 13.0,
+                "output_end": 14.0,
+                "audio": {
+                  "correlation": 0.999613,
+                  "offset_ms": 0.0,
+                  "rms_dbfs": -19.38,
+                  "original_file_match": {
+                    "correlation": 0.974422,
+                    "offset_ms": 23.25
+                  }
+                },
+                "start": 13.0
+              },
+              {
+                "segment_id": "8e7638aab264a9f16889",
+                "heading": "Chopping greens",
+                "caption": "They chop green vegetables on a board.",
+                "activity": "切菜",
+                "stage": "action",
+                "score": 77,
+                "reason": "刀具、砧板和切菜动作清楚可见。",
+                "source_file": "kitchen-part-2.mp4",
+                "source_start": 62.608,
+                "source_end": 67.608,
+                "original_start": 302.608,
+                "original_end": 307.608,
+                "output_start": 14.0,
+                "output_end": 19.0,
+                "audio": {
+                  "correlation": 0.999585,
+                  "offset_ms": 0.0,
+                  "rms_dbfs": -20.82,
+                  "original_file_match": {
+                    "correlation": 0.956252,
+                    "offset_ms": -3.5
+                  }
+                },
+                "start": 14.0
+              },
+              {
+                "segment_id": "72f1ea0379a1d54e2c71",
+                "heading": "Adding greens",
+                "caption": "They put the green vegetables into a pot.",
+                "activity": "倒入蔬菜",
+                "stage": "action",
+                "score": 82,
+                "reason": "倒入锅中的动作和蔬菜落入锅内的变化清晰可见。",
+                "source_file": "kitchen-part-3.mp4",
+                "source_start": 11.562,
+                "source_end": 12.562,
+                "original_start": 491.562,
+                "original_end": 492.562,
+                "output_start": 19.0,
+                "output_end": 20.0,
+                "audio": {
+                  "correlation": 0.998332,
+                  "offset_ms": 0.0,
+                  "rms_dbfs": -35.45,
+                  "original_file_match": {
+                    "correlation": 0.994634,
+                    "offset_ms": -9.875
+                  }
+                },
+                "start": 19.0
+              },
+              {
+                "segment_id": "c3a5c5607cf006088357",
+                "heading": "Adding pasta",
+                "caption": "They put pasta into a pot.",
+                "activity": "倒入意面",
+                "stage": "action",
+                "score": 81,
+                "reason": "滤盆倾斜，意面落入锅中的过程清楚可见。",
+                "source_file": "kitchen-part-3.mp4",
+                "source_start": 153.704,
+                "source_end": 157.707,
+                "original_start": 633.704,
+                "original_end": 637.707,
+                "output_start": 20.0,
+                "output_end": 24.0,
+                "audio": {
+                  "correlation": 0.998943,
+                  "offset_ms": 0.0,
+                  "rms_dbfs": -29.63,
+                  "original_file_match": {
+                    "correlation": 0.994823,
+                    "offset_ms": -9.875
+                  }
+                },
+                "start": 20.0
+              },
+              {
+                "segment_id": "b861a5a27500e0543aff",
+                "heading": "Tasting the food",
+                "caption": "They use a spoon to taste the food.",
+                "activity": "品尝食物",
+                "stage": "result",
+                "score": 76,
+                "reason": "将勺子送入口中的品尝动作清楚可见。",
+                "source_file": "kitchen-part-3.mp4",
+                "source_start": 181.722,
+                "source_end": 184.734,
+                "original_start": 661.722,
+                "original_end": 664.734,
+                "output_start": 24.0,
+                "output_end": 27.0,
+                "audio": {
+                  "correlation": 0.999787,
+                  "offset_ms": 0.0,
+                  "rms_dbfs": -24.61,
+                  "original_file_match": {
+                    "correlation": 0.99925,
+                    "offset_ms": -9.875
+                  }
+                },
+                "start": 24.0
+              }
+            ],
+            "duration": 27,
+            "movie": "/examples/kitchen/story-en.mp4"
+          }
+        }
+      }
+    ]
+  }
+]

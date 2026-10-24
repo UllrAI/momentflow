@@ -1,0 +1,48 @@
+{
+  "story_id": "779f0d74-8ea1-4ae7-a4f5-e24a18f564b8",
+  "title": "Making Pasta, Step by Step",
+  "weekly_note": "In this record, they open a flour package, knead and stretch dough, chop green vegetables, add greens and pasta to a pot, then taste the food with a spoon.",
+  "chapters": [
+    {
+      "segment_id": "e50cc845d5942ac36ed9",
+      "heading": "Opening the flour",
+      "caption": "They open a flour package on the worktop."
+    },
+    {
+      "segment_id": "753dee63de7e7544eb4d",
+      "heading": "Kneading dough",
+      "caption": "They press and knead the dough with both hands."
+    },
+    {
+      "segment_id": "d1c6be483c3019e8d7a8",
+      "heading": "Flouring the dough",
+      "caption": "They dust the dough with flour."
+    },
+    {
+      "segment_id": "0fa123a775b8266a6aa0",
+      "heading": "Stretching dough",
+      "caption": "They stretch the dough by hand."
+    },
+    {
+      "segment_id": "8e7638aab264a9f16889",
+      "heading": "Chopping greens",
+      "caption": "They chop green vegetables on a board."
+    },
+    {
+      "segment_id": "72f1ea0379a1d54e2c71",
+      "heading": "Adding greens",
+      "caption": "They put the green vegetables into a pot."
+    },
+    {
+      "segment_id": "c3a5c5607cf006088357",
+      "heading": "Adding pasta",
+      "caption": "They put pasta into a pot."
+    },
+    {
+      "segment_id": "b861a5a27500e0543aff",
+      "heading": "Tasting the food",
+      "caption": "They use a spoon to taste the food."
+    }
+  ],
+  "translation_method": "Human English translation of the actual saved Chinese Luna draft; selection unchanged."
+}
